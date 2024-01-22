@@ -4,10 +4,17 @@ import com.clothes.perst.DTO.RestResponse;
 import com.clothes.perst.config.JwtTokenService;
 import com.clothes.perst.domain.MemberVO;
 import com.clothes.perst.service.MemberService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.ServletContext;
-import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springdoc.core.annotations.RouterOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +22,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/member") // API의 기본 경로 설정
+@Tag(name="Member", description = "회원과 관련된 API입니다.")
 public class HomeController {
     private final MemberService memberService;
     private final JwtTokenService jwtTokenService;
@@ -42,8 +51,12 @@ public class HomeController {
      * @throws IllegalArgumentException 패스워드가 일치 하지 않을 때
      */
     @ResponseBody
-    @RequestMapping(value = { "/login" }, method = RequestMethod.POST)
-    public ResponseEntity login(@RequestBody MemberVO member) throws Exception {
+    @PostMapping("/login")
+    @RouterOperation(operation = @Operation(operationId = "findEmployeeById", summary = "Find purchase order by ID", tags = { "MyEmployee" },
+            parameters = { @Parameter(in = ParameterIn.PATH, name = "id", description = "Employee Id") },
+            responses = { @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(schema = @Schema(implementation = MemberVO.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid Employee ID supplied"),
+                    @ApiResponse(responseCode = "404", description = "Employee not found") }))public ResponseEntity login(@RequestBody MemberVO member) throws Exception {
         logger.info("[로그인 요청] Phone : " + member.getMemberPhone());
         logger.info("[로그인 요청] Password : " + member.getMemberPassword());
         // 성공적으로 로그인 했을때.
@@ -56,6 +69,7 @@ public class HomeController {
                     .httpStatus(HttpStatus.OK)
                     .message(token)
                     .data(full_member)
+
                     .build();
             System.out.println(restResponse.toString());
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
@@ -77,7 +91,7 @@ public class HomeController {
      */
     @ResponseBody
     @RequestMapping(value = { "/signup" }, method = RequestMethod.POST)
-    public ResponseEntity signup(@RequestBody MemberVO member, HttpServletRequest request) throws Exception {
+    public ResponseEntity signup(@RequestBody MemberVO member) throws Exception {
         // 회원 가입 완료
         try{
             MemberVO signUpMember = memberService.signUpMember(member);
