@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.2"
+             xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
+
+    <persistence-unit name="YourPersistenceUnitName" transaction-type="RESOURCE_LOCAL">
+        <!-- TODO 추후 경로 지정해야함! -->
+        <properties>
+            <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/your_database_name"/>
+            <property name="javax.persistence.jdbc.user" value="your_database_user"/>
+            <property name="javax.persistence.jdbc.password" value="your_database_password"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/> <!-- 자동으로 테이블을 생성/갱신하도록 설정 -->
+            <!-- Other JPA and Hibernate properties -->
+        </properties>
+    </persistence-unit>
+
+</persistence>
