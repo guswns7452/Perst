@@ -3,6 +3,7 @@ plugins {
 	id 'war'
 	id 'org.springframework.boot' version '3.2.1'
 	id 'io.spring.dependency-management' version '1.1.4'
+	id 'application'
 }
 
 group = 'com.clothes'
@@ -24,8 +25,7 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
+	implementation 'org.springframework.boot:spring-boot-starter-web:3.2.0'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
@@ -33,14 +33,22 @@ dependencies {
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
 	testImplementation 'org.springframework.security:spring-security-test'
 
-	implementation 'org.hibernate:hibernate-core'
-	implementation 'mysql:mysql-connector-java' // MySQL 드라이버 추가
+	// Spring Security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	testImplementation 'org.springframework.security:spring-security-test'
 
-	// JPA API
-	implementation 'javax.persistence:javax.persistence-api'
-}
+	implementation 'org.eclipse.persistence:org.eclipse.persistence.jpa:3.0.2'
+	implementation 'mysql:mysql-connector-java:8.0.23' // MySQL 드라이버 추가
+
+	implementation ('org.springframework.boot:spring-boot-starter-data-jpa') {
+		exclude group: 'org.hibernate'
+	}
 
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+application {
+	mainClassName = 'com.clothes.perst.PerstApplication' // 메인 클래스 지정
 }
