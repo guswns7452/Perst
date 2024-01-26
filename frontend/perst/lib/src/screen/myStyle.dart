@@ -1,8 +1,8 @@
 // ignore_for_file: file_names
 import 'package:flutter/material.dart';
 
-class StyleTour extends StatelessWidget {
-  const StyleTour({super.key});
+class MyStyle extends StatelessWidget {
+  const MyStyle({super.key});
 
   @override
   Widget build(BuildContext context) {
