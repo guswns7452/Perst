@@ -1,6 +1,7 @@
 package com.clothes.perst.controller;
 
 import com.clothes.perst.DTO.RestResponse;
+import com.clothes.perst.DTO.loginRequest;
 import com.clothes.perst.config.JwtTokenService;
 import com.clothes.perst.domain.MemberVO;
 import com.clothes.perst.service.MemberService;
@@ -8,8 +9,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.ServletContext;
 import org.slf4j.Logger;
@@ -45,24 +48,27 @@ public class HomeController {
     /**
      * [ 로그인 하는 API ]
      * @apiNote  1. 성공적으로 로그인 했을 때
-     *  / 2. 일치하는 전화번호가 없을 때, NullpointerException 발생
-     *  / 3. 패스워드가 일치 하지 않을 때, IllegalArgumentException 발생
-     * @throws NullPointerException 일치하는 전화번호가 없을 때
-     * @throws IllegalArgumentException 패스워드가 일치 하지 않을 때
+     *  / 2. 전화번호 또는 패스워드가 일치하지 않을 때, IllegalArgumentException 발생
+     * @throws IllegalArgumentException 전화번호 또는 패스워드가 일치 하지 않을 때
      */
     @ResponseBody
+    @Operation(summary = "로그인", description = "전화번호와 비밀번호로 로그인 가능합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그인 성공",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = RestResponse.class),
+                            examples = @ExampleObject(name = "로그인 성공")) }),
+            @ApiResponse(responseCode = "404", description = "전화번호나 비밀번호 미일치")
+    })
     @PostMapping("/login")
-    @RouterOperation(operation = @Operation(operationId = "findEmployeeById", summary = "Find purchase order by ID", tags = { "MyEmployee" },
-            parameters = { @Parameter(in = ParameterIn.PATH, name = "id", description = "Employee Id") },
-            responses = { @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(schema = @Schema(implementation = MemberVO.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid Employee ID supplied"),
-                    @ApiResponse(responseCode = "404", description = "Employee not found") }))public ResponseEntity login(@RequestBody MemberVO member) throws Exception {
+    public ResponseEntity login(@RequestBody loginRequest loginReq) throws Exception {
+        MemberVO member = loginReq.changeToMember();
         logger.info("[로그인 요청] Phone : " + member.getMemberPhone());
         logger.info("[로그인 요청] Password : " + member.getMemberPassword());
         // 성공적으로 로그인 했을때.
         try{
             MemberVO full_member = memberService.loginMember(member);
-            String token = jwtTokenService.generateToken(Integer.toString(full_member.getMemberNumber()));
+            String token = jwtTokenService.generateToken(Integer.toString(full_member.getMemberNumber())); // 토큰 제작
             servletContext.setAttribute(token,full_member);
             restResponse = RestResponse.builder()
                     .code(HttpStatus.OK.value())
