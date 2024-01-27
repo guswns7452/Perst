@@ -76,16 +76,17 @@ public class ClothesSubmitTests {
 
     /**
      * 여성용 데이터를 반영하기 위한 테스트 코드
-     * [여성 데이터 완료 ] 기타 / 레트로 / 로맨틱 (진행중) / 리조트
-     * [여성 데이터 대기 ] 스트리트 : 클라우드에 모두 업로드 되지 않음
+     * [여성 데이터 완료 (원천데이터 1) ] 기타 / 레트로 / 로맨틱 / 리조트 / 매니시 / 모던 / 밀리터리 / 섹시 / 소피스트케이티드
+     * [여성 데이터 대기 (원천데이터 2) ] 스트리트 : 클라우드에 모두 업로드 되지 않음
+     * [여성 데이터 완료 (원천데이터 3) ] 스포티 / 아방가르드 / 오리엔탈 / 웨스턴 / 젠더리스 / 컨트리 / 클래식 / 키치 / 톰보이 / 펑크 / 페미닌 / 프레피 / 히피 / 힙합 (진행중)
      */
     @Test
     @DirtiesContext // 테스트가 컨텍스트에 영향을 주므로 사용
     public void testSaveFemale() throws Exception {
-        String style = "리조트"; // 스타일을 저장함
+        String style = "힙합"; // 스타일을 저장함
 
         // 구글 드라이브에서 파일명을 불러옴
-        File dir = new File("D:\\perst dataset\\k-fashion\\K-Fashion 이미지\\Training\\원천데이터_1\\"+style); // URL
+        File dir = new File("D:\\perst dataset\\k-fashion\\K-Fashion 이미지\\Training\\원천데이터_3\\"+style); // URL
         String pattern = "^[0-9]*(\\.jpg)";
 
         FilenameFilter filter = new FilenameFilter() {
