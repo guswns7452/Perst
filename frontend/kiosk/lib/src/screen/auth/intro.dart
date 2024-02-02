@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:kiosk/src/screen/auth/camera.dart';
 
 class Intro extends StatelessWidget {
-  const Intro({super.key});
+  const Intro({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class Intro extends StatelessWidget {
                 Text(
                   'Perst',
                   style: TextStyle(
-                    fontSize: 50,
+                    fontSize: 70,
                     fontWeight: FontWeight.w700,
                     color: Color.fromRGBO(249, 212, 35, 1),
                   ),
@@ -28,7 +29,7 @@ class Intro extends StatelessWidget {
                   '당신만을 위한 의류 스타일 추천',
                   style: TextStyle(
                     color: Color.fromRGBO(146, 146, 146, 1),
-                    fontSize: 12,
+                    fontSize: 28,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -36,7 +37,7 @@ class Intro extends StatelessWidget {
             ),
           ),
           Container(
-            margin: EdgeInsets.fromLTRB(30, 5, 20, 10),
+            margin: EdgeInsets.fromLTRB(30, 10, 20, 10),
             padding: EdgeInsets.fromLTRB(15, 15, 10, 15),
             width: double.infinity,
             decoration: BoxDecoration(
@@ -52,7 +53,7 @@ class Intro extends StatelessWidget {
                     '내 스타일 분석해보기',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 20,
+                      fontSize: 25,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -64,7 +65,7 @@ class Intro extends StatelessWidget {
                     '현재 내가 입고있는 옷을 등록하고, 내 정보를 입력해보세요!\n제가 분석해드릴께요!',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 11,
+                      fontSize: 14,
                     ),
                   ),
                 ),
@@ -76,13 +77,18 @@ class Intro extends StatelessWidget {
                       style: TextButton.styleFrom(
                         primary: Color.fromRGBO(103, 103, 103, 1),
                         textStyle: TextStyle(
-                          fontSize: 12,
+                          fontSize: 15,
                           fontWeight: FontWeight.w700,
                         ),
                         backgroundColor: Colors.white,
                         padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const CameraExample()));
+                      },
                       child: const Text('사진 찍으러 가기'),
                     ),
                     Image.asset(
@@ -115,7 +121,7 @@ class Intro extends StatelessWidget {
                         Text(
                           '스타일 둘러보기',
                           style: TextStyle(
-                            fontSize: 15,
+                            fontSize: 23,
                             color: Colors.white,
                             fontWeight: FontWeight.w700,
                           ),
@@ -124,7 +130,7 @@ class Intro extends StatelessWidget {
                           '원하는 스타일을 선택해보세요!\n더 많은 코디를 볼 수 있어요!',
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 8,
+                            fontSize: 10,
                           ),
                         ),
                         SizedBox(
@@ -145,7 +151,10 @@ class Intro extends StatelessWidget {
                                 padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
                               ),
                               onPressed: () {},
-                              child: const Text('둘러보기'),
+                              child: const Text(
+                                '둘러보기',
+                                style: TextStyle(fontSize: 15),
+                              ),
                             ),
                             Image.asset(
                               'assets/keyword.png',
@@ -173,7 +182,7 @@ class Intro extends StatelessWidget {
                         Text(
                           '휴대전화 연동하기',
                           style: TextStyle(
-                            fontSize: 15,
+                            fontSize: 23,
                             color: Colors.white,
                             fontWeight: FontWeight.w700,
                           ),
@@ -182,7 +191,7 @@ class Intro extends StatelessWidget {
                           '휴대전화와 연동하여 정보를 입력해보세요!\n편하게 내 스타일을 둘러볼 수 있어요!',
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 8,
+                            fontSize: 10,
                           ),
                         ),
                         SizedBox(
@@ -203,7 +212,10 @@ class Intro extends StatelessWidget {
                                 padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
                               ),
                               onPressed: () {},
-                              child: const Text('연동하기'),
+                              child: const Text(
+                                '연동하기',
+                                style: TextStyle(fontSize: 15),
+                              ),
                             ),
                             Image.asset(
                               'assets/smartphone.png',
