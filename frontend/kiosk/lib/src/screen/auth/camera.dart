@@ -29,7 +29,7 @@ class _CameraExampleState extends State<CameraExample> {
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
     return Scaffold(
-      backgroundColor: const Color(0xfff4f3f9),
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
       body: Stack(
         children: [
           Column(
@@ -123,7 +123,7 @@ class _CameraExampleState extends State<CameraExample> {
                     SizedBox(width: 40),
                     ElevatedButton(
                       onPressed: () {
-                        getImage(ImageSource.camera);
+                        getImage(ImageSource.gallery);
                       },
                       style: ElevatedButton.styleFrom(
                         shape: CircleBorder(),
