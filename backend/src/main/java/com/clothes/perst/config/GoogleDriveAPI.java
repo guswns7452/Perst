@@ -24,8 +24,10 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * TODO GoogleDriveAPI 할일 들
+ * @SEE https://developers.google.com/drive/api/guides/about-sdk?hl=ko
+ * @TODO GoogleDriveAPI 할일 들
  * 1. 폴더 경로를 지정 해서 fileID 알아내기.
+ *    -> 폴더도 미리 fileID를 기록해두어야 할듯 함.
  * 2. fileID를 RestAPI로 전송하기.
  * 3. 구글 드라이브 폴더 경로를 지정해서 파일 업로드 하기.
  * +) 프론트엔드에서는 구글 드라이브 링크로 출력하는 연습
@@ -65,7 +67,8 @@ public class GoogleDriveAPI {
                 .setApplicationName(APPLICATION_NAME)
                 .build();
         FileList result = service.files().list()
-                .setPageSize(10)
+                .setQ("'' in parents and trashed=false and name contains ''") //폴더 만 검색하기
+                .setPageSize(100)
                 .setFields("nextPageToken, files(id, name)")
                 .execute();
 
