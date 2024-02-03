@@ -6,8 +6,10 @@ build/
 !**/src/test/**/build/
 application.properties
 
-!**/src/token/
+!**/src/tokens/
+StoredCredential
 credentials.json
+GoogleDriveFileID.json
 
 ### STS ###
 .apt_generated
