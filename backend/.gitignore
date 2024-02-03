@@ -6,6 +6,8 @@ build/
 !**/src/test/**/build/
 application.properties
 
+credentials.json
+
 ### STS ###
 .apt_generated
 .classpath
