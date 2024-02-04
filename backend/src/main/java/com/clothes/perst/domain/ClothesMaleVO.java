@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 @Getter
 @Setter
 @Entity
@@ -21,4 +24,34 @@ public class ClothesMaleVO {
     private String clothesFile;
 
     private String clothesStore;
+
+    private String clothesFileID;
+
+    /**
+     * 생성자로 객체 생성
+     * @param clothesTimes
+     * @param clothesFile
+     * @param clothesFileID
+     */
+    public ClothesMaleVO(int clothesTimes, String clothesFile, String clothesFileID){
+        this.clothesTimes = clothesTimes;
+        this.clothesFile = clothesFile;
+        this.clothesFileID = clothesFileID;
+
+        String pattern = "^[a-zA-Z]_[0-9]*_[0-9]*_(\\w+)(_M\\.jpg)";
+
+        Pattern regex = Pattern.compile(pattern);
+        Matcher matcher = regex.matcher(clothesFile);
+        
+        if (matcher.find()) {
+            String extractedString = matcher.group(1); // word 부분만 추출하여 스타일 등록
+            this.clothesStyle = extractedString;
+        }else{
+            throw new IllegalArgumentException("스타일이 좀 이상한데요?"); // 정규식 추출 실패시 에러 발생
+        }
+    }
+
+    public ClothesMaleVO() {
+
+    }
 }

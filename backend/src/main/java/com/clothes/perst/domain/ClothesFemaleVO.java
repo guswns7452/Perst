@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 @Getter
 @Setter
 @Entity
@@ -19,4 +22,16 @@ public class ClothesFemaleVO {
     private String clothesFile;
 
     private String clothesStore;
+
+    private String clothesFileID;
+
+    public ClothesFemaleVO(String clothesStyle, String clothesFile, String clothesFileID) {
+        this.clothesStyle = clothesStyle;
+        this.clothesFile = clothesFile;
+        this.clothesFileID = clothesFileID;
+    }
+
+    public ClothesFemaleVO() {
+
+    }
 }
