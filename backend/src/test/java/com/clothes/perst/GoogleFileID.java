@@ -1,5 +1,6 @@
 package com.clothes.perst;
 
+import com.clothes.perst.DTO.ClothesFolder;
 import com.clothes.perst.config.GoogleDriveAPI;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.auth.oauth2.Credential;
@@ -42,48 +43,9 @@ public class GoogleFileID {
     //비밀키 경로
     public static final String CREDENTIALS_FILE_PATH = "/credentials.json";
 
-    // 폴더 위한 클래스
     /**
-     * Female과 Male을 통합하기 위해 Style -> FolderID로 변경함
+     * 폴더 위한 클래스 -> DTO로 분리함
      */
-    public static class ClothesFolder {
-        public String gender;
-        public String folderID;
-        public String folderName;
-
-        public ClothesFolder(){
-
-        }
-        public ClothesFolder(String gender, String folderName, String folderID) {
-            this.gender = gender;
-            this.folderName = folderName;
-            this.folderID = folderID;
-        }
-
-        public String getGender() {
-            return gender;
-        }
-
-        public void setGender(String gender) {
-            this.gender = gender;
-        }
-
-        public String getFolderID() {
-            return folderID;
-        }
-
-        public void setFolderID(String folderID) {
-            this.folderID = folderID;
-        }
-
-        public String getFolderName() {
-            return folderName;
-        }
-
-        public void setFolderName(String folderName) {
-            this.folderName = folderName;
-        }
-    }
 
     // Json 파일을 불러오는 코드
     public static List<ClothesFolder> loadClothesList(String filePath) {
@@ -133,40 +95,6 @@ public class GoogleFileID {
         LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8080).build();
         Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
         return credential;
-    }
-
-
-    /**
-     * 특정 FolderID를 반환하는 코드
-     *
-     * @param gender
-     * @param folderName (남성일 때는 연도별, 여성일 때는 스타일)
-     * @return
-     */
-    public String searchFolderID(String filePath, String gender, String folderName) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        List<ClothesFolder> ClothesFolderList = new ArrayList<>();
-
-        try {
-            // Try to read existing data from the file
-            Path path = Paths.get(filePath);
-            if (Files.exists(path)) {
-                ClothesFolderList = objectMapper.readValue(path.toFile(), objectMapper.getTypeFactory().constructCollectionType(List.class, ClothesFolder.class));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // 반복문을 사용하는 방법, JavaStream을 사용하는 방법도 있던데, 성능차이가 얼마나?
-        for (ClothesFolder folder : ClothesFolderList) {
-            if (folder.getGender().equals(gender) && folder.getFolderName().equals(folderName)) {
-                String folderID = folder.getFolderID();
-                return folderID;
-            }
-        }
-
-        new NullPointerException("일치하는 폴더가 없습니다");
-        return null;
     }
     
     @Test
