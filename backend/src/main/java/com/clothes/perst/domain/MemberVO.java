@@ -30,8 +30,8 @@ public class MemberVO {
     @Schema(name = "memberBirth", description = "회원 생년월일", example = "2024-01-27")
     private Date memberBirth;
 
-    @Schema(name = "memberSex", description = "회원 성별", example = "남자/여자")
-    private String memberSex;
+    @Schema(name = "memberGender", description = "회원 성별", example = "남자/여자")
+    private String memberGender;
 
     @Schema(name = "memberHeight", description = "회원 키", example = "180.4")
     private float memberHeight;
