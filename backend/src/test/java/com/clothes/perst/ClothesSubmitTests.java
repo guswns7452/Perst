@@ -2,8 +2,8 @@ package com.clothes.perst;
 
 import com.clothes.perst.domain.ClothesFemaleVO;
 import com.clothes.perst.domain.ClothesMaleVO;
-import com.clothes.perst.persistance.ClothesFemaleInitRegister;
-import com.clothes.perst.persistance.ClothesMaleInitRegister;
+import com.clothes.perst.persistance.FemaleClothesSearchRepository;
+import com.clothes.perst.persistance.MaleClothesSearchRepository;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.services.drive.Drive;
@@ -31,10 +31,10 @@ import static com.clothes.perst.GoogleFileID.*;
 public class ClothesSubmitTests {
 
     @Autowired
-    private ClothesMaleInitRegister clothesMaleInitRegister; // UserRepository는 JPA Repository 인터페이스
+    private MaleClothesSearchRepository maleClothesSearchRepository; // UserRepository는 JPA Repository 인터페이스
 
     @Autowired
-    private ClothesFemaleInitRegister clothesFemaleInitRegister; // UserRepository는 JPA Repository 인터페이스
+    private FemaleClothesSearchRepository femaleClothesSearchRepository; // UserRepository는 JPA Repository 인터페이스
 
     /**
      * 구글 드라이브에서 파일명과 파일 아이디를 불러와서, DB에 저장하는 코드
@@ -96,7 +96,7 @@ public class ClothesSubmitTests {
 
     // 남성 데이터를 DB에 저장하는 코드 (구글 드라이브 파일들)
     public void SaveMale(ClothesMaleVO male) {
-        ClothesMaleVO clothes2 = clothesMaleInitRegister.save(male); // DB에 저장하는 과정
+        ClothesMaleVO clothes2 = maleClothesSearchRepository.save(male); // DB에 저장하는 과정
         System.out.println(clothes2.getClothesFile()+"  "+ clothes2.getClothesFileID());
     }
 
@@ -108,7 +108,7 @@ public class ClothesSubmitTests {
         Matcher matcher = regex.matcher(female.getClothesFile());
 
         if (matcher.find()) {
-            ClothesFemaleVO clothes2 = clothesFemaleInitRegister.save(female); // DB에 저장하는 과정
+            ClothesFemaleVO clothes2 = femaleClothesSearchRepository.save(female); // DB에 저장하는 과정
             System.out.println(clothes2.getClothesFile() + "  " + clothes2.getClothesFileID());
         }else{
             System.out.println("제외됨 : " + female.getClothesFile());
@@ -160,7 +160,7 @@ public class ClothesSubmitTests {
             }
             clothes.setClothesStore("");
 
-            ClothesMaleVO clothes2 = clothesMaleInitRegister.save(clothes); // DB에 저장하는 과정
+            ClothesMaleVO clothes2 = maleClothesSearchRepository.save(clothes); // DB에 저장하는 과정
             System.out.println(clothes2.getClothesFile());
         }
     }
@@ -203,7 +203,7 @@ public class ClothesSubmitTests {
             if (matcher.find()) {
                 clothes.setClothesStore("");
 
-                ClothesFemaleVO clothes2 = clothesFemaleInitRegister.save(clothes); // DB에 저장하는 과정
+                ClothesFemaleVO clothes2 = femaleClothesSearchRepository.save(clothes); // DB에 저장하는 과정
                 System.out.println(clothes2.getClothesFile());
             }else{
                 System.out.println("제외됨 : " + filename);
