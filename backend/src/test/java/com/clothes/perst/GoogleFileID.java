@@ -33,98 +33,68 @@ import java.util.List;
 
 @SpringBootTest
 public class GoogleFileID {
-
-    private static final String APPLICATION_NAME = "Google Drive API Java Quickstart";
-    private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
+    public static final String APPLICATION_NAME = "Google Drive API Java Quickstart";
+    public static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     //사용자의 토큰을 어디에 저장할지 경로를 지정
-    private static final String TOKENS_DIRECTORY_PATH = "tokens";
+    public static final String TOKENS_DIRECTORY_PATH = "tokens";
     //어플리케이션이 요청하는 권한의 범위를 지정
-    private static final List<String> SCOPES = Collections.singletonList(DriveScopes.DRIVE);
+    public static final List<String> SCOPES = Collections.singletonList(DriveScopes.DRIVE);
     //비밀키 경로
-    private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
+    public static final String CREDENTIALS_FILE_PATH = "/credentials.json";
 
-    class ClothesFemale {
-        private String Gender;
-        private String FolderID;
-        private String Style;
+    // 폴더 위한 클래스
+    /**
+     * Female과 Male을 통합하기 위해 Style -> FolderID로 변경함
+     */
+    public static class ClothesFolder {
+        public String gender;
+        public String folderID;
+        public String folderName;
 
-        public ClothesFemale(String Style, String FolderID) {
-            this.Gender = "F";
-            this.Style = Style;
-            this.FolderID = FolderID;
+        public ClothesFolder(){
+
+        }
+        public ClothesFolder(String gender, String folderName, String folderID) {
+            this.gender = gender;
+            this.folderName = folderName;
+            this.folderID = folderID;
         }
 
         public String getGender() {
-            return Gender;
+            return gender;
         }
 
         public void setGender(String gender) {
-            Gender = gender;
+            this.gender = gender;
         }
 
         public String getFolderID() {
-            return FolderID;
+            return folderID;
         }
 
         public void setFolderID(String folderID) {
-            FolderID = folderID;
+            this.folderID = folderID;
         }
 
-        public String getStyle() {
-            return Style;
+        public String getFolderName() {
+            return folderName;
         }
 
-        public void setStyle(String style) {
-            Style = style;
-        }
-    }
-
-    class ClothesMale {
-        private String Gender;
-        private String FolderID;
-        private int Times;
-
-        public ClothesMale(int Times, String FolderID) {
-            this.Gender = "M";
-            this.Times = Times;
-            this.FolderID = FolderID;
-        }
-
-        public String getGender() {
-            return Gender;
-        }
-
-        public void setGender(String gender) {
-            Gender = gender;
-        }
-
-        public String getFolderID() {
-            return FolderID;
-        }
-
-        public void setFolderID(String folderID) {
-            FolderID = folderID;
-        }
-
-        public int getTimes() {
-            return Times;
-        }
-
-        public void setTimes(int times) {
-            Times = times;
+        public void setFolderName(String folderName) {
+            this.folderName = folderName;
         }
     }
 
-    // Json 파일로 추가하기 위한 코드
-    private static List<ClothesMale> loadClothesList(String filePath) {
+    // Json 파일을 불러오는 코드
+    public static List<ClothesFolder> loadClothesList(String filePath) {
         ObjectMapper objectMapper = new ObjectMapper();
-        List<ClothesMale> clothesList = new ArrayList<>();
+        List<ClothesFolder> clothesList = new ArrayList<>();
 
         try {
             // Try to read existing data from the file
             Path path = Paths.get(filePath);
             if (Files.exists(path)) {
-                clothesList = objectMapper.readValue(path.toFile(), objectMapper.getTypeFactory().constructCollectionType(List.class, ClothesMale.class));
+                clothesList = objectMapper.readValue(path.toFile(), objectMapper.getTypeFactory().constructCollectionType(List.class, ClothesFolder.class));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -133,7 +103,8 @@ public class GoogleFileID {
         return clothesList;
     }
 
-    private static void saveClothesList(String filePath, List<ClothesMale> clothesList) {
+    // Json 파일을 저장하는 코드
+    public static void saveClothesList(String filePath, List<ClothesFolder> clothesList) {
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
@@ -146,7 +117,8 @@ public class GoogleFileID {
         }
     }
 
-    private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
+    // Credentials 코드
+    public static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         //credentials.json 파일을 in에 저장함
         InputStream in = GoogleDriveAPI.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
         if (in == null) {   // credentials이 빈값이면
@@ -163,8 +135,42 @@ public class GoogleFileID {
         return credential;
     }
 
+
+    /**
+     * 특정 FolderID를 반환하는 코드
+     *
+     * @param gender
+     * @param folderName (남성일 때는 연도별, 여성일 때는 스타일)
+     * @return
+     */
+    public String searchFolderID(String filePath, String gender, String folderName) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<ClothesFolder> ClothesFolderList = new ArrayList<>();
+
+        try {
+            // Try to read existing data from the file
+            Path path = Paths.get(filePath);
+            if (Files.exists(path)) {
+                ClothesFolderList = objectMapper.readValue(path.toFile(), objectMapper.getTypeFactory().constructCollectionType(List.class, ClothesFolder.class));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // 반복문을 사용하는 방법, JavaStream을 사용하는 방법도 있던데, 성능차이가 얼마나?
+        for (ClothesFolder folder : ClothesFolderList) {
+            if (folder.getGender().equals(gender) && folder.getFolderName().equals(folderName)) {
+                String folderID = folder.getFolderID();
+                return folderID;
+            }
+        }
+
+        new NullPointerException("일치하는 폴더가 없습니다");
+        return null;
+    }
+    
     @Test
-    public void TestGoogleFolderFileID() throws GeneralSecurityException, IOException {
+    public void SaveGoogleFolderFileID() throws GeneralSecurityException, IOException {
         String filePath = "src/main/resources/GoogleDriveFileID.json";
         System.out.println(filePath);
 
@@ -173,28 +179,29 @@ public class GoogleFileID {
                 .setApplicationName(APPLICATION_NAME)
                 .build();
         FileList result = service.files().list()
-                .setQ("'' in parents and trashed=false") //특정 폴더 만 검색하기
+                .setQ("'1hoEQQ2mLDgnBhgIuelui-rX7rw0P5bDI' in parents and trashed=false") //특정 폴더 만 검색하기
                 .setPageSize(100)
                 .setFields("nextPageToken, files(id, name)")
                 .execute();
 
         List<File> files = result.getFiles();
 
-        //List<ClothesFemale> clothesList = loadClothesList(filePath);
-
-        List<ClothesMale> clothesList = new ArrayList<>();
+        // List<ClothesFolder> clothesList = new ArrayList<>();
+        List<ClothesFolder> clothesList = loadClothesList(filePath);
 
         if (files == null || files.isEmpty()) {
             System.out.println("No files found.");
         } else {
             System.out.println("Files:");
             for (File file : files) {
-                ClothesMale newClothes = new ClothesMale(Integer.valueOf(file.getName()), file.getId());
+                ClothesFolder newClothes = new ClothesFolder("M", file.getName(), file.getId()); // 폴더를 저장하는 코드
                 clothesList.add(newClothes);
                 System.out.printf("%s (%s)\n", file.getName(), file.getId());
             }
         }
         saveClothesList(filePath, clothesList);
     }
+
+
 }
 
