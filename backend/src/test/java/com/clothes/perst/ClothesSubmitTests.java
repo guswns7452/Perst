@@ -1,5 +1,6 @@
 package com.clothes.perst;
 
+import com.clothes.perst.DTO.ClothesFolder;
 import com.clothes.perst.domain.ClothesFemaleVO;
 import com.clothes.perst.domain.ClothesMaleVO;
 import com.clothes.perst.persistance.FemaleClothesSearchRepository;
@@ -18,6 +19,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -62,6 +64,7 @@ public class ClothesSubmitTests {
             String folderName = folder.getFolderName();
 
             String pageToken = null;
+            int count = 0;
             do {
                 FileList result = service.files().list()
                         .setQ("'" + folderId + "' in parents and trashed=false") // 특정 폴더만 검색하기
@@ -73,13 +76,14 @@ public class ClothesSubmitTests {
                 files.addAll(result.getFiles());
 
                 pageToken = result.getNextPageToken();
-                System.out.println(pageToken);
+                System.out.println("[Google Drive][gender : " + gender + " / Folder Name : " + folderName + "] "+count++ + " Page Loading End!");
             } while (pageToken != null);
 
             if (files == null || files.isEmpty()) {
                 System.out.println("No files found.");
             } else {
                 System.out.println("Files:");
+                Collections.shuffle(files); // 저장할 때 무작위로 섞어서 저장함 -> 출력할 때 다양한 스타일들을 보여주기 위함.
                 for (com.google.api.services.drive.model.File file : files) {
                     String filename = file.getName();
                     if (gender.equals("M") && filename.contains(".jpg")) {
