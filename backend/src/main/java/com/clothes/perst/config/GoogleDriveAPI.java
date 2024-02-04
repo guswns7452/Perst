@@ -34,14 +34,13 @@ import java.util.regex.Pattern;
 
 /**
  * @TODO GoogleDriveAPI 할일 들
- * 1. 폴더 경로를 지정 해서 fileID 알아내기.
- * -> 폴더도 미리 fileID를 기록해두어야 할듯 함.
- * 2. fileID를 RestAPI로 전송하기.
- * 3. 구글 드라이브 폴더 경로를 지정해서 파일 업로드 하기.
+ * 1. 폴더 경로를 지정 해서 fileID 알아내기. -> 폴더도 미리 fileID를 기록해두어야 할듯 함.
+ * 2. fileID를 RestAPI로 전송하기. -> 완료.
+ * 3. 구글 드라이브 폴더 경로를 지정해서 파일 업로드 하기. -> 프론트에서 바로 업로드를 하고, 백에서는 DB에 저장하는 방식으로만
  * +) 프론트엔드에서는 구글 드라이브 링크로 출력하는 연습
  * +) DB image도 realID를 넣어야함. 경로도 (아직 생성되지는 않음.)
- * @see {https://developers.google.com/drive/api/guides/about-sdk?hl=ko}
- */
+ * @see <a href="https://developers.google.com/drive/api/guides/about-sdk?hl=ko">Google Drive API</a>
+ * */
 public class GoogleDriveAPI {
     private static final String APPLICATION_NAME = "Google Drive API Java Quickstart";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
@@ -71,7 +70,6 @@ public class GoogleDriveAPI {
     
     /**
      * 특정 FolderID를 반환 하는 코드
-     *
      * @param gender
      * @param folderName (남성일 때는 연도별, 여성일 때는 스타일)
      * @return
@@ -102,6 +100,11 @@ public class GoogleDriveAPI {
         return null;
     }
 
+    /**
+     * 정규식을 이용하여 이미지 파일만 검출
+     * @param file
+     * @param gender
+     */
     private static void isJPG(File file, String gender){
         String fileName = file.getName();
         if(gender.equals("M") && fileName.contains(".jpg")){
@@ -116,6 +119,7 @@ public class GoogleDriveAPI {
             }
         }
     }
+
     /**
      * 특정 Folder 안에 파일들 출력 하기.
      * @param filePath

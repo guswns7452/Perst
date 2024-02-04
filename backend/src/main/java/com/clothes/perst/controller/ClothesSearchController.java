@@ -42,7 +42,7 @@ public class ClothesSearchController {
      * 남성의 스타일을 둘러보는 API
      */
     @ResponseBody
-    @Operation(summary = "남성 스타일 둘러보기", description = "스타일을 입력하여 의류를 둘러볼 수 있음")
+    @Operation(summary = "남성 스타일 둘러보기", description = "스타일을 입력하여 의류를 둘러볼 수 있음. 한 페이지에 12장이 출력되고, 페이지마다 호출하세요.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = { @Content(mediaType = "application/json",
@@ -50,17 +50,21 @@ public class ClothesSearchController {
                             examples = @ExampleObject(name = "로그인 성공")) }),
             @ApiResponse(responseCode = "404", description = "일치하는 스타일이 없음")
     })
-    @GetMapping("/male")
-    public ResponseEntity findMaleSearch(@RequestParam String maleStyle) throws Exception {
+    @GetMapping("/male/{page}")
+    public ResponseEntity findMaleSearch(@PathVariable int page, @RequestParam String maleStyle) throws Exception {
         logger.info("[남성 스타일 둘러보기] Style : " + maleStyle);
         // 성공적으로 로그인 했을때.
         try{
-            List<ClothesMaleVO> maleClothes = clothesSearchService.findByMaleStyle(maleStyle);
+            List<ClothesMaleVO> maleClothes = clothesSearchService.findByMaleStyle(maleStyle); // 맨날 불러오는 것이 성능적으로 괜찮은가?
+
+            int subListDataCount = 12; // 한 페이지에 넣을 데이터 개수
+            List<ClothesMaleVO> subMaleClothes = maleClothes.subList(subListDataCount * (page-1),subListDataCount * page + 1);
+
             restResponse = RestResponse.builder()
                     .code(HttpStatus.OK.value())
                     .httpStatus(HttpStatus.OK)
-                    .message(maleStyle + " 스타일 조회 성공했습니다. " + maleClothes.size() + "장")
-                    .data(maleClothes)
+                    .message(maleStyle + " 스타일 조회 성공했습니다. " + subMaleClothes.size() + "장")
+                    .data(subMaleClothes)
                     .build();
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
         }
@@ -76,10 +80,10 @@ public class ClothesSearchController {
     }
 
     /**
-     * 남성의 스타일을 둘러보는 API
+     * 여성의 스타일을 둘러보는 API
      */
     @ResponseBody
-    @Operation(summary = "여성 스타일 둘러보기", description = "스타일을 입력하여 의류를 둘러볼 수 있음")
+    @Operation(summary = "여성 스타일 둘러보기", description = "스타일을 입력하여 의류를 둘러볼 수 있음. 한 페이지에 12장이 출력되고, 페이지마다 호출하세요.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = { @Content(mediaType = "application/json",
@@ -87,19 +91,22 @@ public class ClothesSearchController {
                             examples = @ExampleObject(name = "로그인 성공")) }),
             @ApiResponse(responseCode = "404", description = "일치하는 스타일이 없음")
     })
-    @GetMapping("/female")
-    public ResponseEntity findFemaleSearch(@RequestParam String femaleStyle) throws Exception {
+    @GetMapping("/female/{page}")
+    public ResponseEntity findFemaleSearch(@PathVariable int page, @RequestParam String femaleStyle) throws Exception {
         logger.info("[여성 스타일 둘러보기] Style : " + femaleStyle);
         // 성공적으로 로그인 했을때.
         try{
             List<ClothesFemaleVO> femaleClothes = clothesSearchService.findByFemaleStyle(femaleStyle);
-            // 페미닌 8만장 DB 호출은 2초 이내, 데이터 파싱은 오래걸림
-            // @TODO List를 랜덤하게 주어, 페이지 별로 API를 분리해야할듯
+            // @TODO 완료함 List를 랜덤하게 주어, 페이지 별로 API를 분리해야할듯
+
+            int subListDataCount = 12; // 한 페이지에 넣을 데이터 개수
+            List<ClothesFemaleVO> subMaleClothes = femaleClothes.subList(subListDataCount * (page-1),subListDataCount * page + 1);
+
             restResponse = RestResponse.builder()
                     .code(HttpStatus.OK.value())
                     .httpStatus(HttpStatus.OK)
                     .message(femaleStyle + " 스타일 조회 성공했습니다. " + femaleClothes.size() + "장")
-                    .data(femaleStyle)
+                    .data(subMaleClothes)
                     .build();
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
         }
