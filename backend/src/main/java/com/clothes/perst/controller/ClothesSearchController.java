@@ -47,13 +47,12 @@ public class ClothesSearchController {
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = RestResponse.class),
-                            examples = @ExampleObject(name = "로그인 성공")) }),
+                            examples = @ExampleObject(name = "스타일 조회 성공")) }),
             @ApiResponse(responseCode = "404", description = "일치하는 스타일이 없음")
     })
     @GetMapping("/male/{page}")
     public ResponseEntity findMaleSearch(@PathVariable int page, @RequestParam String maleStyle) throws Exception {
         logger.info("[남성 스타일 둘러보기] Style : " + maleStyle);
-        // 성공적으로 로그인 했을때.
         try{
             List<ClothesMaleVO> maleClothes = clothesSearchService.findByMaleStyle(maleStyle); // 맨날 불러오는 것이 성능적으로 괜찮은가?
 
@@ -68,12 +67,12 @@ public class ClothesSearchController {
                     .build();
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
         }
-        // 이메일 또는 비밀번호가 일치하지 않음, IllegalArgumentException 발생
+        // 일치 하는 의류가 없을 때, IllegalArgumentException 발생
         catch (IllegalArgumentException e){
             restResponse = RestResponse.builder()
                     .code(HttpStatus.FORBIDDEN.value())
                     .httpStatus(HttpStatus.FORBIDDEN)
-                    .message("이메일 또는 비밀번호가 틀렸습니다.")
+                    .message(e.getMessage())
                     .build();
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
         }
@@ -88,16 +87,14 @@ public class ClothesSearchController {
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = RestResponse.class),
-                            examples = @ExampleObject(name = "로그인 성공")) }),
+                            examples = @ExampleObject(name = "스타일 조회 성공")) }),
             @ApiResponse(responseCode = "404", description = "일치하는 스타일이 없음")
     })
     @GetMapping("/female/{page}")
     public ResponseEntity findFemaleSearch(@PathVariable int page, @RequestParam String femaleStyle) throws Exception {
         logger.info("[여성 스타일 둘러보기] Style : " + femaleStyle);
-        // 성공적으로 로그인 했을때.
         try{
             List<ClothesFemaleVO> femaleClothes = clothesSearchService.findByFemaleStyle(femaleStyle);
-            // @TODO 완료함 List를 랜덤하게 주어, 페이지 별로 API를 분리해야할듯
 
             int subListDataCount = 12; // 한 페이지에 넣을 데이터 개수
             List<ClothesFemaleVO> subMaleClothes = femaleClothes.subList(subListDataCount * (page-1),subListDataCount * page + 1);
@@ -110,12 +107,12 @@ public class ClothesSearchController {
                     .build();
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
         }
-        // 이메일 또는 비밀번호가 일치하지 않음, IllegalArgumentException 발생
+        // 일치 하는 의류가 없을 때, IllegalArgumentException 발생
         catch (IllegalArgumentException e){
             restResponse = RestResponse.builder()
                     .code(HttpStatus.FORBIDDEN.value())
                     .httpStatus(HttpStatus.FORBIDDEN)
-                    .message("이메일 또는 비밀번호가 틀렸습니다.")
+                    .message(e.getMessage())
                     .build();
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
         }

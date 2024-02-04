@@ -12,10 +12,8 @@ import java.util.List;
 
 @Service
 public class ClothesSearchService {
-    @Autowired
     private final MaleClothesSearchRepository maleJPA;
 
-    @Autowired
     private final FemaleClothesSearchRepository femaleJPA;
 
     @Autowired
