@@ -56,9 +56,9 @@ public class ClothesSubmitTests {
                 .build();
 
         List<ClothesFolder> folders = loadClothesList(filePath);
-        List<com.google.api.services.drive.model.File> files = new ArrayList<>();
 
         for (ClothesFolder folder : folders) {
+            List<com.google.api.services.drive.model.File> files = new ArrayList<>();
             String folderId = folder.getFolderID();
             String gender = folder.getGender();
             String folderName = folder.getFolderName();
