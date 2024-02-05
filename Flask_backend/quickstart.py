@@ -1,9 +1,5 @@
 import os.path
 
-from http import HTTPStatus
-from flask import Flask, jsonify, make_response
-import json
-
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -13,15 +9,12 @@ from googleapiclient.errors import HttpError
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/drive.metadata.readonly"]
 
-
-app = Flask(__name__)
-
-# [1] 분석) 사진을 전송 받음.
-## 프론트(요청) -> 스프링(요청) -> 머신러닝
-### 요청 : 사진(구글 드라이브) / 키, 몸무게 
-### 응답 : 스타일 / 추출 색상
-
-def googleDrive():
+### 사용되지 않을 예정
+@DeprecationWarning
+def main():
+    """Shows basic usage of the Drive v3 API.
+    Prints the names and ids of the first 10 files the user has access to.
+    """
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
@@ -59,19 +52,7 @@ def googleDrive():
     except HttpError as error:
         # TODO(developer) - Handle errors from drive API.
         print(f"An error occurred: {error}")
-    return items
-
-@app.route('/')
-def hi():
-    items = googleDrive()
-    message = "정상적임"
-    data = {"code": HTTPStatus.OK.value, "status": "OK", "message":message, "data":items}
-    
-    result = json.dumps(data, ensure_ascii=False)
-    res = make_response(result)
-    return res
 
 
-if __name__ == '__main__':
-    app.config['JSON_AS_ASCII'] = False
-    app.run()
+if __name__ == "__main__":
+    main()
