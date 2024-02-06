@@ -75,33 +75,32 @@ class _CameraExampleState extends State<CameraExample> {
           ),
           Positioned(
             bottom: 85.0,
-            top: 150.0,
             left: 0,
             right: 0,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text(
-                  '양 발끝을 선에 맞춰서 서주세요.',
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white,
-                  ),
-                ),
-                Container(
-                  width: 500,
-                  height: 635,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.white,
-                      width: 4,
-                    ),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Image.asset('assets/man.png'),
-                  alignment: Alignment.bottomCenter,
-                ),
+                // Text(
+                //   '양 발끝을 선에 맞춰서 서주세요.',
+                //   style: TextStyle(
+                //     fontSize: 30,
+                //     fontWeight: FontWeight.w500,
+                //     color: Colors.white,
+                //   ),
+                // ),
+                // Container(
+                //   width: 500,
+                //   height: 635,
+                //   decoration: BoxDecoration(
+                //     border: Border.all(
+                //       color: Colors.white,
+                //       width: 4,
+                //     ),
+                //     borderRadius: BorderRadius.circular(20),
+                //   ),
+                //   child: Image.asset('assets/man.png'),
+                //   alignment: Alignment.bottomCenter,
+                // ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
