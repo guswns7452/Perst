@@ -176,8 +176,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-<<<<<<< HEAD
-=======
   gallery_saver:
     dependency: "direct main"
     description:
@@ -186,22 +184,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.2"
->>>>>>> origin/Frontend-kiosk
   http:
     dependency: transitive
     description:
       name: http
-<<<<<<< HEAD
-      sha256: a2bbf9d017fcced29139daa8ed2bba4ece450ab222871df93ca9eec6f80c34ba
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.0"
-=======
       sha256: "5895291c13fa8a3bd82e76d5627f69e0d85ca6a30dcac95c4ea19a5d555879c2"
       url: "https://pub.dev"
     source: hosted
     version: "0.13.6"
->>>>>>> origin/Frontend-kiosk
   http_parser:
     dependency: transitive
     description:
@@ -307,17 +297,6 @@ packages:
     source: hosted
     version: "1.10.0"
   mime:
-<<<<<<< HEAD
-    dependency: transitive
-    description:
-      name: mime
-      sha256: "2e123074287cc9fd6c09de8336dae606d1ddb88d9ac47358826db698c176a1f2"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.5"
-  path:
-=======
->>>>>>> origin/Frontend-kiosk
     dependency: transitive
     description:
       name: mime
@@ -333,8 +312,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.8.3"
-<<<<<<< HEAD
-=======
   path_provider:
     dependency: "direct main"
     description:
@@ -391,7 +368,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.4"
->>>>>>> origin/Frontend-kiosk
   plugin_platform_interface:
     dependency: transitive
     description:
@@ -503,8 +479,4 @@ packages:
     version: "1.0.4"
 sdks:
   dart: ">=3.2.5 <4.0.0"
-<<<<<<< HEAD
-  flutter: ">=3.10.0"
-=======
   flutter: ">=3.16.6"
->>>>>>> origin/Frontend-kiosk
