@@ -2,7 +2,6 @@ package com.clothes.perst.controller;
 
 import com.clothes.perst.DTO.RestResponse;
 import com.clothes.perst.domain.StyleAnalyzeVO;
-import com.clothes.perst.service.ClothesSearchService;
 import com.clothes.perst.service.StyleAnalyzeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.LinkedHashMap;
 
 @RestController
 @RequestMapping("/clothes/analyze") // API의 기본 경로 설정
@@ -44,13 +45,19 @@ public class StyleAnalyzeController {
             @ApiResponse(responseCode = "500", description = "스타일 분석 시 오류 발생")
     })
     @PostMapping("/")
-    public ResponseEntity Analyze(@RequestBody StyleAnalyzeVO styleAnalyzeVO) throws Exception {
+    public ResponseEntity Analyze(@RequestBody String filename) throws Exception {
         logger.info("[스타일 분석하기]");
         try{
-            // TODO flask 먼저 호출하기.
+            String requestBody = "{\"filename\": \""+filename+"\"}";
+            RestResponse responseBody = styleAnalyzeService.ConnectFlaskServer(requestBody);
+
+            LinkedHashMap data = (LinkedHashMap) responseBody.getData();
+
+            StyleAnalyzeVO styleAnalyzed = new StyleAnalyzeVO(); // TODO 추후 생성자 형태로 변경하기
+            styleAnalyzed.setStyleFileID((String) data.get("styleFileId"));
 
             /* 결과값 받아 DB에 저장하기 */
-            StyleAnalyzeVO newstyleAnalyzeVO =  styleAnalyzeService.saveStyleAnalyze(styleAnalyzeVO);
+            StyleAnalyzeVO newstyleAnalyzeVO =  styleAnalyzeService.saveStyleAnalyze(styleAnalyzed);
 
             restResponse = RestResponse.builder()
                     .code(HttpStatus.OK.value())
