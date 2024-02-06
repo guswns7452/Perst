@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kiosk/src/screen/auth/camera.dart';
+import 'package:kiosk/src/screen/auth/phonenumber.dart';
 
 class Intro extends StatelessWidget {
   const Intro({Key? key}) : super(key: key);
@@ -214,7 +215,13 @@ class Intro extends StatelessWidget {
                                     backgroundColor: Colors.white,
                                     padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                Phonenumber()));
+                                  },
                                   child: const Text(
                                     '연동하기',
                                     style: TextStyle(fontSize: 15),
@@ -239,8 +246,9 @@ class Intro extends StatelessWidget {
                 child: OutlinedButton(
                   onPressed: () {},
                   style: OutlinedButton.styleFrom(
-                      minimumSize: Size.zero,
-                      padding: EdgeInsets.fromLTRB(0, 10, 0, 10)),
+                    minimumSize: Size.zero,
+                    padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
