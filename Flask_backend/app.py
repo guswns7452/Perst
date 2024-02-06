@@ -1,7 +1,7 @@
 import os.path
 
 from http import HTTPStatus
-from flask import Flask, jsonify, make_response
+from flask import Flask, make_response, request
 import json
 
 from google.auth.transport.requests import Request
@@ -21,7 +21,7 @@ app = Flask(__name__)
 ### 요청 : 사진(구글 드라이브) / 키, 몸무게 
 ### 응답 : 스타일 / 추출 색상
 
-def googleDrive():
+def googleDrive(filename):
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
@@ -45,30 +45,46 @@ def googleDrive():
         # Call the Drive v3 API
         results = (
             service.files()
-            .list(pageSize=10, fields="nextPageToken, files(id, name)")
+            .list(q="'1grTkjdWs_2lvZp-EyepMoaoi74PHAEfd' in parents and trashed=false and name = '"+filename+"'" ,pageSize=10, fields="nextPageToken, files(id, name)")
             .execute()
         )
         items = results.get("files", [])
 
         if not items:
-            print("No files found.")
-            return
+            raise FileNotFoundError("일치하는 파일이 없습니다.")
         print("Files:")
         for item in items:
             print(f"{item['name']} ({item['id']})")
     except HttpError as error:
         # TODO(developer) - Handle errors from drive API.
-        print(f"An error occurred: {error}")
+        raise ConnectionError("구글 드라이브 API 문제입니다.")
     return items
 
-@app.route('/')
-def hi():
-    items = googleDrive()
-    message = "정상적임"
-    data = {"code": HTTPStatus.OK.value, "status": "OK", "message":message, "data":items}
+@app.route('/style/analyze', methods=['POST'])
+def analyzeAPI():
+    filename = request.json['filename'] # api 호출 시 반환 하는 값
+    print(filename)
     
-    result = json.dumps(data, ensure_ascii=False)
+    ## TODO 스타일 분석 머신러닝 파트 추가 ##
+    
+    try:
+        items = googleDrive(filename)
+        # 현재 사진 데이터 하나라고 가정.
+        message = "정상적임"
+        data = {"code": HTTPStatus.OK.value, "httpStatus": "OK", "message":message, "data":{"styleFileId" : items[0]['id']}} # 이름의 필요성 없음. , "name": items[0]['name']
+    
+    except FileNotFoundError:
+        data = {"code": HTTPStatus.NOT_FOUND.value, "httpStatus": "Not Found", "message": "구글 드라이브에 일치하는 파일이 없습니다."}
+    
+    except ConnectionError:
+        data = {"code": HTTPStatus.INTERNAL_SERVER_ERROR.value, "httpStatus": "Internal Server Error", "message":"[오류] 구글 드라이브 API 문제가 발생했습니다."}
+    
+    
+    # 한글 인코딩 
+    result = json.dumps(data, ensure_ascii=False) 
     res = make_response(result)
+    res.headers['Content-Type'] = 'application/json'
+    
     return res
 
 
