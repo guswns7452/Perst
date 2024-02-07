@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kiosk/src/screen/auth/camera.dart';
 import 'package:kiosk/src/screen/auth/phonenumber.dart';
+import 'package:kiosk/src/screen/camera/cameraIntro.dart';
 
 class Intro extends StatelessWidget {
   const Intro({Key? key}) : super(key: key);
@@ -90,8 +90,7 @@ class Intro extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        const CameraExample()));
+                                    builder: (context) => const CameraIntro()));
                           },
                           child: const Text('사진 찍으러 가기'),
                         ),
