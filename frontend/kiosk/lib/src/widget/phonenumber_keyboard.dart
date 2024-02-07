@@ -8,11 +8,12 @@ class phonenumber_keyboard extends StatefulWidget {
 }
 
 class _phonenumber_keyboardState extends State<phonenumber_keyboard> {
-  TextEditingController _textEditingController = TextEditingController();
+  TextEditingController _phonenumbercontroller = TextEditingController();
 
+// 각 버튼을 클릭했을때 번호가 추가되는 함수 정의
   void _addNumber(String number) {
     setState(() {
-      _textEditingController.text += number;
+      _phonenumbercontroller.text += number;
     });
   }
 
@@ -23,42 +24,13 @@ class _phonenumber_keyboardState extends State<phonenumber_keyboard> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          // Container(
-          //   margin: EdgeInsets.fromLTRB(40, 15, 40, 10),
-          //   child: TextFormField(
-          //     // controller: ,
-          //     decoration: const InputDecoration(
-          //       border: OutlineInputBorder(),
-          //       icon: Icon(
-          //         Icons.phone,
-          //         color: Colors.black,
-          //       ),
-          //       focusedBorder: OutlineInputBorder(
-          //         borderSide: BorderSide(
-          //           color: Colors.black,
-          //         ),
-          //       ),
-          //       enabledBorder: OutlineInputBorder(
-          //         borderSide: BorderSide(
-          //           color: Colors.black,
-          //         ),
-          //       ),
-          //       labelText: '전화번호',
-          //       labelStyle: TextStyle(
-          //         color: Colors.black,
-          //       ),
-          //       focusColor: Colors.white,
-          //       filled: true,
-          //       fillColor: Colors.white,
-          //       hintText: 'ex) 01000000000',
-          //     ),
-          //   ),
-          // ),
+          // phonenumber 입력 textformfield
           TextFormField(
-            controller: _textEditingController,
+            controller: _phonenumbercontroller,
+            style: TextStyle(fontSize: 30),
             decoration: InputDecoration(
               labelText: '전화번호',
-              labelStyle: TextStyle(fontSize: 22),
+              labelStyle: TextStyle(fontSize: 25),
               icon: Icon(
                 Icons.phone,
                 color: Colors.black,
@@ -66,6 +38,7 @@ class _phonenumber_keyboardState extends State<phonenumber_keyboard> {
             ),
           ),
           SizedBox(height: 40.0),
+          // 키패드 정렬
           Column(mainAxisAlignment: MainAxisAlignment.center, children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -112,7 +85,7 @@ class _phonenumber_keyboardState extends State<phonenumber_keyboard> {
                   style: OutlinedButton.styleFrom(
                     backgroundColor: Colors.white,
                     minimumSize: Size.zero,
-                    padding: EdgeInsets.fromLTRB(35, 35, 35, 35),
+                    padding: EdgeInsets.fromLTRB(38, 36, 38, 36),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(
                         Radius.circular(10),
@@ -121,9 +94,9 @@ class _phonenumber_keyboardState extends State<phonenumber_keyboard> {
                   ),
                   onPressed: () {
                     setState(() {
-                      String currentValue = _textEditingController.text;
+                      String currentValue = _phonenumbercontroller.text;
                       if (currentValue.isNotEmpty) {
-                        _textEditingController.text =
+                        _phonenumbercontroller.text =
                             currentValue.substring(0, currentValue.length - 1);
                       }
                     });
@@ -161,6 +134,7 @@ class _phonenumber_keyboardState extends State<phonenumber_keyboard> {
     );
   }
 
+// 각 번호의 위젯 스타일을 한번에 정의
   Widget _buildNumberButton(String number) {
     return OutlinedButton(
       onPressed: () {
@@ -187,9 +161,10 @@ class _phonenumber_keyboardState extends State<phonenumber_keyboard> {
     );
   }
 
+// delete 버튼을 눌렀을때 입력된 번호가 지워지는 함수 정의
   @override
   void dispose() {
-    _textEditingController.dispose();
+    _phonenumbercontroller.dispose();
     super.dispose();
   }
 }

@@ -18,7 +18,7 @@ class Phonenumber extends StatelessWidget {
                 height: 200,
               ),
               Text(
-                '           휴대폰 번호를 입력해주세요.',
+                '      휴대폰 번호를 입력해주세요.',
                 style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.w500,
