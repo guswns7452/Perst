@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kiosk/src/widget/bottom_bar.dart';
 import 'package:kiosk/src/widget/phonenumber_keyboard.dart';
 
 class Phonenumber extends StatelessWidget {
@@ -27,21 +28,7 @@ class Phonenumber extends StatelessWidget {
               phonenumber_keyboard(),
             ],
           ),
-          Container(
-            child: Center(
-              child: Text(
-                'Perst : 당신만을 위한 의류 스타일 추천 서비스',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-            color: Color.fromRGBO(217, 217, 217, 1),
-            width: double.infinity,
-            height: 60,
-          ),
+          BottomBar(),
         ],
       ),
     );

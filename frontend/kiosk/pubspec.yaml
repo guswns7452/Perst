@@ -40,6 +40,7 @@ dependencies:
   path: ^1.8.3
   path_provider: ^2.1.2
   gallery_saver: ^2.3.2
+  get: ^4.6.6
 
 dev_dependencies:
   flutter_test:
@@ -73,6 +74,9 @@ flutter:
     - assets/camera.png
     - assets/map.png
     - assets/delete.png
+    - assets/fashion.png
+    - assets/fashion1.jpg
+    - assets/next.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

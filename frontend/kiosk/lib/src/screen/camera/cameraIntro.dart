@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kiosk/src/widget/camera_guide.dart';
+import 'package:kiosk/src/screen/camera/camera_guide.dart';
+import 'package:kiosk/src/widget/bottom_bar.dart';
 
 class CameraIntro extends StatelessWidget {
   const CameraIntro({super.key});
@@ -28,21 +29,7 @@ class CameraIntro extends StatelessWidget {
                 width: double.infinity,
                 color: Colors.black,
               ),
-              Container(
-                child: Center(
-                  child: Text(
-                    'Perst : 당신만을 위한 의류 스타일 추천 서비스',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                color: Color.fromRGBO(217, 217, 217, 1),
-                width: double.infinity,
-                height: 60,
-              ),
+              BottomBar(),
             ],
           ),
           Positioned(
