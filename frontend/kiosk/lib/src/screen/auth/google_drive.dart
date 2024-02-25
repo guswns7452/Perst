@@ -8,6 +8,7 @@ import 'google_auth_client.dart';
 
 //TODO 이거를 토큰 형태로 바꾸면 베스트
 
+@Deprecated("현재 사용하지 않음. 추후에도 사용하지 않으면 삭제 요망")
 class GoogleDriveAppData {
   /// sign in with google
   Future<GoogleSignInAccount?> signInGoogle() async {
@@ -55,7 +56,7 @@ class GoogleDriveAppData {
     try {
       drive.File fileMetadata = drive.File();
       fileMetadata.name = path.basename(file.absolute.path);
-      fileMetadata.parents = "대충 부모 ID"; //TODO 부모 아이디 넣으면 됨.
+      // fileMetadata.parents = "대충 부모 ID"; //TODO 부모 아이디 넣으면 됨.
 
       late drive.File response;
       if (driveFileId != null) {

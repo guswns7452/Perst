@@ -12,6 +12,6 @@ class google_drive_image extends StatelessWidget {
             image: new DecorationImage(
                 fit: BoxFit.fill,
                 image: new NetworkImage(
-                    "https://drive.google.com/uc?export=view&id=1rQZtEv-CLIS9eBADpD9grkoD3HWEpXLa"))));
+                    "https://drive.google.com/thumbnail?id=1ePHl_Wt1bZKgiCQ6PF8OAwABq7fTmLV5&sz=w300"))));
   }
 }
