@@ -39,9 +39,9 @@
     },
     {
       "name": "camera_platform_interface",
-      "rootUri": "file:///C:/Users/guswn/AppData/Local/Pub/Cache/hosted/pub.dev/camera_platform_interface-2.7.3",
+      "rootUri": "file:///C:/Users/guswn/AppData/Local/Pub/Cache/hosted/pub.dev/camera_platform_interface-2.7.4",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.1"
     },
     {
       "name": "camera_web",
@@ -69,9 +69,9 @@
     },
     {
       "name": "cross_file",
-      "rootUri": "file:///C:/Users/guswn/AppData/Local/Pub/Cache/hosted/pub.dev/cross_file-0.3.3+8",
+      "rootUri": "file:///C:/Users/guswn/AppData/Local/Pub/Cache/hosted/pub.dev/cross_file-0.3.4+1",
       "packageUri": "lib/",
-      "languageVersion": "3.2"
+      "languageVersion": "3.3"
     },
     {
       "name": "cupertino_icons",
@@ -159,9 +159,9 @@
     },
     {
       "name": "google_identity_services_web",
-      "rootUri": "file:///C:/Users/guswn/AppData/Local/Pub/Cache/hosted/pub.dev/google_identity_services_web-0.3.0+2",
+      "rootUri": "file:///C:/Users/guswn/AppData/Local/Pub/Cache/hosted/pub.dev/google_identity_services_web-0.3.1",
       "packageUri": "lib/",
-      "languageVersion": "3.2"
+      "languageVersion": "3.3"
     },
     {
       "name": "google_sign_in",
@@ -189,9 +189,9 @@
     },
     {
       "name": "google_sign_in_web",
-      "rootUri": "file:///C:/Users/guswn/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_web-0.12.3+2",
+      "rootUri": "file:///C:/Users/guswn/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_web-0.12.4",
       "packageUri": "lib/",
-      "languageVersion": "3.2"
+      "languageVersion": "3.3"
     },
     {
       "name": "googleapis",
@@ -249,9 +249,9 @@
     },
     {
       "name": "image_picker_platform_interface",
-      "rootUri": "file:///C:/Users/guswn/AppData/Local/Pub/Cache/hosted/pub.dev/image_picker_platform_interface-2.9.3",
+      "rootUri": "file:///C:/Users/guswn/AppData/Local/Pub/Cache/hosted/pub.dev/image_picker_platform_interface-2.9.4",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.3"
     },
     {
       "name": "image_picker_windows",
@@ -429,9 +429,9 @@
     },
     {
       "name": "web",
-      "rootUri": "file:///C:/Users/guswn/AppData/Local/Pub/Cache/hosted/pub.dev/web-0.4.2",
+      "rootUri": "file:///C:/Users/guswn/AppData/Local/Pub/Cache/hosted/pub.dev/web-0.5.0",
       "packageUri": "lib/",
-      "languageVersion": "3.2"
+      "languageVersion": "3.3"
     },
     {
       "name": "win32",
@@ -452,7 +452,7 @@
       "languageVersion": "3.2"
     }
   ],
-  "generated": "2024-02-19T15:22:45.188634Z",
+  "generated": "2024-02-25T17:08:21.372808Z",
   "generator": "pub",
   "generatorVersion": "3.3.0"
 }
