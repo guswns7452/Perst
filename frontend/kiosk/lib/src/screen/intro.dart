@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kiosk/src/screen/auth/phonenumber.dart';
 import 'package:kiosk/src/screen/camera/cameraIntro.dart';
 import 'package:kiosk/src/widget/bottom_bar.dart';
-
+import 'package:kiosk/src/widget/google_dive_image.dart';
 class Intro extends StatelessWidget {
   const Intro({Key? key}) : super(key: key);
 
@@ -79,7 +79,7 @@ class Intro extends StatelessWidget {
                       children: [
                         TextButton(
                           style: TextButton.styleFrom(
-                            primary: Color.fromRGBO(103, 103, 103, 1),
+                            foregroundColor: Color.fromRGBO(103, 103, 103, 1),
                             textStyle: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w700,
@@ -146,7 +146,7 @@ class Intro extends StatelessWidget {
                               children: [
                                 TextButton(
                                   style: TextButton.styleFrom(
-                                    primary: Color.fromRGBO(103, 103, 103, 1),
+                                    foregroundColor: Color.fromRGBO(103, 103, 103, 1),
                                     textStyle: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w700,
@@ -207,7 +207,7 @@ class Intro extends StatelessWidget {
                               children: [
                                 TextButton(
                                   style: TextButton.styleFrom(
-                                    primary: Color.fromRGBO(103, 103, 103, 1),
+                                    foregroundColor: Color.fromRGBO(103, 103, 103, 1),
                                     textStyle: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w700,
@@ -269,6 +269,7 @@ class Intro extends StatelessWidget {
                   ),
                 ),
               ),
+              google_drive_image()
             ],
           ),
           BottomBar(),
