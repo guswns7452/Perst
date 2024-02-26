@@ -14,11 +14,11 @@ model_dir_path = "D:\\perstDir\\Flask_backend\\Models\\"
 def imgLoad(fileID, input_type):
     if input_type == "man":
         # 남성 샘플 이미지 불러오기
-        img_path = model_dir_path + fileID + ".jpg";
+        img_path = model_dir_path + fileID + ".jpg"
         print(img_path)
     elif input_type == "woman":
         # 여성 샘플 이미지 불러오기
-        img_path = model_dir_path + "img_sample_female.jpg"
+        img_path = model_dir_path + fileID + ".jpg"
     else:
         print(
             "img_type 변수의 입력 형태가 올바르지 않습니다. male과 female중 하나를 입력해주세요"
