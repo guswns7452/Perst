@@ -10,6 +10,7 @@ application.properties
 StoredCredential
 credentials.json
 GoogleDriveFileID.json
+musinsaFolderID.json
 
 ### STS ###
 .apt_generated
