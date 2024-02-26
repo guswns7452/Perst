@@ -58,4 +58,14 @@ public class MemberService {
             return memberRepository.save(member);
         }
     }
+
+    /**
+     * 스타일 분석에 필요한 성별 찾아내기
+     * @param memberNumber
+     * @return
+     * @throws Exception
+     */
+    public String findMemberGenderByMemberNumber(int memberNumber) throws Exception{
+        return memberRepository.findByMemberNumber(memberNumber).getMemberGender();
+    }
 }

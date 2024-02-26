@@ -2,6 +2,7 @@ package com.clothes.perst.controller;
 
 import com.clothes.perst.DTO.RestResponse;
 import com.clothes.perst.domain.StyleAnalyzeVO;
+import com.clothes.perst.service.MemberService;
 import com.clothes.perst.service.StyleAnalyzeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
 import java.util.LinkedHashMap;
 
 @RestController
@@ -24,12 +26,14 @@ import java.util.LinkedHashMap;
 @Tag(name="스타일 분석하기", description = "스타일 분석하기와 관련된 API입니다.")
 public class StyleAnalyzeController {
     private final StyleAnalyzeService styleAnalyzeService;
+    private final MemberService memberService;
     RestResponse<Object> restResponse = new RestResponse<>();
     private static final Logger logger = LoggerFactory.getLogger(StyleAnalyzeController.class);
 
     @Autowired
-    public StyleAnalyzeController(StyleAnalyzeService styleAnalyzeService){
+    public StyleAnalyzeController(StyleAnalyzeService styleAnalyzeService, MemberService memberService){
         this.styleAnalyzeService = styleAnalyzeService;
+        this.memberService = memberService;
     }
 
     /**
@@ -47,15 +51,23 @@ public class StyleAnalyzeController {
     @PostMapping("/")
     public ResponseEntity Analyze(@RequestBody StyleAnalyzeVO styleAnalyzeVO) throws Exception {
         logger.info("[스타일 분석하기]");
-        try{
+        try{ 
+            // TODO 파일 업로드 요청 -> 파일 업로드 (file만) / meta데이터들 API 분리하기
             // Flask로 요청 보내기
-            String requestBody = "{\"filename\": \""+styleAnalyzeVO.getStyleFileID()+"\"}";
+
+            String gender = memberService.findMemberGenderByMemberNumber(styleAnalyzeVO.getMemberNumber());
+
+            String requestBody = "{\"fileID\": \""+styleAnalyzeVO.getStyleFileID() + "\", \"gender\": \""+gender+"\"}";
             RestResponse responseBody = styleAnalyzeService.ConnectFlaskServer(requestBody);
 
             LinkedHashMap data = (LinkedHashMap) responseBody.getData();
 
             StyleAnalyzeVO styleAnalyzed = new StyleAnalyzeVO(); // TODO 추후 생성자 형태로 변경하기
-            styleAnalyzed.setStyleFileID((String) data.get("styleFileId"));
+            styleAnalyzed.setStyleName((String) data.get("fashionType"));
+            styleAnalyzed.setStyleFileID(styleAnalyzeVO.getStyleFileID());
+            styleAnalyzed.setMemberNumber(styleAnalyzeVO.getMemberNumber());
+
+            logger.info(String.valueOf(data));
 
             /* 결과값 받아 DB에 저장하기 */
             StyleAnalyzeVO newstyleAnalyzeVO =  styleAnalyzeService.saveStyleAnalyze(styleAnalyzed);
