@@ -2,6 +2,7 @@ package com.clothes.perst.controller;
 
 import com.clothes.perst.DTO.RestResponse;
 import com.clothes.perst.domain.StyleAnalyzeVO;
+import com.clothes.perst.domain.StyleColorVO;
 import com.clothes.perst.service.MemberService;
 import com.clothes.perst.service.StyleAnalyzeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,7 +20,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 @RestController
 @RequestMapping("/clothes/analyze") // API의 기본 경로 설정
@@ -71,6 +74,15 @@ public class StyleAnalyzeController {
 
             /* 결과값 받아 DB에 저장하기 */
             StyleAnalyzeVO newstyleAnalyzeVO =  styleAnalyzeService.saveStyleAnalyze(styleAnalyzed);
+            int styleNumber = newstyleAnalyzeVO.getStyleNumber();
+
+            /* DB에 색상 저장하기 */
+            List<StyleColorVO> colors = new ArrayList();
+            colors.add(new StyleColorVO((String) data.get("color1"), styleNumber));
+            colors.add(new StyleColorVO((String) data.get("color2"), styleNumber));
+            colors.add(new StyleColorVO((String) data.get("color3"), styleNumber));
+            colors.add(new StyleColorVO((String) data.get("color4"), styleNumber));
+            styleAnalyzeService.saveStyleColor(colors);
 
             restResponse = RestResponse.builder()
                     .code(HttpStatus.OK.value())
@@ -81,7 +93,8 @@ public class StyleAnalyzeController {
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
         }
         // 일치 하는 의류가 없을 때, IllegalArgumentException 발생
-        catch (IllegalArgumentException e){
+        catch (NullPointerException e){
+            logger.info(e.getMessage());
             restResponse = RestResponse.builder()
                     .code(HttpStatus.FORBIDDEN.value())
                     .httpStatus(HttpStatus.FORBIDDEN)
