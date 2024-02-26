@@ -32,9 +32,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @SpringBootTest
 public class ShoppingClothesUpload {
@@ -99,16 +97,23 @@ public class ShoppingClothesUpload {
 
     @Test
     public void updateMusinsaDB() throws GeneralSecurityException, IOException {
+        Map<String, String> seasonMap = new HashMap<String, String>();
+        seasonMap.put("봄","spring"); seasonMap.put("여름","summer"); seasonMap.put("가을","autumn"); seasonMap.put("겨울","winter");
+
+        Map<String, String> styleMap = new HashMap<String, String>();
+        styleMap.put("캐주얼","casual"); styleMap.put("아메카지","Amekaji"); styleMap.put("시크","chic"); styleMap.put("스포티","sporty"); styleMap.put("스트릿","street"); styleMap.put("비즈니스캐주얼","businessCasual"); styleMap.put("로맨틱","romantic"); styleMap.put("레트로","retro"); styleMap.put("골프","golf"); styleMap.put("고프코어","gofcore"); styleMap.put("걸리시","girlish"); styleMap.put("미니멀","minimal"); styleMap.put("댄디","dandy");
+
         String folderPath = "D:\\perstDir\\Flask_backend\\images\\";
 
         ArrayList<String> genders = new ArrayList(); genders.add("man"); genders.add("woman");
-        ArrayList<String> styles = new ArrayList(); styles.add("걸리시");  styles.add("고프코어"); styles.add("골프"); styles.add("댄디"); styles.add("로맨틱"); styles.add("미니멀"); styles.add("비즈니스캐주얼"); styles.add("스트릿"); styles.add("스포티"); styles.add("시크"); styles.add("아메카지"); styles.add("캐주얼");
+        ArrayList<String> styles = new ArrayList(); styles.add("걸리시");  styles.add("고프코어"); styles.add("골프"); styles.add("댄디"); styles.add("로맨틱"); styles.add("미니멀"); styles.add("비즈니스캐주얼"); styles.add("스트릿"); styles.add("스포티"); styles.add("시크"); styles.add("아메카지"); styles.add("캐주얼"); styles.add("레트로");
 
         for (String gender : genders){
             for(String style : styles){
                 // 폴더 객체 생성
                 java.io.File folder = new java.io.File(folderPath+"\\"+gender+"\\"+style);
 
+                String englishStyle = styleMap.get(style);
                 // 해당 폴더에 있는 파일 목록 가져오기
                 java.io.File[] files = folder.listFiles();
 
@@ -116,15 +121,23 @@ public class ShoppingClothesUpload {
                 if (files != null) {
                     for (java.io.File file : files) {
                         String fileName = file.getName();
-                        List<String> fileMetaData = new ArrayList<>(List.of(file.getName().split("_")));
-                        fileMetaData.set(5, fileMetaData.get(5).replace(".jpg",""));
-                        fileMetaData.add(uploadBasic(gender, style, fileName));
+                        List<String> fileMetaData = new ArrayList<>(List.of(fileName.split("_")));
 
-                        System.out.println(fileName);
-                        System.out.println(fileMetaData); // [man, 34376, 188, 70, 여름, 고프코어, 3jdhFJUr_dsjcb3j5bkksbakDJSFK]
+                        fileMetaData.set(4, seasonMap.get(fileMetaData.get(4)));
+                        fileMetaData.set(5, styleMap.get(fileMetaData.get(5).replace(".jpg","")));
+
+                        // File명을 모두 영어로 변경함
+                        String newFileName = fileMetaData.toString().replace("[","").replace("]","").replace(", ","_")+".jpg";
+
+                        fileMetaData.add(uploadBasic(gender, style, folderPath+"\\"+gender+"\\"+style+"\\"+fileName, newFileName));
+
+                        // System.out.println(fileName);
+                        // System.out.println(fileMetaData); // [man, 34376, 188, 70, 여름, 고프코어, 3jdhFJUr_dsjcb3j5bkksbakDJSFK]
 
                         MusinsaVO musinsaVO = new MusinsaVO(fileMetaData);
                         musinsaRepository.save(musinsaVO);
+
+                        System.out.println(newFileName);
                     }
                 } else {
                     System.out.println("해당 폴더에 파일이 존재하지 않습니다.");
@@ -133,12 +146,11 @@ public class ShoppingClothesUpload {
         }
     }
 
-    public String uploadBasic(String gender, String style, String fileName) throws IOException, GeneralSecurityException {
+    public String uploadBasic(String gender, String style, String folderPath, String newFileName) throws IOException, GeneralSecurityException {
         // Load pre-authorized user credentials from the environment.
         // TODO(developer) - See https://developers.google.com/identity for
         // guides on implementing OAuth2 for your application.
 
-        String folderPath = "D:\\perstDir\\Flask_backend\\images\\" + gender + "\\" + style + "\\" + fileName;
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         Drive service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
                 .setApplicationName(APPLICATION_NAME)
@@ -152,7 +164,7 @@ public class ShoppingClothesUpload {
         File fileMetadata = new File();
         // File's content.
         java.io.File filepath = new java.io.File(folderPath);
-        fileMetadata.setName(fileName);
+        fileMetadata.setName(newFileName);
         fileMetadata.setParents(folderID);
 
         // Specify media type and file-path for file.
