@@ -27,7 +27,7 @@ public class SecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFil
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        config.setAllowedOrigins(Arrays.asList("http://127.0.0.1:5000"));
         config.addAllowedMethod("GET");
         config.addAllowedMethod("POST");
         config.addAllowedMethod("OPTIONS");

@@ -45,10 +45,11 @@ public class StyleAnalyzeController {
             @ApiResponse(responseCode = "500", description = "스타일 분석 시 오류 발생")
     })
     @PostMapping("/")
-    public ResponseEntity Analyze(@RequestBody String filename) throws Exception {
+    public ResponseEntity Analyze(@RequestBody StyleAnalyzeVO styleAnalyzeVO) throws Exception {
         logger.info("[스타일 분석하기]");
         try{
-            String requestBody = "{\"filename\": \""+filename+"\"}";
+            // Flask로 요청 보내기
+            String requestBody = "{\"filename\": \""+styleAnalyzeVO.getStyleFileID()+"\"}";
             RestResponse responseBody = styleAnalyzeService.ConnectFlaskServer(requestBody);
 
             LinkedHashMap data = (LinkedHashMap) responseBody.getData();

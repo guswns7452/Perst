@@ -125,6 +125,7 @@ def upload_basic(file_name, img_path, gender, index, height, weight, season, sty
 # 크롤링할 페이지 URL
 # 2024/02/25 23:50 기준 40031 최신
 for i in range(39366, 34000, -1):
+
     index = "{:d}".format(i)
     url = "https://www.musinsa.com/app/styles/views/"+index
 

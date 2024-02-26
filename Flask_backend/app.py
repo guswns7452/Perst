@@ -15,7 +15,7 @@ import google.auth
 from googleapiclient.http import MediaIoBaseDownload
 
 # If modifying these scopes, delete the file token.json.
-SCOPES = ["https://www.googleapis.com/auth/drive.metadata.readonly"]
+SCOPES = ["https://www.googleapis.com/auth/drive"]
 
 
 app = Flask(__name__)
@@ -58,14 +58,14 @@ def googleDrive(filename):
             raise FileNotFoundError("일치하는 파일이 없습니다.")
         print("Files:")
         for item in items:
-            DownloadByGoogleDrive(file_id=item['id'])
             print(f"{item['name']} ({item['id']})")
+            DownloadByGoogleDrive(filename=item['name'], file_id=item['id'])
     except HttpError as error:
         # TODO(developer) - Handle errors from drive API.
         raise ConnectionError("구글 드라이브 API 문제입니다.")
     return items
 
-def DownloadByGoogleDrive(file_id):
+def DownloadByGoogleDrive(filename, file_id):
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
@@ -84,24 +84,20 @@ def DownloadByGoogleDrive(file_id):
             token.write(creds.to_json())
 
     try:
-    # create drive api client
-        service = build("drive", "v3", credentials=creds)
+        # Google 드라이브 API 빌드
+        drive_service = build('drive', 'v3', credentials=creds)
 
-        # pylint: disable=maybe-no-member
-        request = service.files().get_media(fileId=file_id)
-        file = io.BytesIO()
-        downloader = MediaIoBaseDownload(file, request)
+        # 파일 다운로드
+        request = drive_service.files().get_media(fileId=file_id)
+        fh = open(filename, "wb")
+        downloader = MediaIoBaseDownload(fh, request)
         done = False
         while done is False:
             status, done = downloader.next_chunk()
-            print(f"Download {int(status.progress() * 100)}.")
-
-    except HttpError as error:
-        print(f"An error occurred: {error}")
-        file = None
-
-    return file.getvalue()
-
+            print("Download %d%%." % int(status.progress() * 100))
+        print("이미지 다운로드가 완료되었습니다.")
+    except Exception as e:
+        print("이미지 다운로드 중 오류가 발생했습니다:", str(e))
 
 @app.route('/style/analyze', methods=['POST'])
 def analyzeAPI():
