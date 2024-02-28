@@ -1,29 +1,48 @@
 package com.clothes.perst.service;
 
 import com.clothes.perst.DTO.RestResponse;
+import com.clothes.perst.config.GoogleDriveAPI;
 import com.clothes.perst.domain.StyleAnalyzeVO;
 import com.clothes.perst.domain.StyleColorVO;
 import com.clothes.perst.persistance.StyleAnalyzeColorRepository;
 import com.clothes.perst.persistance.StyleAnalyzeRepository;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
+import com.google.api.client.http.FileContent;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.model.File;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 @Service
 public class StyleAnalyzeService {
     private final StyleAnalyzeRepository styleAnalyzeJPA;
     private final StyleAnalyzeColorRepository styleAnalyzeColorRepository;
+    private final GoogleDriveAPI googleDriveAPI;
+
+    @Value("${folderId.ClothesAnalyze}")
+    String folderID;
 
     @Autowired
-    public StyleAnalyzeService(StyleAnalyzeRepository styleAnalyzeJPA, StyleAnalyzeColorRepository styleAnalyzeColorRepository) {
+    public StyleAnalyzeService(StyleAnalyzeRepository styleAnalyzeJPA, StyleAnalyzeColorRepository styleAnalyzeColorRepository, GoogleDriveAPI googleDriveAPI) {
         this.styleAnalyzeJPA = styleAnalyzeJPA;
         this.styleAnalyzeColorRepository = styleAnalyzeColorRepository;
+        this.googleDriveAPI = googleDriveAPI;
     }
 
     /**
@@ -36,6 +55,40 @@ public class StyleAnalyzeService {
     public void saveStyleColor(List<StyleColorVO> colors) {
         for(StyleColorVO color : colors){
             styleAnalyzeColorRepository.save(color);
+        }
+    }
+
+    /**
+     * 스타일 분석 시, 구글 드라이브에 이미지 업로드 하는 코드
+     * @param uploadFile
+     * @param memberNumber
+     * @return fileID
+     */
+    public String uploadImage(MultipartFile uploadFile, int memberNumber) throws IOException, GeneralSecurityException {
+        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+        Drive service = new Drive.Builder(HTTP_TRANSPORT, GoogleDriveAPI.JSON_FACTORY, GoogleDriveAPI.getCredentials(HTTP_TRANSPORT))
+                .setApplicationName(GoogleDriveAPI.APPLICATION_NAME)
+                .build();
+
+        /* 구글 드라이브에 저장될 파일 이름 지정 : 회원번호. 현재시간*/
+        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
+        String fileName = memberNumber + "_" + sdf1.format(new Date()) + ".jpg";
+
+        File fileMetadata = new File();
+        fileMetadata.setName(fileName);
+        fileMetadata.setParents(Collections.singletonList(folderID));
+
+        // 구글 드라이브에 파일 저장
+        FileContent mediaContent = new FileContent("image/jpeg", (java.io.File) uploadFile);
+        try {
+            File file = service.files().create(fileMetadata, mediaContent)
+                    .setFields("id")
+                    .execute();
+            System.out.println("File ID: " + file.getId());
+            return file.getId();
+        } catch (GoogleJsonResponseException e) {
+            System.err.println("Unable to upload file: " + e.getDetails());
+            throw e;
         }
     }
 

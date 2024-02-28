@@ -14,6 +14,14 @@ import java.util.Date;
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "style_analyze") // 테이블 이름을 명시해줄 수 있습니다.
 public class StyleAnalyzeVO {
+    public StyleAnalyzeVO(String fashionType, String styleFileID, int memberNumber){
+        this.styleName = fashionType;
+        this.styleFileID = styleFileID;
+        this.memberNumber = memberNumber;
+    }
+    public StyleAnalyzeVO(){
+
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int styleNumber;

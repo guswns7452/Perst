@@ -95,7 +95,10 @@ public class GoogleFileID {
         Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
         return credential;
     }
-    
+
+    /**
+     * [musinsa] 구글 폴더 ID를 json에 저장 하는 코드
+     */
     @Test
     public void SaveGoogleFolderFileID() throws GeneralSecurityException, IOException {
         String filePath = "src/main/resources/musinsaFolderID.json";

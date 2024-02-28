@@ -105,8 +105,8 @@ public class ShoppingClothesUpload {
 
         String folderPath = "D:\\perstDir\\Flask_backend\\images\\";
 
-        ArrayList<String> genders = new ArrayList(); genders.add("man"); genders.add("woman");
-        ArrayList<String> styles = new ArrayList(); styles.add("걸리시");  styles.add("고프코어"); styles.add("골프"); styles.add("댄디"); styles.add("로맨틱"); styles.add("미니멀"); styles.add("비즈니스캐주얼"); styles.add("스트릿"); styles.add("스포티"); styles.add("시크"); styles.add("아메카지"); styles.add("캐주얼"); styles.add("레트로");
+        ArrayList<String> genders = new ArrayList(); genders.add("woman");
+        ArrayList<String> styles = new ArrayList(); styles.add("걸리시"); /* styles.add("고프코어"); styles.add("골프"); styles.add("댄디"); styles.add("로맨틱"); styles.add("미니멀"); styles.add("비즈니스캐주얼"); styles.add("스트릿"); styles.add("스포티");*/ styles.add("시크"); styles.add("아메카지"); styles.add("캐주얼"); styles.add("레트로");
 
         for (String gender : genders){
             for(String style : styles){
@@ -128,7 +128,12 @@ public class ShoppingClothesUpload {
 
                         // File명을 모두 영어로 변경함
                         String newFileName = fileMetaData.toString().replace("[","").replace("]","").replace(", ","_")+".jpg";
-
+                        
+                        // 중간에 정지 하면 넘김 (숫자와 스타일)
+                        if(Integer.parseInt(fileMetaData.get(1)) <= 33388 && style.equals("걸리시")){
+                            continue;
+                        }
+                        
                         fileMetaData.add(uploadBasic(gender, style, folderPath+"\\"+gender+"\\"+style+"\\"+fileName, newFileName));
 
                         // System.out.println(fileName);

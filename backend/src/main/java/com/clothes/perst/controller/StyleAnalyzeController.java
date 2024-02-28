@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -57,22 +58,22 @@ public class StyleAnalyzeController {
     @PostMapping("/")
     public ResponseEntity Analyze(@RequestHeader("Authorization") String token, @RequestParam("image") MultipartFile file) throws Exception {
         logger.info("[스타일 분석하기]");
-        try{ 
-            // TODO 파일 업로드 요청 -> 파일 업로드 (file만) / meta데이터들 API 분리하기
-            // Flask로 요청 보내기
+        try{
             int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
 
-            String gender = memberService.findMemberGenderByMemberNumber(styleAnalyzeVO.getMemberNumber());
+            /* 구글 드라이브로 업로드 하기 */
+            String fileID = styleAnalyzeService.uploadImage(file, memberNumber);
 
-            String requestBody = "{\"fileID\": \""+styleAnalyzeVO.getStyleFileID() + "\", \"gender\": \""+gender+"\"}";
+            /* Flask로 요청 보내기 */
+            String gender = memberService.findMemberGenderByMemberNumber(memberNumber);
+
+            String requestBody = "{\"fileID\": \""+ fileID + "\", \"gender\": \""+gender+"\"}";
             RestResponse responseBody = styleAnalyzeService.ConnectFlaskServer(requestBody);
 
             LinkedHashMap data = (LinkedHashMap) responseBody.getData();
 
-            StyleAnalyzeVO styleAnalyzed = new StyleAnalyzeVO(); // TODO 추후 생성자 형태로 변경하기
-            styleAnalyzed.setStyleName((String) data.get("fashionType"));
-            styleAnalyzed.setStyleFileID(styleAnalyzeVO.getStyleFileID());
-            styleAnalyzed.setMemberNumber(styleAnalyzeVO.getMemberNumber());
+            /* 스타일 분석 내용 저장 : styleName, FileID, memberNumber */
+            StyleAnalyzeVO styleAnalyzed = new StyleAnalyzeVO((String) data.get("fashionType"), fileID, memberNumber);
 
             logger.info(String.valueOf(data));
 
@@ -82,10 +83,8 @@ public class StyleAnalyzeController {
 
             /* DB에 색상 저장하기 */
             List<StyleColorVO> colors = new ArrayList();
-            colors.add(new StyleColorVO((String) data.get("color1"), styleNumber));
-            colors.add(new StyleColorVO((String) data.get("color2"), styleNumber));
-            colors.add(new StyleColorVO((String) data.get("color3"), styleNumber));
-            colors.add(new StyleColorVO((String) data.get("color4"), styleNumber));
+            colors.add(new StyleColorVO((String) data.get("color1"), styleNumber));  colors.add(new StyleColorVO((String) data.get("color2"), styleNumber));
+            colors.add(new StyleColorVO((String) data.get("color3"), styleNumber));  colors.add(new StyleColorVO((String) data.get("color4"), styleNumber));
             styleAnalyzeService.saveStyleColor(colors);
 
             restResponse = RestResponse.builder()
