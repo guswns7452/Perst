@@ -32,7 +32,6 @@ public class MemberService {
         MemberVO members = memberRepository.findByMemberPhone(memberPhone);
 
         if (passwordEncoder.matches(member.getMemberPassword(), members.getMemberPassword())) {
-            logger.info("회원 이름 : ",members.getMemberName());
             return members;
         } else {
             throw new IllegalArgumentException("[로그인] 전화번호 또는 이메일이 일치하지 않습니다.");

@@ -4,9 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 @Getter
 @Setter
 @Entity

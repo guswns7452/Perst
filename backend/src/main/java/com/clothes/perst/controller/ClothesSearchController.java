@@ -1,9 +1,7 @@
 package com.clothes.perst.controller;
 
 import com.clothes.perst.DTO.RestResponse;
-import com.clothes.perst.domain.ClothesMaleVO;
 import com.clothes.perst.domain.MusinsaVO;
-import com.clothes.perst.service.ClothesSearchService;
 import com.clothes.perst.service.MusinsaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
