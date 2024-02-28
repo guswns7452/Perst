@@ -57,7 +57,7 @@ public class HomeController {
             @ApiResponse(responseCode = "200", description = "로그인 성공",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = RestResponse.class),
-                            examples = @ExampleObject(name = "로그인 성공")) }),
+                            examples = @ExampleObject(name = "로그인 성공시 message에 token을 반환합니다.")) }),
             @ApiResponse(responseCode = "404", description = "전화번호나 비밀번호 미일치")
     })
     @PostMapping("/login")
@@ -96,15 +96,26 @@ public class HomeController {
      * @apiNote  1. 회원 가입을 완료했을 때 / 2. 중복되는 전화번호가 있을 때
      */
     @ResponseBody
+    @Operation(summary = "회원가입", description = "회원가입 기능입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "회원가입 성공",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = RestResponse.class),
+                            examples = @ExampleObject(name = "회원가입 성공 시, message에 token을 반환합니다.")) }),
+            @ApiResponse(responseCode = "403", description = "전화번호 중복으로 회원가입 실패")
+    })
     @RequestMapping(value = { "/signup" }, method = RequestMethod.POST)
     public ResponseEntity signup(@RequestBody MemberVO member) throws Exception {
         // 회원 가입 완료
         try{
             MemberVO signUpMember = memberService.signUpMember(member);
+            signUpMember.setMemberPassword("secret");
+            String token = jwtTokenService.generateToken(Integer.toString(signUpMember.getMemberNumber())); // 토큰 제작
+
             restResponse = RestResponse.builder()
                     .code(HttpStatus.CREATED.value())
                     .httpStatus(HttpStatus.CREATED)
-                    .message("Success Signup")
+                    .message(token)
                     .data(signUpMember)
                     .build();
         }
