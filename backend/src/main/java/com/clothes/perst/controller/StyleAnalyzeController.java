@@ -1,6 +1,7 @@
 package com.clothes.perst.controller;
 
 import com.clothes.perst.DTO.RestResponse;
+import com.clothes.perst.config.JwtTokenService;
 import com.clothes.perst.domain.StyleAnalyzeVO;
 import com.clothes.perst.domain.StyleColorVO;
 import com.clothes.perst.service.MemberService;
@@ -32,18 +33,20 @@ public class StyleAnalyzeController {
     private final MemberService memberService;
     RestResponse<Object> restResponse = new RestResponse<>();
     private static final Logger logger = LoggerFactory.getLogger(StyleAnalyzeController.class);
+    private final JwtTokenService jwtTokenService;
 
     @Autowired
-    public StyleAnalyzeController(StyleAnalyzeService styleAnalyzeService, MemberService memberService){
+    public StyleAnalyzeController(StyleAnalyzeService styleAnalyzeService, MemberService memberService, JwtTokenService jwtTokenService){
         this.styleAnalyzeService = styleAnalyzeService;
         this.memberService = memberService;
+        this.jwtTokenService = jwtTokenService;
     }
 
     /**
      * 스타일 분석하는 API 필요
      */
     @ResponseBody
-    @Operation(summary = "스타일 분석하기", description = "스타일 분석하기")
+    @Operation(summary = "스타일 분석하기", description = "스타일 분석하기. 헤더에 토큰을 넣어주시고, image 파라미터에 파일을 담아 보내주세요")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "분석 성공",
                     content = { @Content(mediaType = "application/json",
@@ -52,11 +55,12 @@ public class StyleAnalyzeController {
             @ApiResponse(responseCode = "500", description = "스타일 분석 시 오류 발생")
     })
     @PostMapping("/")
-    public ResponseEntity Analyze(@RequestBody StyleAnalyzeVO styleAnalyzeVO) throws Exception {
+    public ResponseEntity Analyze(@RequestHeader("Authorization") String token, @RequestParam("image") MultipartFile file) throws Exception {
         logger.info("[스타일 분석하기]");
         try{ 
             // TODO 파일 업로드 요청 -> 파일 업로드 (file만) / meta데이터들 API 분리하기
             // Flask로 요청 보내기
+            int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
 
             String gender = memberService.findMemberGenderByMemberNumber(styleAnalyzeVO.getMemberNumber());
 
@@ -92,8 +96,9 @@ public class StyleAnalyzeController {
                     .build();
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
         }
+
         // 일치 하는 의류가 없을 때, IllegalArgumentException 발생
-        catch (NullPointerException e){
+        catch (IllegalArgumentException e){
             logger.info(e.getMessage());
             restResponse = RestResponse.builder()
                     .code(HttpStatus.FORBIDDEN.value())

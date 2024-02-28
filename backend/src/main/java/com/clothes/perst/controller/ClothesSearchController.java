@@ -36,6 +36,8 @@ public class ClothesSearchController {
         this.musinsaService = musinsaService;
     }
 
+    // TODO 토큰 활용하여 정상적인 사용자를 식별하는 코드 추가
+    
     @ResponseBody
     @Operation(summary = "남성 스타일 둘러보기", description = "스타일을 입력하여 의류를 둘러볼 수 있음.")
     @ApiResponses(value = {
@@ -46,7 +48,7 @@ public class ClothesSearchController {
             @ApiResponse(responseCode = "404", description = "일치하는 스타일이 없음")
     })
     @GetMapping("/man")
-    public ResponseEntity findMaleSearch(@RequestParam String style) throws Exception {
+    public ResponseEntity findMaleSearch(@RequestHeader("Authorization") String token, @RequestParam String style) throws Exception {
         logger.info("[남성 스타일 둘러보기] Style : " + style);
         try{
             MusinsaVO manInfo = new MusinsaVO(); manInfo.setMusinsaGender("man"); manInfo.setMusinsaStyle(style);
@@ -81,7 +83,7 @@ public class ClothesSearchController {
             @ApiResponse(responseCode = "404", description = "일치하는 스타일이 없음")
     })
     @GetMapping("/woman")
-    public ResponseEntity findFemaleSearch(@RequestParam String style) throws Exception {
+    public ResponseEntity findFemaleSearch(@RequestHeader("Authorization") String token, @RequestParam String style) throws Exception {
         logger.info("[여성 스타일 둘러보기] Style : " + style);
         try{
             MusinsaVO womanInfo = new MusinsaVO(); womanInfo.setMusinsaGender("woman"); womanInfo.setMusinsaStyle(style);
