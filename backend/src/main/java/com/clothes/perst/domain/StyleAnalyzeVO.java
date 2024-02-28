@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -34,7 +35,8 @@ public class StyleAnalyzeVO {
 
     private String styleFeedback;
 
-    private String styleColor;
+    @Transient // DB에 포함하지 않는 변수
+    private List<StyleColorVO> styleColor;
 
     @CreatedDate
     private Date styleDate;

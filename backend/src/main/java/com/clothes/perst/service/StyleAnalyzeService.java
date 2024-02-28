@@ -44,6 +44,7 @@ public class StyleAnalyzeService {
 
     private static String uploadDir = "./src/main/resources/image/";
 
+    /* 파일 저장 코드 */
     public String multipartFileToFile(MultipartFile multipartFile, String fileName) throws IOException {
         try {
             // 파일 경로 설정 (디렉토리 생성)
@@ -62,6 +63,24 @@ public class StyleAnalyzeService {
         } catch (IOException e) {
             throw new IOException("Could not save file " + fileName, e);
         }
+    }
+
+    /* 사용된 이미지들은 삭제 해버림 */
+    public void deleteFile() throws IOException {
+        Files.walk(Path.of(uploadDir))
+                .sorted(java.util.Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(file -> {
+                    try {
+                        Files.delete(file.toPath());
+                    } catch (IOException e) {
+                        // 예외 처리
+                        e.printStackTrace();
+                    }
+                });
+
+        // 디렉토리 삭제
+        Files.deleteIfExists(Path.of(uploadDir));
     }
 
     @Autowired
@@ -97,7 +116,7 @@ public class StyleAnalyzeService {
                 .setApplicationName(GoogleDriveAPI.APPLICATION_NAME)
                 .build();
 
-        /* 구글 드라이브에 저장될 파일 이름 지정 : 회원번호. 현재시간*/
+        /* 구글 드라이브에 저장될 파일 이름 지정 : 회원번호. 현재시간 */
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
         String fileName = memberNumber + "_" + sdf1.format(new Date()) + ".jpg";
 

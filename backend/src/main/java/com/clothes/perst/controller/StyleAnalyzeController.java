@@ -72,11 +72,10 @@ public class StyleAnalyzeController {
             RestResponse responseBody = styleAnalyzeService.ConnectFlaskServer(requestBody);
 
             LinkedHashMap data = (LinkedHashMap) responseBody.getData();
+            logger.info(String.valueOf(data));
 
             /* 스타일 분석 내용 저장 : styleName, FileID, memberNumber */
             StyleAnalyzeVO styleAnalyzed = new StyleAnalyzeVO((String) data.get("fashionType"), fileID, memberNumber);
-
-            logger.info(String.valueOf(data));
 
             /* 결과값 받아 DB에 저장하기 */
             StyleAnalyzeVO newstyleAnalyzeVO =  styleAnalyzeService.saveStyleAnalyze(styleAnalyzed);
@@ -87,6 +86,10 @@ public class StyleAnalyzeController {
             colors.add(new StyleColorVO((String) data.get("color1"), styleNumber));  colors.add(new StyleColorVO((String) data.get("color2"), styleNumber));
             colors.add(new StyleColorVO((String) data.get("color3"), styleNumber));  colors.add(new StyleColorVO((String) data.get("color4"), styleNumber));
             styleAnalyzeService.saveStyleColor(colors);
+            newstyleAnalyzeVO.setStyleColor(colors);
+
+            /* 이미지 삭제하기 */
+            styleAnalyzeService.deleteFile();
 
             restResponse = RestResponse.builder()
                     .code(HttpStatus.OK.value())
@@ -117,8 +120,8 @@ public class StyleAnalyzeController {
                     .build();
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
         }
-        
+
         // TODO 이미지 삭제하는 코드
-        // TODO 컬러 지정
+
     }
 }
