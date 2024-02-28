@@ -19,10 +19,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -38,6 +42,28 @@ public class StyleAnalyzeService {
     @Value("${folderId.ClothesAnalyze}")
     String folderID;
 
+    private static String uploadDir = "./src/main/resources/image/";
+
+    public String multipartFileToFile(MultipartFile multipartFile, String fileName) throws IOException {
+        try {
+            // 파일 경로 설정 (디렉토리 생성)
+            Path uploadPath = Paths.get(uploadDir);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            // 파일 경로와 파일 이름 결합
+            Path filePath = uploadPath.resolve(fileName);
+
+            // 파일 저장
+            Files.copy(multipartFile.getInputStream(), filePath);
+
+            return fileName;
+        } catch (IOException e) {
+            throw new IOException("Could not save file " + fileName, e);
+        }
+    }
+
     @Autowired
     public StyleAnalyzeService(StyleAnalyzeRepository styleAnalyzeJPA, StyleAnalyzeColorRepository styleAnalyzeColorRepository, GoogleDriveAPI googleDriveAPI) {
         this.styleAnalyzeJPA = styleAnalyzeJPA;
@@ -48,18 +74,19 @@ public class StyleAnalyzeService {
     /**
      * DB에 저장하는 코드
      */
-    public StyleAnalyzeVO saveStyleAnalyze(StyleAnalyzeVO styleAnalyze){
+    public StyleAnalyzeVO saveStyleAnalyze(StyleAnalyzeVO styleAnalyze) {
         return styleAnalyzeJPA.save(styleAnalyze);
     }
 
     public void saveStyleColor(List<StyleColorVO> colors) {
-        for(StyleColorVO color : colors){
+        for (StyleColorVO color : colors) {
             styleAnalyzeColorRepository.save(color);
         }
     }
 
     /**
      * 스타일 분석 시, 구글 드라이브에 이미지 업로드 하는 코드
+     *
      * @param uploadFile
      * @param memberNumber
      * @return fileID
@@ -78,8 +105,10 @@ public class StyleAnalyzeService {
         fileMetadata.setName(fileName);
         fileMetadata.setParents(Collections.singletonList(folderID));
 
+        java.io.File files = new java.io.File(uploadDir+multipartFileToFile(uploadFile,fileName));
+
         // 구글 드라이브에 파일 저장
-        FileContent mediaContent = new FileContent("image/jpeg", (java.io.File) uploadFile);
+        FileContent mediaContent = new FileContent("image/jpeg",files);
         try {
             File file = service.files().create(fileMetadata, mediaContent)
                     .setFields("id")
@@ -92,7 +121,7 @@ public class StyleAnalyzeService {
         }
     }
 
-    public RestResponse ConnectFlaskServer(String requestBody){
+    public RestResponse ConnectFlaskServer(String requestBody) throws Exception {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();

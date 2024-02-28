@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.ConnectException;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -55,7 +56,7 @@ public class StyleAnalyzeController {
                             examples = @ExampleObject(name = "스타일 분석 성공")) }),
             @ApiResponse(responseCode = "500", description = "스타일 분석 시 오류 발생")
     })
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity Analyze(@RequestHeader("Authorization") String token, @RequestParam("image") MultipartFile file) throws Exception {
         logger.info("[스타일 분석하기]");
         try{
@@ -106,5 +107,18 @@ public class StyleAnalyzeController {
                     .build();
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
         }
+
+        catch (ConnectException e){
+            logger.info(e.getMessage());
+            restResponse = RestResponse.builder()
+                    .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .message("Flask Server 오류입니다. Flask 서버 상태를 확인해주세요.")
+                    .build();
+            return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
+        }
+        
+        // TODO 이미지 삭제하는 코드
+        // TODO 컬러 지정
     }
 }
