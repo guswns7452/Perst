@@ -120,8 +120,5 @@ public class StyleAnalyzeController {
                     .build();
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
         }
-
-        // TODO 이미지 삭제하는 코드
-
     }
 }
