@@ -64,12 +64,13 @@ public class HomeController {
     public ResponseEntity login(@RequestBody loginRequest loginReq) throws Exception {
         MemberVO member = loginReq.changeToMember();
         logger.info("[로그인 요청] Phone : " + member.getMemberPhone());
-        logger.info("[로그인 요청] Password : " + member.getMemberPassword());
+
         // 성공적으로 로그인 했을때.
         try{
             MemberVO full_member = memberService.loginMember(member);
+            full_member.setMemberPassword("secret");
             String token = jwtTokenService.generateToken(Integer.toString(full_member.getMemberNumber())); // 토큰 제작
-            servletContext.setAttribute(token,full_member);
+            servletContext.setAttribute(token, full_member);
             restResponse = RestResponse.builder()
                     .code(HttpStatus.OK.value())
                     .httpStatus(HttpStatus.OK)

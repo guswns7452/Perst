@@ -28,14 +28,12 @@ public class MemberService {
      * @return 로그인 되었으면, 완성된 객체 전달함. 아니면 null
      */
     public MemberVO loginMember(MemberVO member) throws Exception {
-        // 패스워드 암호화하여 Member 검색함
-        String inputPW = member.getMemberPassword();
-        member.setMemberPassword(passwordEncoder.encode(inputPW));
-        MemberVO members = memberRepository.findByMemberPhoneAndMemberPassword(member.getMemberPhone(), member.getMemberPassword());
+        String memberPhone = member.getMemberPhone();
+        MemberVO members = memberRepository.findByMemberPhone(memberPhone);
 
-        if (members != null) {
-           logger.info("회원 이름 : ",members.getMemberName());
-           return members;
+        if (passwordEncoder.matches(member.getMemberPassword(), members.getMemberPassword())) {
+            logger.info("회원 이름 : ",members.getMemberName());
+            return members;
         } else {
             throw new IllegalArgumentException("[로그인] 전화번호 또는 이메일이 일치하지 않습니다.");
         }
