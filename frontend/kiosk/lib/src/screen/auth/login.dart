@@ -27,7 +27,8 @@ class _LoginState extends State<Login> {
       bool result =
           await userController.login(memberPhoneNumber, memberPassword);
 
-      // 로그인 성공시 다음 화면 (메인)으로 이동처리
+      // 로그인 성공시 다음 화면으로 이동처리
+      // TODO: 다음 화면 어디로 갈지 생각
       if (result) {
         Navigator.push(
           context,

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:kiosk/src/screen/auth/login.dart';
 import 'package:kiosk/src/screen/auth/phonenumber.dart';
+import 'package:kiosk/src/screen/auth/test.dart';
 import 'package:kiosk/src/screen/camera/cameraIntro.dart';
 import 'package:kiosk/src/widget/bottom_bar.dart';
-import 'package:kiosk/src/widget/google_dive_image.dart';
+import 'package:kiosk/src/widget/google_drive_image.dart';
+
 class Intro extends StatelessWidget {
   const Intro({Key? key}) : super(key: key);
 
@@ -91,7 +94,14 @@ class Intro extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const CameraIntro()));
+                                    builder: (context) => const Login()));
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) =>
+                            //         Test(styleKeyword: 'girlish'),
+                            //   ),
+                            // );
                           },
                           child: const Text('사진 찍으러 가기'),
                         ),
@@ -146,7 +156,8 @@ class Intro extends StatelessWidget {
                               children: [
                                 TextButton(
                                   style: TextButton.styleFrom(
-                                    foregroundColor: Color.fromRGBO(103, 103, 103, 1),
+                                    foregroundColor:
+                                        Color.fromRGBO(103, 103, 103, 1),
                                     textStyle: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w700,
@@ -207,7 +218,8 @@ class Intro extends StatelessWidget {
                               children: [
                                 TextButton(
                                   style: TextButton.styleFrom(
-                                    foregroundColor: Color.fromRGBO(103, 103, 103, 1),
+                                    foregroundColor:
+                                        Color.fromRGBO(103, 103, 103, 1),
                                     textStyle: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w700,
@@ -242,7 +254,7 @@ class Intro extends StatelessWidget {
                 ),
               ),
               Container(
-                margin: EdgeInsets.fromLTRB(230, 20, 230, 180),
+                margin: EdgeInsets.fromLTRB(230, 20, 230, 5),
                 child: OutlinedButton(
                   onPressed: () {},
                   style: OutlinedButton.styleFrom(
