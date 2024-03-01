@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:kiosk/src/screen/styleTour/keywordFashion.dart';
 import 'package:kiosk/src/widget/bottom_bar.dart';
 
 class PictureAnalysis extends StatelessWidget {
+  static const platform = MethodChannel('com.example.kiosk/android');
   const PictureAnalysis({super.key});
 
   @override

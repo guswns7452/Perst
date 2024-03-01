@@ -50,8 +50,8 @@ class CameraIntro extends StatelessWidget {
                                 builder: (context) => const CameraGuide()));
                       },
                       style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.white,
                         shape: CircleBorder(),
-                        primary: Colors.white,
                         padding: EdgeInsets.all(30),
                         backgroundColor: Colors.white,
                       ),
