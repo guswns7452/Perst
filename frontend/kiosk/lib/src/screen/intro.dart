@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kiosk/src/screen/auth/login.dart';
 import 'package:kiosk/src/screen/auth/phonenumber.dart';
+import 'package:kiosk/src/screen/auth/register.dart';
 import 'package:kiosk/src/screen/auth/test.dart';
 import 'package:kiosk/src/screen/camera/cameraIntro.dart';
 import 'package:kiosk/src/widget/bottom_bar.dart';
@@ -94,7 +95,7 @@ class Intro extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const Login()));
+                                    builder: (context) => const Register()));
                             // Navigator.push(
                             //   context,
                             //   MaterialPageRoute(
