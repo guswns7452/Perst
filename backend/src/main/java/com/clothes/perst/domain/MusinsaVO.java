@@ -39,6 +39,8 @@ public class MusinsaVO {
 
     private String musinsaFileid;
 
+    private String musinsaType;
+
     public MusinsaVO() {
 
     }
