@@ -35,7 +35,7 @@ import java.security.GeneralSecurityException;
 import java.util.*;
 
 @SpringBootTest
-public class ShoppingClothesUpload {
+public class ShoppingCodiShopClothesUpload {
     //사용자의 토큰을 어디에 저장할지 경로를 지정
     public static final String TOKENS_DIRECTORY_PATH = "tokens";
     //어플리케이션이 요청하는 권한의 범위를 지정
