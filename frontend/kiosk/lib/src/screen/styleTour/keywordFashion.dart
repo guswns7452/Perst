@@ -11,7 +11,6 @@ class KeywordFashion extends StatelessWidget {
     return GetMaterialApp(
       home: Scaffold(
         body: ListView(
-          physics: AlwaysScrollableScrollPhysics(),
           children: [
             Container(
               margin: EdgeInsets.fromLTRB(50, 50, 50, 80),
@@ -19,25 +18,29 @@ class KeywordFashion extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    '* 해당 제품을 클릭하면 매장 위치를 확인할 수 있어요!',
+                    '* 해당 제품을 클릭하면 자세한 정보를 확인할 수 있습니다.',
                     style: TextStyle(fontSize: 20),
                   ),
                   SizedBox(height: 50),
-                  GridView.builder(
-                    shrinkWrap: true,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 10.0,
-                      mainAxisSpacing: 30.0,
-                    ),
-                    // 자식위젯 100개는 여기서 조정해주면 됨.
-                    itemCount: 30,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Container(
-                        child: KeywordFashionWidget(),
-                      );
-                    },
-                  ),
+                  SizedBox(
+                    height: 1000,
+                    child: GridView.builder(
+                        shrinkWrap: true,
+                        // TODO: itemCount에 해당 키워드에 해당하는 사진 개수 넣기.
+                        itemCount: 100,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 1 / 2,
+                          mainAxisSpacing: 10,
+                          crossAxisSpacing: 10,
+                        ),
+                        itemBuilder: (BuildContext context, int index) {
+                          return Container(
+                            child: KeywordFashionWidget(),
+                            // TODO: 이거를 fileId를 어떻게 넘겨줄지 고민좀... 왜냐면 google_drive_widget는 stl이고, keywordFashionWidget는 stf라..
+                          );
+                        }),
+                  )
                 ],
               ),
             ),
@@ -65,9 +68,7 @@ class KeywordFashion extends StatelessWidget {
           child: FloatingActionButton.extended(
             // TODO: 여기 페이지 이동할때 이전 페이지 기록 없애는 방법 더 찾아보기
             onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => const Intro(),
-              ));
+              Get.offAll(() => const Intro());
             },
             backgroundColor: Colors.black,
             label: Text(

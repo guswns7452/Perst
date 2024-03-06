@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kiosk/src/screen/auth/login.dart';
-import 'package:kiosk/src/screen/auth/phonenumber.dart';
 import 'package:kiosk/src/screen/auth/register.dart';
-import 'package:kiosk/src/screen/auth/test.dart';
 import 'package:kiosk/src/screen/camera/cameraIntro.dart';
 import 'package:kiosk/src/widget/bottom_bar.dart';
-import 'package:kiosk/src/widget/google_drive_image.dart';
 
 class Intro extends StatelessWidget {
   const Intro({Key? key}) : super(key: key);
@@ -14,7 +10,7 @@ class Intro extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -95,7 +91,7 @@ class Intro extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const Register()));
+                                    builder: (context) => const CameraIntro()));
                             // Navigator.push(
                             //   context,
                             //   MaterialPageRoute(
@@ -233,7 +229,7 @@ class Intro extends StatelessWidget {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                Phonenumber()));
+                                                const Register()));
                                   },
                                   child: const Text(
                                     '연동하기',
@@ -282,12 +278,11 @@ class Intro extends StatelessWidget {
                   ),
                 ),
               ),
-              google_drive_image()
             ],
           ),
-          BottomBar(),
         ],
       ),
+      bottomNavigationBar: BottomBar(),
     );
   }
 }

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:kiosk/src/controller/user_controller.dart';
+import 'package:kiosk/src/screen/auth/login.dart';
+import 'package:kiosk/src/screen/intro.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -8,6 +12,54 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
+  final userController = Get.put(UserController());
+  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+  final TextEditingController _memberNameController = TextEditingController();
+  final TextEditingController _memberPhoneController = TextEditingController();
+  final TextEditingController _memberPasswordController =
+      TextEditingController();
+  final TextEditingController _memberBirthController = TextEditingController();
+  final TextEditingController _memberGenderController = TextEditingController();
+  final TextEditingController _memberHeightController = TextEditingController();
+  final TextEditingController _memberWeightController = TextEditingController();
+
+  String? _selectedGender;
+
+  // 회원가입 완료 버튼을 누를 때 동작할 함수
+  _submitForm() async {
+    final String memberName = _memberNameController.text;
+    final String memberPhone = _memberPhoneController.text;
+    final String memberPassword = _memberPasswordController.text;
+    final String memberBirth = _memberBirthController.text;
+    final String memberHeight = _memberHeightController.text;
+    final String memberWeight = _memberWeightController.text;
+
+    int memberHeightInt = int.parse(memberHeight);
+    int memberWightInt = int.parse(memberWeight);
+
+    // 회원가입 통신 로직
+    print(
+        "------------------------------------------------------------------------------------------------------------" +
+            memberName +
+            memberPhone +
+            memberPassword +
+            memberBirth);
+    print(memberHeightInt + memberWightInt);
+    // 데이터 한개씩 넣어서 요청해보고 요청이 성공적으로 된다면 고것이 문제겠지.
+    bool result = await userController.register(
+        "이다현", "01034886692", "1234", "2002-07-31", "woman", 168, 20);
+
+    // 회원가입 성공시 다음 화면으로 이동처리
+    if (result) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Intro(),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,18 +91,8 @@ class _RegisterState extends State<Register> {
                   padding: EdgeInsets.all(20),
                   child: Column(
                     children: [
-                      // 전화번호 입력폼
-                      /*{
-    "memberName": "전현준",
-    "memberPhone": "01058559687",
-    "memberPassword": "1234",
-    "memberBirth": "2024-02-26",
-	  "memberGender": "man/woman",
-	  "memberHeight": 180.4,
-	  "memberWeight": 62.8
-}*/
                       TextFormField(
-                        // controller: ,
+                        controller: _memberPhoneController,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           icon: Icon(
@@ -88,7 +130,7 @@ class _RegisterState extends State<Register> {
                       ),
                       // 비밀번호 입력폼
                       TextFormField(
-                        // controller: ,
+                        controller: _memberPasswordController,
                         obscureText: true,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
@@ -139,9 +181,44 @@ class _RegisterState extends State<Register> {
                       SizedBox(
                         height: 10,
                       ),
+                      // 성별 선택
+                      Column(
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              SizedBox(width: 25),
+                              Radio<String>(
+                                value: 'man',
+                                groupValue: _selectedGender,
+                                onChanged: (String? value) {
+                                  setState(() {
+                                    _selectedGender = value;
+                                    _memberGenderController.text = value ?? '';
+                                  });
+                                },
+                              ),
+                              const Text('남성'),
+                              Radio<String>(
+                                value: 'woman',
+                                groupValue: _selectedGender,
+                                onChanged: (String? value) {
+                                  setState(() {
+                                    _selectedGender = value;
+                                    _memberGenderController.text = value ?? '';
+                                  });
+                                },
+                              ),
+                              const Text('여성'),
+                            ],
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
                       // 이름 입력폼
                       TextFormField(
-                        // controller: ,
+                        controller: _memberNameController,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           icon: Icon(
@@ -173,8 +250,7 @@ class _RegisterState extends State<Register> {
                       ),
                       // 생년월일 입력폼
                       TextFormField(
-                        // controller: ,
-                        obscureText: true,
+                        controller: _memberBirthController,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           icon: Icon(
@@ -206,7 +282,7 @@ class _RegisterState extends State<Register> {
                       ),
                       // 키 입력폼
                       TextFormField(
-                        // controller: ,
+                        controller: _memberHeightController,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           icon: Icon(
@@ -238,7 +314,7 @@ class _RegisterState extends State<Register> {
                       ),
                       // 체중 입력폼
                       TextFormField(
-                        // controller: ,
+                        controller: _memberWeightController,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           icon: Icon(
@@ -268,8 +344,7 @@ class _RegisterState extends State<Register> {
                       Container(
                         margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
                         child: ElevatedButton(
-                          onPressed: () {},
-                          // onPressed: _submitForm,
+                          onPressed: _submitForm,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color.fromARGB(255, 0, 0, 0),
                           ),
@@ -280,6 +355,20 @@ class _RegisterState extends State<Register> {
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
+                          ),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const Login()));
+                        },
+                        child: Text(
+                          "이미 가입한 계정이 있으신가요?",
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 20, 5, 151),
                           ),
                         ),
                       )

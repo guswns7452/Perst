@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:kiosk/src/screen/styleTour/fashionDetail.dart';
+import 'package:kiosk/src/widget/google_drive_image.dart';
 
 class KeywordFashionWidget extends StatefulWidget {
   const KeywordFashionWidget({super.key});
@@ -13,16 +15,22 @@ class _KeywordFashionWidgetState extends State<KeywordFashionWidget> {
     return Expanded(
       child: Column(
         children: [
-          // 키워드에 맞는 이미지 100개 정도?
-          Image.asset(
-            'assets/fashion1.jpg',
-            height: 300,
+          // Todo: fileId 가져와서 이미지 띄우기
+          OutlinedButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                // TODO: musinsaNumber을 넘겨주기.
+                builder: (context) => const FashionDetail(),
+              ));
+            },
+            child: google_drive_image(id: '1AcTmlxRrzr40lZqQqg1LyBEX-CC7xSOt'),
+            style: OutlinedButton.styleFrom(
+                backgroundColor: Colors.white,
+                side: BorderSide(
+                  width: 0,
+                  color: Colors.transparent,
+                )),
           ),
-          // 브랜드명
-          Text(
-            'HAZZYS',
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
-          )
         ],
       ),
     );

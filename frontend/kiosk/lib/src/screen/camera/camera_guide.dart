@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kiosk/src/screen/camera/camera.dart';
+import 'package:kiosk/src/screen/camera/cameraTest.dart';
 import 'package:kiosk/src/widget/bottom_bar.dart';
 
 class CameraGuide extends StatelessWidget {
@@ -60,8 +61,10 @@ class CameraGuide extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const Camera()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const CameraScreen()));
               },
               child: Text(
                 '사진 찍으러 가기',

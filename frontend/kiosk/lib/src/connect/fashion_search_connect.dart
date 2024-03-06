@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:get/get_connect/connect.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:kiosk/shared/global.dart';
@@ -19,20 +21,14 @@ class FashionSearchConnect extends GetConnect {
   // 여자 패션 이미지 받아오기
   Future searchWoman(String womanFashionKeyword) async {
     try {
-      print('안녕?');
       Response response = await get(
-          '/clothes/search/man?style=$womanFashionKeyword',
+          '/clothes/search/woman?style=$womanFashionKeyword',
           headers: {'Authorization': getToken});
-      print('안녕?' + getToken);
       Map<String, dynamic> body = response.body;
-      print('bodobodobodobodobodobodobdo');
-      print(body);
 
       if (body['code'] != 200) {
-        throw Exception('서버 응답 코드가 200이 아닙니다: ${body['code']}');
+        throw Exception(body['message']);
       }
-      print("----------------------------------------------------------------" +
-          body['data']);
       return body['data'];
     } catch (e) {
       print('Error: $e');
@@ -42,25 +38,47 @@ class FashionSearchConnect extends GetConnect {
   // 남자 패션 이미지 받아오기
   Future searchMan(String manFashionKeyword) async {
     try {
-      print('안녕?');
-      Response response =
-          await get('/clothes/search/man?style=$manFashionKeyword');
+      Response response = await get(
+          '/clothes/search/man?style=$manFashionKeyword',
+          headers: {'Authorization': getToken});
       Map<String, dynamic> body = response.body;
-      print('bodobodobodobodobodobodobdo');
-      print(body);
 
       if (body['code'] != 200) {
         throw Exception(body['message']);
       }
-      print("----------------------------------------------------------------" +
-          body['data']);
       return body['data'];
     } catch (e) {
       print('Error: $e');
     }
   }
 
-  // 추후에 토큰 추가시 사용 예정
+  Future<bool> styleAnalyze(File? image) async {
+    try {
+      String imagePath = image!.path;
+      Response response = await post('/clothes/analyze', {
+        'image': imagePath,
+      }, headers: {
+        'Authorization':
+            'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4IiwiaWF0IjoxNzA5NzQzMjMxLCJleHAiOjE3MDk4NDMyMzF9.zu_56mspD8SA-GJ0K6z-mJqGNQmIE5pTbXlW0deH9oY'
+      });
+
+      Map<String, dynamic> body = response.body;
+      print(
+          "--------------------------------------------------------------------------------" +
+              getToken);
+
+      if (body['code'] == 200) {
+        return true;
+      } else {
+        throw Exception(body['message']);
+      }
+    } catch (e) {
+      print('Error: $e');
+      return false;
+    }
+  }
+
+  // 토큰 받아오기
   get getToken async {
     return _storage.read("access_token");
   }

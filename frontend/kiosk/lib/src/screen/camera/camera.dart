@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:kiosk/src/controller/fashion_search_controller.dart';
 import 'package:kiosk/src/screen/styleTour/pictureAnalysis.dart';
 import 'package:kiosk/src/widget/bottom_bar.dart';
 
@@ -15,14 +17,25 @@ class Camera extends StatefulWidget {
 class _CameraState extends State<Camera> {
   File? _image;
   final picker = ImagePicker();
+  FashionSearchController feedController = Get.put(FashionSearchController());
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   Future getImage(ImageSource imageSource) async {
     final image = await picker.pickImage(source: imageSource);
 
     setState(() {
-      _image = File(image!.path); // 가져온 이미지를 _image에 저장
+      _image = File(image!.path);
     });
   }
+
+  // void _submitForm() async {
+  //   if (_formKey.currentState!.validate()) {
+  //     feedController.sendAnalyzeStyle(_image);
+
+  //     Navigator.push(context,
+  //         MaterialPageRoute(builder: (context) => const PictureAnalysis()));
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -74,11 +87,7 @@ class _CameraState extends State<Camera> {
                     _image != null
                         ? TextButton(
                             onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const PictureAnalysis()));
+                              //_submitForm();
                             },
                             child: Text(
                               '스타일 분석하러가기',

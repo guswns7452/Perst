@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kiosk/src/controller/user_controller.dart';
-import 'package:kiosk/src/screen/auth/test.dart';
+import 'package:kiosk/src/screen/intro.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -21,19 +21,17 @@ class _LoginState extends State<Login> {
     if (_formkey.currentState!.validate()) {
       final String memberPhoneNumber = _phoneNumberController.text;
       final String memberPassword = _passwordController.text;
-      print("login" + memberPhoneNumber + memberPassword);
 
       // 로그인 통신 로직
       bool result =
           await userController.login(memberPhoneNumber, memberPassword);
 
       // 로그인 성공시 다음 화면으로 이동처리
-      // TODO: 다음 화면 어디로 갈지 생각
       if (result) {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => Test(styleKeyword: 'gofcore'),
+            builder: (context) => Intro(),
           ),
         );
       }

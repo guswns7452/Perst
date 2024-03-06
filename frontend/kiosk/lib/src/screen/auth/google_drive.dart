@@ -115,7 +115,7 @@ class GoogleDriveAppData {
           spaces: 'appDataFolder', $fields: 'files(id, name, modifiedTime)');
       List<drive.File>? files = fileList.files;
       drive.File? driveFile =
-      files?.firstWhere((element) => element.name == filename);
+          files?.firstWhere((element) => element.name == filename);
       return driveFile;
     } catch (e) {
       debugPrint(e.toString());

@@ -70,6 +70,7 @@ class PictureAnalysis extends StatelessWidget {
                 Container(
                   margin: EdgeInsets.fromLTRB(50, 0, 50, 0),
                   child: Row(
+                    // TODO: 분석한 키워드에 맞는 사진 3장 불러오기
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Image.asset(
