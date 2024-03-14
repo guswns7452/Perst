@@ -32,7 +32,6 @@ class UserController extends GetxController {
         memberHeight,
         memberWeight,
       );
-      print("token" + token);
       await _storage.write('access_token', token);
       return true;
     } catch (e) {

@@ -18,12 +18,19 @@ class FashionSearchConnect extends GetConnect {
     super.onInit();
   }
 
+  // 토큰 받아오기
+  get getToken async {
+    print("ddddddddddddddddddddddddddddddddddddddddddddddddddddd" +
+        _storage.read("access_token"));
+    return _storage.read("access_token");
+  }
+
   // 여자 패션 이미지 받아오기
   Future searchWoman(String womanFashionKeyword) async {
     try {
       Response response = await get(
           '/clothes/search/woman?style=$womanFashionKeyword',
-          headers: {'Authorization': getToken});
+          headers: {'Authorization': await getToken});
       Map<String, dynamic> body = response.body;
 
       if (body['code'] != 200) {
@@ -40,7 +47,7 @@ class FashionSearchConnect extends GetConnect {
     try {
       Response response = await get(
           '/clothes/search/man?style=$manFashionKeyword',
-          headers: {'Authorization': getToken});
+          headers: {'Authorization': await getToken});
       Map<String, dynamic> body = response.body;
 
       if (body['code'] != 200) {
@@ -76,10 +83,5 @@ class FashionSearchConnect extends GetConnect {
       print('Error: $e');
       return false;
     }
-  }
-
-  // 토큰 받아오기
-  get getToken async {
-    return _storage.read("access_token");
   }
 }

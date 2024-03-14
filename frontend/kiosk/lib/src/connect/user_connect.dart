@@ -18,35 +18,6 @@ class UserConnect extends GetConnect {
   }
 
   // 회원가입 통신
-  // Future sendRegister(String memberName, String memberEmail, String memberPhone,
-  //     String memberPassword) async {
-  //   print("user_connect" +
-  //       memberName +
-  //       memberEmail +
-  //       memberPassword +
-  //       memberPhone);
-  //   Response response = await post(
-  //     '/user/register',
-  //     {
-  //       'memberName': memberName,
-  //       'memberEmail': memberEmail,
-  //       'memberPhone': memberPhone,
-  //       'memberPassword': memberPassword
-  //     },
-  //   );
-  //   print(response.bodyString);
-  //   Map<String, dynamic> body = response.body;
-
-  //   _storage.write("memberName", body['data']['memberName']);
-  //   _storage.write("memberPhone", body['data']['memberPhone']);
-
-  //   if (body['code'] != 201) {
-  //     throw Exception(body['message']);
-  //   }
-  //   return body['data']['token'];
-  // }
-
-  // 회원가입 통신
   Future sendRegister(
       String memberName,
       String memberPhone,
@@ -55,13 +26,6 @@ class UserConnect extends GetConnect {
       String memberGender,
       int memberHeight,
       int memberWeight) async {
-    print("이이이ㅣ" +
-        memberName +
-        memberPhone +
-        memberPassword +
-        memberBirth +
-        memberGender);
-    print(memberHeight + memberWeight);
     Response response = await post('/member/signup', {
       'memberName': memberName,
       'memberPhone': memberPhone,
@@ -82,7 +46,7 @@ class UserConnect extends GetConnect {
     Response response = await post('/member/login',
         {'memberPhone': memberPhone, 'memberPassword': memberPassword});
     Map<String, dynamic> body = response.body;
-    print("-----------으아아ㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏ" + body['message']);
+    print("-------------------------------------------" + body['message']);
 
     if (body['code'] != 200) {
       throw Exception(body['code']);
