@@ -14,9 +14,10 @@ import io
 import google.auth
 from googleapiclient.http import MediaIoBaseDownload
 
+from module_import_example import machineLearning
+
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/drive"]
-
 
 app = Flask(__name__)
 
@@ -65,7 +66,7 @@ def googleDrive(filename):
         raise ConnectionError("구글 드라이브 API 문제입니다.")
     return items
 
-def DownloadByGoogleDrive(filename, file_id):
+def DownloadByGoogleDrive(fileID):
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
@@ -88,8 +89,8 @@ def DownloadByGoogleDrive(filename, file_id):
         drive_service = build('drive', 'v3', credentials=creds)
 
         # 파일 다운로드
-        request = drive_service.files().get_media(fileId=file_id)
-        fh = open(filename, "wb")
+        request = drive_service.files().get_media(fileId=fileID)
+        fh = open("./Models/" + fileID + ".jpg", "wb")
         downloader = MediaIoBaseDownload(fh, request)
         done = False
         while done is False:
@@ -101,16 +102,38 @@ def DownloadByGoogleDrive(filename, file_id):
 
 @app.route('/style/analyze', methods=['POST'])
 def analyzeAPI():
-    filename = request.json['filename'] # api 호출 시 반환 하는 값
-    print(filename)
-    
-    ## TODO 스타일 분석 머신러닝 파트 추가 ##
+    fileID = request.json['fileID'] # api 호출 시 반환 하는 값
+    gender = request.json['gender']
+    print(fileID)
     
     try:
-        items = googleDrive(filename)
+        DownloadByGoogleDrive(fileID)
+        output = machineLearning(fileID, gender)
+        
+        # 패션 분류 타입 출력
+        print("Fashion Type : " + output[1])
+        
+        colors = []
+        
+        # 컬러 리스트 출력
+        for color in output[2]:
+            r = color[0][0]
+            g = color[0][1]
+            b = color[0][2]
+            ratio = color[1]
+            
+            colors.append([r,g,b,ratio])
+            
+            rgb_string = 'R' + str(r) + ' G' + str(g) + ' B' + str(b) + ' / '
+            ratio_string = ('%.2f' % ratio) + '%'
+            new_string = rgb_string + ratio_string
+
+            print(new_string)
+        
+        print(colors)
         # 현재 사진 데이터 하나라고 가정.
         message = "정상적임"
-        data = {"code": HTTPStatus.OK.value, "httpStatus": "OK", "message":message, "data":{"styleFileId" : items[0]['id']}} # 이름의 필요성 없음. , "name": items[0]['name']
+        data = {"code": HTTPStatus.OK.value, "httpStatus": "OK", "message":message, "data":{"fashionType" : output[1], "color1": str(colors[0]), "color2": str(colors[1]), "color3": str(colors[2]), "color4": str(colors[3])}} # 이름의 필요성 없음. , "name": items[0]['name']
     
     except FileNotFoundError:
         data = {"code": HTTPStatus.NOT_FOUND.value, "httpStatus": "Not Found", "message": "구글 드라이브에 일치하는 파일이 없습니다."}
@@ -118,14 +141,12 @@ def analyzeAPI():
     except ConnectionError:
         data = {"code": HTTPStatus.INTERNAL_SERVER_ERROR.value, "httpStatus": "Internal Server Error", "message":"[오류] 구글 드라이브 API 문제가 발생했습니다."}
     
-    
     # 한글 인코딩 
     result = json.dumps(data, ensure_ascii=False) 
     res = make_response(result)
     res.headers['Content-Type'] = 'application/json'
     
     return res
-
 
 if __name__ == '__main__':
     app.config['JSON_AS_ASCII'] = False

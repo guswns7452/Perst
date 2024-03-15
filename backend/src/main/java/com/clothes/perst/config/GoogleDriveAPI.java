@@ -17,6 +17,7 @@ import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
+import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -41,9 +42,10 @@ import java.util.regex.Pattern;
  * +) DB image도 realID를 넣어야함. 경로도 (아직 생성되지는 않음.)
  * @see <a href="https://developers.google.com/drive/api/guides/about-sdk?hl=ko">Google Drive API</a>
  * */
+@Service
 public class GoogleDriveAPI {
-    private static final String APPLICATION_NAME = "Google Drive API Java Quickstart";
-    private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
+    public static final String APPLICATION_NAME = "Google Drive API Java Quickstart";
+    public static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     //사용자의 토큰을 어디에 저장할지 경로를 지정
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
     //어플리케이션이 요청하는 권한의 범위를 지정
@@ -51,7 +53,7 @@ public class GoogleDriveAPI {
     //비밀키 경로
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
 
-    private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
+    public static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         //credentials.json 파일을 in에 저장함
         InputStream in = GoogleDriveAPI.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
         if (in == null) {   // credentials이 빈값이면

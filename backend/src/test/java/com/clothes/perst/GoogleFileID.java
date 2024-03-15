@@ -61,7 +61,6 @@ public class GoogleFileID {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return clothesList;
     }
 
@@ -96,10 +95,13 @@ public class GoogleFileID {
         Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
         return credential;
     }
-    
+
+    /**
+     * [musinsa] 구글 폴더 ID를 json에 저장 하는 코드
+     */
     @Test
     public void SaveGoogleFolderFileID() throws GeneralSecurityException, IOException {
-        String filePath = "src/main/resources/GoogleDriveFileID.json";
+        String filePath = "src/main/resources/musinsaFolderID.json";
         System.out.println(filePath);
 
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
@@ -107,7 +109,7 @@ public class GoogleFileID {
                 .setApplicationName(APPLICATION_NAME)
                 .build();
         FileList result = service.files().list()
-                .setQ("'1hoEQQ2mLDgnBhgIuelui-rX7rw0P5bDI' in parents and trashed=false") //특정 폴더 만 검색하기
+                .setQ("'1q-P7if9MFNl2LV8nBvzN5tNeOXuiPQVM' in parents and trashed=false") //특정 폴더 만 검색하기
                 .setPageSize(100)
                 .setFields("nextPageToken, files(id, name)")
                 .execute();
@@ -122,7 +124,7 @@ public class GoogleFileID {
         } else {
             System.out.println("Files:");
             for (File file : files) {
-                ClothesFolder newClothes = new ClothesFolder("M", file.getName(), file.getId()); // 폴더를 저장하는 코드
+                ClothesFolder newClothes = new ClothesFolder("man", file.getName(), file.getId()); // 폴더를 저장하는 코드
                 clothesList.add(newClothes);
                 System.out.printf("%s (%s)\n", file.getName(), file.getId());
             }
