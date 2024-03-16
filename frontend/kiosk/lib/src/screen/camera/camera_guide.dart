@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kiosk/src/screen/camera/camera.dart';
-import 'package:kiosk/src/screen/camera/cameraTest.dart';
 import 'package:kiosk/src/widget/bottom_bar.dart';
 
 class CameraGuide extends StatelessWidget {

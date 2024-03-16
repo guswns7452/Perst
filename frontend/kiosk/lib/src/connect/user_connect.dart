@@ -36,6 +36,7 @@ class UserConnect extends GetConnect {
       'memberWeight': memberWeight
     });
     Map<String, dynamic> body = response.body;
+    _storage.write('gender', body['data']['memberGender']);
 
     if (body['code'] == 201) {
       return body['message']; // 토큰 반환
@@ -46,7 +47,9 @@ class UserConnect extends GetConnect {
     Response response = await post('/member/login',
         {'memberPhone': memberPhone, 'memberPassword': memberPassword});
     Map<String, dynamic> body = response.body;
-    print("-------------------------------------------" + body['message']);
+    // _storage.write('gender', body['data']['memberGender']);
+    print(
+        "--------------------------------------------------" + body['message']);
 
     if (body['code'] != 200) {
       throw Exception(body['code']);

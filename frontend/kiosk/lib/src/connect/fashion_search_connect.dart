@@ -20,8 +20,6 @@ class FashionSearchConnect extends GetConnect {
 
   // 토큰 받아오기
   get getToken async {
-    print("ddddddddddddddddddddddddddddddddddddddddddddddddddddd" +
-        _storage.read("access_token"));
     return _storage.read("access_token");
   }
 
@@ -59,20 +57,17 @@ class FashionSearchConnect extends GetConnect {
     }
   }
 
+  // 스타일 분석 후 데이터 받아오기
   Future<bool> styleAnalyze(File? image) async {
     try {
       String imagePath = image!.path;
       Response response = await post('/clothes/analyze', {
         'image': imagePath,
       }, headers: {
-        'Authorization':
-            'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4IiwiaWF0IjoxNzA5NzQzMjMxLCJleHAiOjE3MDk4NDMyMzF9.zu_56mspD8SA-GJ0K6z-mJqGNQmIE5pTbXlW0deH9oY'
+        'Authorization': await getToken
       });
 
       Map<String, dynamic> body = response.body;
-      print(
-          "--------------------------------------------------------------------------------" +
-              getToken);
 
       if (body['code'] == 200) {
         return true;

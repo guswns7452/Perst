@@ -8,7 +8,7 @@ final GetStorage _storage = GetStorage();
 
 // 회원 동작과 관련된 모든 상태를 공통으로 관리하는 controller
 class UserController extends GetxController {
-  // UserConnect 객체를 생성 (의존성 주입)
+  // UserConnect 객체를 생성
   final userConnection = Get.put(UserConnect());
 
   UserModel? user;

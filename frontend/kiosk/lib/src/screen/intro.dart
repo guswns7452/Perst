@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kiosk/src/screen/auth/register.dart';
 import 'package:kiosk/src/screen/camera/cameraIntro.dart';
-import 'package:kiosk/src/screen/auth/test.dart';
 import 'package:kiosk/src/widget/bottom_bar.dart';
 
 class Intro extends StatelessWidget {
@@ -89,16 +88,10 @@ class Intro extends StatelessWidget {
                             padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
                           ),
                           onPressed: () {
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) => const CameraIntro()));
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    Test(styleKeyword: 'gofcore'),
-                              ),
+                                  builder: (context) => CameraIntro()),
                             );
                           },
                           child: const Text('사진 찍으러 가기'),

@@ -23,7 +23,7 @@ class _RegisterState extends State<Register> {
   final TextEditingController _memberHeightController = TextEditingController();
   final TextEditingController _memberWeightController = TextEditingController();
 
-  String? _selectedGender;
+  late String _selectedGender = "man";
 
   // 회원가입 완료 버튼을 누를 때 동작할 함수
   _submitForm() async {
@@ -35,19 +35,17 @@ class _RegisterState extends State<Register> {
     final String memberWeight = _memberWeightController.text;
 
     int memberHeightInt = int.parse(memberHeight);
-    int memberWightInt = int.parse(memberWeight);
+    int memberWeightInt = int.parse(memberWeight);
 
     // 회원가입 통신 로직
-    print(
-        "------------------------------------------------------------------------------------------------------------" +
-            memberName +
-            memberPhone +
-            memberPassword +
-            memberBirth);
-    print(memberHeightInt + memberWightInt);
-    // 데이터 한개씩 넣어서 요청해보고 요청이 성공적으로 된다면 고것이 문제겠지.
     bool result = await userController.register(
-        "이다현", "01034886692", "1234", "2002-07-31", "woman", 168, 20);
+        memberName,
+        memberPhone,
+        memberPassword,
+        memberBirth,
+        _selectedGender,
+        memberHeightInt,
+        memberWeightInt);
 
     // 회원가입 성공시 다음 화면으로 이동처리
     if (result) {
@@ -192,8 +190,8 @@ class _RegisterState extends State<Register> {
                                 groupValue: _selectedGender,
                                 onChanged: (String? value) {
                                   setState(() {
-                                    _selectedGender = value;
-                                    _memberGenderController.text = value ?? '';
+                                    _selectedGender = value!;
+                                    _memberGenderController.text = value;
                                   });
                                 },
                               ),
@@ -203,8 +201,8 @@ class _RegisterState extends State<Register> {
                                 groupValue: _selectedGender,
                                 onChanged: (String? value) {
                                   setState(() {
-                                    _selectedGender = value;
-                                    _memberGenderController.text = value ?? '';
+                                    _selectedGender = value!;
+                                    _memberGenderController.text = value;
                                   });
                                 },
                               ),

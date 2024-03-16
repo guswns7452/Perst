@@ -1,55 +1,60 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:kiosk/shared/global.dart';
 
+final GetStorage _storage = GetStorage();
+
 class FashionAnalyzeConnect {
-  String token =
-      'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI4IiwiaWF0IjoxNzA5NzQzMjMxLCJleHAiOjE3MDk4NDMyMzF9.zu_56mspD8SA-GJ0K6z-mJqGNQmIE5pTbXlW0deH9oY'; // 토큰 값이 어디서 와야하는지 알 수 없어서 일단 비워두었습니다.
+  // 토큰 받아오기
+  get getToken async {
+    return _storage.read("access_token");
+  }
 
   final Dio _dio = Dio();
   Dio dio = Dio(BaseOptions(
     baseUrl: Global.apiRoot, // 여기에 서버 주소를 설정하세요.
   ));
 
-  Future<bool> uploadImage(File imageFile) async {
+  Future<Map<String, dynamic>> uploadImage(File imageFile) async {
     try {
       FormData formData = FormData.fromMap({
         'image': await MultipartFile.fromFile(imageFile.path),
       });
 
       Response response = await dio.post(
-        '/clothes/analyze', // 여기에 API 엔드포인트를 추가하세요
+        '/clothes/analyze',
         data: formData,
         options: Options(
           headers: {
-            'Authorization': token,
+            'Authorization':
+                'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5IiwiaWF0IjoxNzEwNjAzODYzLCJleHAiOjEwMDAwMTcxMDYwMzg2M30.G0lNha3FQvdTGX6Kby5zSkXxgyU6Ne29i9c028kS6wE',
             'Content-Type': 'multipart/form-data',
           },
         ),
       );
 
-      Map<String, dynamic>? extractDataFromResponse(Response response) {
+      Map<String, dynamic> extractDataFromResponse(Response response) {
         try {
           Map<String, dynamic> responseData = json.decode(response.toString());
           if (responseData.containsKey('data')) {
             return responseData['data'];
           }
         } catch (e) {
-          print('Error extracting data from response: $e');
+          print('서버 통신오류: $e');
         }
-        return null;
+        throw Exception('서버 통신오류');
       }
 
       if (response.statusCode == 200) {
         print(extractDataFromResponse(response));
-        return true;
+        return extractDataFromResponse(response);
       } else {
-        return false;
+        throw Exception('서버 통신오류');
       }
     } catch (e) {
-      print('Error uploading image: $e');
-      return false;
+      throw Exception('서버 통신오류: $e');
     }
   }
 }
