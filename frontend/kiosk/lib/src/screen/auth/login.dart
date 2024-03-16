@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kiosk/src/controller/user_controller.dart';
-import 'package:kiosk/src/screen/auth/test.dart';
+import 'package:kiosk/src/screen/intro.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -21,19 +21,17 @@ class _LoginState extends State<Login> {
     if (_formkey.currentState!.validate()) {
       final String memberPhoneNumber = _phoneNumberController.text;
       final String memberPassword = _passwordController.text;
-      print("login" + memberPhoneNumber + memberPassword);
 
       // 로그인 통신 로직
       bool result =
           await userController.login(memberPhoneNumber, memberPassword);
 
       // 로그인 성공시 다음 화면으로 이동처리
-      // TODO: 다음 화면 어디로 갈지 생각
       if (result) {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => Test(styleKeyword: 'gofcore'),
+            builder: (context) => Intro(),
           ),
         );
       }
@@ -64,7 +62,7 @@ class _LoginState extends State<Login> {
             Container(
               margin: EdgeInsets.fromLTRB(20, 10, 20, 0),
               decoration: BoxDecoration(
-                color: Color.fromRGBO(255, 228, 244, 1),
+                color: Color.fromRGBO(234, 234, 234, 1),
                 borderRadius: BorderRadius.circular(10),
               ),
               padding: EdgeInsets.all(20),
@@ -77,21 +75,21 @@ class _LoginState extends State<Login> {
                       border: OutlineInputBorder(),
                       icon: Icon(
                         Icons.phone,
-                        color: Color.fromRGBO(255, 81, 185, 1),
+                        color: Color.fromRGBO(0, 0, 0, 1),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Color.fromRGBO(255, 81, 185, 1),
+                          color: Color.fromRGBO(0, 0, 0, 1),
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Color.fromRGBO(255, 81, 185, 1),
+                          color: Color.fromRGBO(0, 0, 0, 1),
                         ),
                       ),
                       labelText: '전화번호',
                       labelStyle: TextStyle(
-                        color: Color.fromRGBO(255, 81, 185, 1),
+                        color: Color.fromRGBO(0, 0, 0, 1),
                       ),
                       focusColor: Colors.white,
                       filled: true,
@@ -113,21 +111,21 @@ class _LoginState extends State<Login> {
                       border: OutlineInputBorder(),
                       icon: Icon(
                         Icons.lock,
-                        color: Color.fromRGBO(255, 81, 185, 1),
+                        color: Color.fromRGBO(0, 0, 0, 1),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Color.fromRGBO(255, 81, 185, 1),
+                          color: Color.fromRGBO(0, 0, 0, 1),
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Color.fromRGBO(255, 81, 185, 1),
+                          color: Color.fromRGBO(0, 0, 0, 1),
                         ),
                       ),
                       labelText: '비밀번호',
                       labelStyle: TextStyle(
-                        color: Color.fromRGBO(255, 81, 185, 1),
+                        color: Color.fromRGBO(0, 0, 0, 1),
                       ),
                       focusColor: Colors.white,
                       filled: true,
@@ -141,11 +139,11 @@ class _LoginState extends State<Login> {
                     },
                   ),
                   Container(
-                    margin: const EdgeInsets.only(left: 40.0),
+                    margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
                     child: ElevatedButton(
                       onPressed: _submitForm,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromRGBO(255, 99, 99, 1),
+                        backgroundColor: Color.fromARGB(255, 0, 0, 0),
                       ),
                       child: const Text(
                         '로그인',

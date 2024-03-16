@@ -1,85 +1,93 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kiosk/src/screen/intro.dart';
-import 'package:kiosk/src/widget/keyword_fashion_widget.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:kiosk/src/controller/fashion_search_controller.dart';
+import 'package:kiosk/src/model/fashion_search_model.dart';
+import 'package:kiosk/src/screen/styleTour/fashionDetail.dart';
+import 'package:kiosk/src/widget/google_drive_image.dart';
 
-class KeywordFashion extends StatelessWidget {
-  const KeywordFashion({super.key});
+final GetStorage _storage = GetStorage();
+
+class KeywordFashion extends StatefulWidget {
+  final String styleKeyword;
+
+  const KeywordFashion({required this.styleKeyword, Key? key})
+      : super(key: key);
+
+  @override
+  State<KeywordFashion> createState() => _KeywordFashionState();
+}
+
+class _KeywordFashionState extends State<KeywordFashion> {
+  final fashionSearchController = Get.put(FashionSearchController());
+  late Future<List<FashionSearchModel>>? fashions;
+
+  @override
+  void initState() {
+    super.initState();
+    String gender = _storage.read("gender");
+    if (gender == "woman") {
+      fashions = fashionSearchController.searchWoman(widget.styleKeyword);
+    } else if (gender == "man") {
+      fashions = fashionSearchController.searchMan(widget.styleKeyword);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      home: Scaffold(
-        body: ListView(
-          physics: AlwaysScrollableScrollPhysics(),
-          children: [
-            Container(
-              margin: EdgeInsets.fromLTRB(50, 50, 50, 80),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    '* 해당 제품을 클릭하면 매장 위치를 확인할 수 있어요!',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  SizedBox(height: 50),
-                  GridView.builder(
-                    shrinkWrap: true,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 10.0,
-                      mainAxisSpacing: 30.0,
-                    ),
-                    // 자식위젯 100개는 여기서 조정해주면 됨.
-                    itemCount: 30,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Container(
-                        child: KeywordFashionWidget(),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        bottomSheet: SafeArea(
-          child: Container(
-            child: Center(
-              child: Text(
-                'Perst : 당신만을 위한 의류 스타일 추천 서비스',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-            color: Color.fromRGBO(217, 217, 217, 1),
-            width: double.infinity,
-            height: 60,
+    return Scaffold(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(height: 30),
+          Text(
+            '* 해당 제품을 클릭하면 자세한 정보를 확인할 수 있습니다.*',
+            style: TextStyle(fontSize: 30, fontWeight: FontWeight.w500),
           ),
-        ),
-        floatingActionButton: Container(
-          margin: EdgeInsets.only(bottom: 70),
-          child: FloatingActionButton.extended(
-            // TODO: 여기 페이지 이동할때 이전 페이지 기록 없애는 방법 더 찾아보기
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => const Intro(),
-              ));
-            },
-            backgroundColor: Colors.black,
-            label: Text(
-              '처음으로 돌아가기',
-              style: TextStyle(color: Colors.white),
-            ),
-            icon: Icon(
-              Icons.add_to_home_screen,
-              color: Colors.white,
+          SizedBox(height: 30),
+          Expanded(
+            child: FutureBuilder<List<FashionSearchModel>>(
+              future: fashions,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  return GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10),
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        var fashion = snapshot.data![index];
+                        return Stack(children: [
+                          google_drive_image(
+                            id: fashion.musinsaFileid!,
+                          ),
+                          Positioned.fill(
+                              child: Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => FashionDetail(
+                                          fashion: fashion,
+                                        ),
+                                      ),
+                                    );
+                                  })))
+                        ]);
+                      });
+                }
+              },
             ),
           ),
-        ),
+        ],
       ),
     );
   }

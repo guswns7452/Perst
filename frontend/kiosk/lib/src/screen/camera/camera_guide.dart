@@ -60,8 +60,10 @@ class CameraGuide extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const Camera()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const CameraScreen()));
               },
               child: Text(
                 '사진 찍으러 가기',

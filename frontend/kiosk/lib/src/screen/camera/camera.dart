@@ -1,35 +1,70 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:kiosk/src/controller/fashion_search_controller.dart';
 import 'package:kiosk/src/screen/styleTour/pictureAnalysis.dart';
 import 'package:kiosk/src/widget/bottom_bar.dart';
 
-class Camera extends StatefulWidget {
-  const Camera({Key? key}) : super(key: key);
+class CameraScreen extends StatefulWidget {
+  const CameraScreen({Key? key}) : super(key: key);
 
   @override
-  _CameraState createState() => _CameraState();
+  _CameraScreenState createState() => _CameraScreenState();
 }
 
-class _CameraState extends State<Camera> {
-  File? _image;
+class _CameraScreenState extends State<CameraScreen> {
+  FashionSearchController _fashionSearchController =
+      Get.put(FashionSearchController());
   final picker = ImagePicker();
+  late File? _image;
+  late Future<Map<String, dynamic>> _analysisFuture;
 
-  Future getImage(ImageSource imageSource) async {
+  @override
+  void initState() {
+    super.initState();
+    _image = null;
+  }
+
+  Future<void> _getImage(ImageSource imageSource) async {
     final image = await picker.pickImage(source: imageSource);
 
     setState(() {
-      _image = File(image!.path); // 가져온 이미지를 _image에 저장
+      _image = File(image!.path);
     });
+  }
+
+  bool isLoading = false;
+
+  void _submitForm() async {
+    if (_image != null) {
+      setState(() {
+        isLoading = true; // 로딩 상태 시작
+      });
+
+      try {
+        Map<String, dynamic> result =
+            await _fashionSearchController.sendStyleAnalyze(_image!);
+
+        if (result.isNotEmpty) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => PictureAnalysis(result)));
+        }
+      } catch (e) {
+        // 오류 처리
+      } finally {
+        setState(() {
+          isLoading = false; // 로딩 상태 종료
+        });
+      }
+    } else {
+      throw Exception('이미지가 없습니다.');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // 화면 세로 고정
-    SystemChrome.setPreferredOrientations(
-        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 255, 255, 255),
       body: Stack(
@@ -74,11 +109,7 @@ class _CameraState extends State<Camera> {
                     _image != null
                         ? TextButton(
                             onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const PictureAnalysis()));
+                              _submitForm();
                             },
                             child: Text(
                               '스타일 분석하러가기',
@@ -99,7 +130,7 @@ class _CameraState extends State<Camera> {
                           )
                         : OutlinedButton(
                             onPressed: () {
-                              getImage(ImageSource.camera);
+                              _getImage(ImageSource.camera);
                             },
                             style: OutlinedButton.styleFrom(
                               foregroundColor: Colors.white,
