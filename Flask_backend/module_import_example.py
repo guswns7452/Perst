@@ -21,7 +21,7 @@ def machineLearning(fileId, gender):
     output = cnn_model_main(ori_img, user_input)
 
     # 배경이 제거된 이미지 출력
-    # plt.imshow(output[0])
-    # plt.show()
+    plt.imshow(output[0])
+    plt.show()
 
     return output;

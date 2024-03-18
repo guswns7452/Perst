@@ -26,9 +26,12 @@ class _KeywordFashionState extends State<KeywordFashion> {
   void initState() {
     super.initState();
     String gender = _storage.read("gender");
+    print(gender);
     if (gender == "woman") {
+      print("여자");
       fashions = fashionSearchController.searchWoman(widget.styleKeyword);
     } else if (gender == "man") {
+      print("남자");
       fashions = fashionSearchController.searchMan(widget.styleKeyword);
     }
   }

@@ -130,7 +130,7 @@ class _CameraScreenState extends State<CameraScreen> {
                           )
                         : OutlinedButton(
                             onPressed: () {
-                              _getImage(ImageSource.camera);
+                              _getImage(ImageSource.gallery);
                             },
                             style: OutlinedButton.styleFrom(
                               foregroundColor: Colors.white,

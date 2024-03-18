@@ -47,9 +47,10 @@ class UserConnect extends GetConnect {
     Response response = await post('/member/login',
         {'memberPhone': memberPhone, 'memberPassword': memberPassword});
     Map<String, dynamic> body = response.body;
-    // _storage.write('gender', body['data']['memberGender']);
+    _storage.remove('gender');
+    _storage.write('gender', body['data']['memberGender']);
     print(
-        "--------------------------------------------------" + body['message']);
+        "--------------------------------------------------" + body['message'] + body['data']['memberGender']);
 
     if (body['code'] != 200) {
       throw Exception(body['code']);

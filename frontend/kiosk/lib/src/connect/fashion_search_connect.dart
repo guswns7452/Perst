@@ -26,6 +26,9 @@ class FashionSearchConnect extends GetConnect {
   // 여자 패션 이미지 받아오기
   Future searchWoman(String womanFashionKeyword) async {
     try {
+      if (womanFashionKeyword == 'Subculture'){
+        womanFashionKeyword = 'street';
+      }
       Response response = await get(
           '/clothes/search/woman?style=$womanFashionKeyword',
           headers: {'Authorization': await getToken});
@@ -43,6 +46,9 @@ class FashionSearchConnect extends GetConnect {
   // 남자 패션 이미지 받아오기
   Future searchMan(String manFashionKeyword) async {
     try {
+      if (manFashionKeyword == 'Hip-hop'){
+        manFashionKeyword = 'street';
+      }
       Response response = await get(
           '/clothes/search/man?style=$manFashionKeyword',
           headers: {'Authorization': await getToken});

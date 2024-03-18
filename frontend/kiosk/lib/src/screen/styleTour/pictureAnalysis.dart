@@ -67,7 +67,7 @@ class PictureAnalysis extends StatelessWidget {
                 SizedBox(
                   height: 20,
                 ),
-                ThreeKeywordFashion(styleKeyword: 'gofcore'),
+                // ThreeKeywordFashion(styleKeyword: 'gofcore'),
                 SizedBox(height: 50),
                 Center(
                   // 여기 넘어갈때 스타일 키워드 넘겨주기!

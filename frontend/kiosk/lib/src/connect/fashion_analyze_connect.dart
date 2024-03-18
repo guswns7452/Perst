@@ -28,8 +28,7 @@ class FashionAnalyzeConnect {
         data: formData,
         options: Options(
           headers: {
-            'Authorization':
-                'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5IiwiaWF0IjoxNzEwNjAzODYzLCJleHAiOjEwMDAwMTcxMDYwMzg2M30.G0lNha3FQvdTGX6Kby5zSkXxgyU6Ne29i9c028kS6wE',
+            'Authorization': await getToken,
             'Content-Type': 'multipart/form-data',
           },
         ),

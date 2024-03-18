@@ -30,7 +30,7 @@ class FashionSearchController extends GetxController {
   Future<List<FashionSearchModel>> searchMan(String manFashionKeyword) async {
     try {
       List<dynamic> results =
-          await fashionSearchConnection.searchWoman(manFashionKeyword);
+          await fashionSearchConnection.searchMan(manFashionKeyword);
       List<FashionSearchModel> fashions = [];
       for (var result in results) {
         fashions.add(FashionSearchModel.fromJson(result));

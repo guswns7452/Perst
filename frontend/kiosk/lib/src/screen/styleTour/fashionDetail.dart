@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kiosk/src/widget/google_drive_image.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class FashionDetail extends StatefulWidget {
   final fashion;
@@ -30,6 +31,16 @@ class _FashionDetailState extends State<FashionDetail> {
       backgroundColor = Colors.black;
     }
 
+    // launchURL() async {
+    //   String url =
+    //       "https://www.musinsa.com/app/styles/views/$widget.musinsaNumber";
+    //   if (await canLaunchUrl(url)) {
+    //     await launch(url);
+    //   } else {
+    //     throw Exception("url 연결 실패");
+    //   }
+    // }
+
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -51,7 +62,6 @@ class _FashionDetailState extends State<FashionDetail> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(7),
                   color: backgroundColor,
-                  // 봄, 여름, 가을, 겨울 색이 다름
                 ),
               ),
               SizedBox(width: 10),
@@ -103,6 +113,12 @@ class _FashionDetailState extends State<FashionDetail> {
               ],
             ),
           ),
+          TextButton(
+              onPressed: () {
+                // launchURL();
+                launchUrl(Uri.parse('https://www.musinsa.com/app/styles/views/${widget.fashion.musinsaNumber}'));
+              },
+              child: Text('패션 링크로 이동하기'))
         ],
       ),
     );
