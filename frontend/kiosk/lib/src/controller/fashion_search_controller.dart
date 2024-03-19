@@ -18,7 +18,6 @@ class FashionSearchController extends GetxController {
       for (var result in results) {
         fashions.add(FashionSearchModel.fromJson(result));
       }
-      print(fashions.toString());
       return fashions;
     } catch (e) {
       print('Error in searchWoman: $e');
@@ -35,7 +34,6 @@ class FashionSearchController extends GetxController {
       for (var result in results) {
         fashions.add(FashionSearchModel.fromJson(result));
       }
-      print(fashions.toString());
       return fashions;
     } catch (e) {
       print('Error: $e');
@@ -43,33 +41,9 @@ class FashionSearchController extends GetxController {
     }
   }
 
-  // 남자 키워드별 패션 스타일 불러오기
-  // Future SearchMan(manFachionKeyword) async {
-  //   try {
-  //     List<dynamic> results =
-  //         await fashionSearchConnection.searchMan(manFachionKeyword);
-  //     Iterator<dynamic> iterator = results.iterator;
-  //     List<FashionSearchModel> fashions = [];
-  //     while (iterator.moveNext()) {
-  //       fashions.add(FashionSearchModel.fromJson(iterator.current));
-  //     }
-  //     print(fashions.toString());
-  //     return fashions;
-  //   } catch (e) {
-  //     return false;
-  //   }
-  // }
-
   FashionAnalyzeConnect _connect = Get.put(FashionAnalyzeConnect());
 
   Future<Map<String, dynamic>> sendStyleAnalyze(File imageFile) async {
-    // 서비스 클래스를 이용하여 스타일 분석 요청을 보냅니다.
-    // try {
-    //   await fashionSearchConnection.styleAnalyze(image);
-    //   return true;
-    // } catch (e) {
-    //   return false;
-    // }
     try {
       Map<String, dynamic> success = await _connect.uploadImage(imageFile);
       return success;
