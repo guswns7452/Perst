@@ -49,8 +49,6 @@ class UserConnect extends GetConnect {
     Map<String, dynamic> body = response.body;
     _storage.remove('gender');
     _storage.write('gender', body['data']['memberGender']);
-    print(
-        "--------------------------------------------------" + body['message'] + body['data']['memberGender']);
 
     if (body['code'] != 200) {
       throw Exception(body['code']);

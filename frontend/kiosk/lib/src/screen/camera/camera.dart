@@ -20,6 +20,7 @@ class _CameraScreenState extends State<CameraScreen> {
   final picker = ImagePicker();
   late File? _image;
   late Future<Map<String, dynamic>> _analysisFuture;
+  bool isLoading = false; // 로딩 상태를 관리하는 변수
 
   @override
   void initState() {
@@ -35,17 +36,49 @@ class _CameraScreenState extends State<CameraScreen> {
     });
   }
 
-  bool isLoading = false;
-
   void _submitForm() async {
-    if (_image != null) {
+    if (_image != null && !isLoading) {
       setState(() {
-        isLoading = true; // 로딩 상태 시작
+        isLoading = true;
       });
 
       try {
         Map<String, dynamic> result =
             await _fashionSearchController.sendStyleAnalyze(_image!);
+
+        if (result['styleName'] == "Ivy") {
+          result['styleName'] = "businessCasual";
+        } else if (result['styleName'] == "Mods") {
+          result['styleName'] = "";
+        } else if (result['styleName'] == "Bold") {
+          result['styleName'] = "dandy";
+        } else if (result['styleName'] == "Hippie") {
+          result['styleName'] = "";
+        } else if (result['styleName'] == "Hip-hop") {
+          result['styleName'] = "street";
+        } else if (result['styleName'] == "Metrosexual") {
+          result['styleName'] = "chic";
+        } else if (result['styleName'] == "Spotivecasual") {
+          result['styleName'] = "gofcore";
+        } else if (result['styleName'] == "Normcore") {
+          result['styleName'] = "minimal";
+        } else if (result['styleName'] == "Traditional") {
+          result['styleName'] = "casual";
+        } else if (result['styleName'] == "Manish") {
+          result['styleName'] = "businessCasual";
+        } else if (result['styleName'] == "Feminine") {
+          result['styleName'] = "romantic";
+        } else if (result['styleName'] == "Ethnic") {
+          result['styleName'] = "retro";
+        } else if (result['styleName'] == "Contemporary") {
+          result['styleName'] = "casual";
+        } else if (result['styleName'] == "Natural") {
+          result['styleName'] = "girlish";
+        } else if (result['styleName'] == "Gender-fluid") {
+          result['styleName'] = "";
+        } else if (result['styleName'] == "Subculture") {
+          result['styleName'] = "street";
+        }
 
         if (result.isNotEmpty) {
           Navigator.push(context,
@@ -55,11 +88,11 @@ class _CameraScreenState extends State<CameraScreen> {
         // 오류 처리
       } finally {
         setState(() {
-          isLoading = false; // 로딩 상태 종료
+          isLoading = false;
         });
       }
     } else {
-      throw Exception('이미지가 없습니다.');
+      throw Exception('이미지가 없거나 이미 로딩 중입니다.');
     }
   }
 
@@ -108,9 +141,7 @@ class _CameraScreenState extends State<CameraScreen> {
                   children: <Widget>[
                     _image != null
                         ? TextButton(
-                            onPressed: () {
-                              _submitForm();
-                            },
+                            onPressed: isLoading ? null : _submitForm,
                             child: Text(
                               '스타일 분석하러가기',
                               style: TextStyle(
@@ -149,6 +180,13 @@ class _CameraScreenState extends State<CameraScreen> {
               ],
             ),
           ),
+          if (isLoading)
+            Container(
+              color: Colors.black.withOpacity(0.5),
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
         ],
       ),
     );

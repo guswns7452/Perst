@@ -31,16 +31,6 @@ class _FashionDetailState extends State<FashionDetail> {
       backgroundColor = Colors.black;
     }
 
-    // launchURL() async {
-    //   String url =
-    //       "https://www.musinsa.com/app/styles/views/$widget.musinsaNumber";
-    //   if (await canLaunchUrl(url)) {
-    //     await launch(url);
-    //   } else {
-    //     throw Exception("url 연결 실패");
-    //   }
-    // }
-
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -115,8 +105,8 @@ class _FashionDetailState extends State<FashionDetail> {
           ),
           TextButton(
               onPressed: () {
-                // launchURL();
-                launchUrl(Uri.parse('https://www.musinsa.com/app/styles/views/${widget.fashion.musinsaNumber}'));
+                launchUrl(Uri.parse(
+                    'https://www.musinsa.com/app/styles/views/${widget.fashion.musinsaNumber}'));
               },
               child: Text('패션 링크로 이동하기'))
         ],

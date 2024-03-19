@@ -52,7 +52,6 @@ class PictureAnalysis extends StatelessWidget {
                   margin: EdgeInsets.only(top: 10),
                   padding: EdgeInsets.fromLTRB(10, 3, 10, 3),
                   child: Text(
-                    // 여기에 키워드 분석한 결과 넣기.
                     styleName,
                     style: TextStyle(
                         fontSize: 23,
@@ -67,10 +66,13 @@ class PictureAnalysis extends StatelessWidget {
                 SizedBox(
                   height: 20,
                 ),
-                // ThreeKeywordFashion(styleKeyword: 'gofcore'),
+                Container(
+                  height: 320,
+                  width: double.infinity,
+                  child: ThreeKeywordFashion(styleKeyword: styleName),
+                ),
                 SizedBox(height: 50),
                 Center(
-                  // 여기 넘어갈때 스타일 키워드 넘겨주기!
                   child: TextButton(
                     onPressed: () {
                       Navigator.push(

@@ -47,10 +47,16 @@ class _ThreeKeywordFashionState extends State<ThreeKeywordFashion> {
             return Center(child: Text('No data available'));
           } else {
             return ListView.builder(
+              scrollDirection: Axis.horizontal,
               itemCount: fashions.length > 3 ? 3 : fashions.length,
               itemBuilder: (context, index) {
                 final fashion = fashions[index];
-                google_drive_image(id: fashion.musinsaFileid!);
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                      width: 210,
+                      child: google_drive_image(id: fashion.musinsaFileid!)),
+                );
               },
             );
           }
