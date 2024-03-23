@@ -41,6 +41,8 @@ public class MusinsaVO {
 
     private String musinsaType;
 
+    private String musinsaPersonal;
+
     public MusinsaVO() {
 
     }
