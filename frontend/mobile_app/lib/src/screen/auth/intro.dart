@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:perst/src/screen/auth/login.dart';
 import 'package:perst/src/screen/auth/register.dart';
+import 'package:perst/src/widget/tap_bar.dart';
 
 class Intro extends StatelessWidget {
   const Intro({super.key});
@@ -45,7 +45,7 @@ class Intro extends StatelessWidget {
               SizedBox(
                 child: Center(
                   child: Image.asset(
-                    'assets/image.png',
+                    'assets/mypageOutlined.png',
                     width: double.infinity,
                     height: 400,
                   ),
@@ -58,7 +58,7 @@ class Intro extends StatelessWidget {
                   onPressed: () {
                     // 로그인을 클릭하면 로그인 창으로 이동
                     Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const Login(),
+                      builder: (context) => const Tapbar(),
                     ));
                   },
                   style: ElevatedButton.styleFrom(
