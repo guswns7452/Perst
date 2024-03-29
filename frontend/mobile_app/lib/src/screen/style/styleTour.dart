@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:perst/src/widget/radio_item.dart';
 
 class StyleTour extends StatefulWidget {
   const StyleTour({Key? key});
@@ -27,20 +28,93 @@ class _StyleTourState extends State<StyleTour> {
                   ),
                 ),
                 Text(
-                  '코디',
+                  '스타일 둘러보기',
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.w800),
                 ),
-                SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    showModalBottomSheet(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return CustomDrawer();
+                Text(
+                  '원하는 스타일을 선택하고 의류를 둘러보세요!',
+                  style: TextStyle(fontSize: 15),
+                ),
+                SizedBox(height: 15),
+                Container(
+                  width: double.infinity,
+                  height: 1,
+                  decoration: BoxDecoration(
+                      color: Color.fromRGBO(240, 240, 240, 1),
+                      borderRadius: BorderRadius.circular(50)),
+                ),
+                SizedBox(height: 15),
+                Row(
+                  children: [
+                    OutlinedButton(
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return CustomDrawer();
+                          },
+                        );
                       },
-                    );
-                  },
-                  child: Text('Open Custom Drawer'),
+                      style: OutlinedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                      ),
+                      child: Image.asset('assets/filter.png',
+                          width: 20, height: 20),
+                    ),
+                    SizedBox(width: 5),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(10, 4, 10, 4),
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              width: 1,
+                              color: Color.fromRGBO(133, 133, 133, 1)),
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Text(
+                        '남성',
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    SizedBox(width: 5),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(10, 4, 10, 4),
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              width: 1,
+                              color: Color.fromRGBO(133, 133, 133, 1)),
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Text(
+                        '로맨틱',
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    SizedBox(width: 5),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(10, 4, 10, 4),
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              width: 1,
+                              color: Color.fromRGBO(133, 133, 133, 1)),
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color: Color.fromRGBO(236, 20, 20, 1),
+                          borderRadius: BorderRadius.circular(50),
+                          border: Border.all(width: 0.3, color: Colors.black),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -315,125 +389,77 @@ class _CustomDrawerState extends State<CustomDrawer>
   }
 
   Widget _buildColorTab() {
-    return Column(
-      children: [
-        SizedBox(height: 30),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
-              children: [
-                SizedBox(width: 20),
-                for (var i = 0; i < 6; i++)
-                  InkWell(
-                    onTap: () {
-                      setState(() {
-                        _colorList
-                            .forEach((element) => element.isSelected = false);
-                        _colorList[i].isSelected = true;
-                      });
-                    },
-                    child: ColorRadioItem(_colorList[i]),
+    return Container(
+      margin: EdgeInsets.fromLTRB(10, 30, 10, 30),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    children: [
+                      SizedBox(width: 20),
+                      for (var i = 0; i < 6; i++)
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              _colorList.forEach(
+                                  (element) => element.isSelected = false);
+                              _colorList[i].isSelected = true;
+                            });
+                          },
+                          child: ColorRadioItem(_colorList[i]),
+                        ),
+                    ],
                   ),
-              ],
-            ),
-          ],
-        ),
-        SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(width: 20),
-            for (var i = 6; i < 12; i++)
-              InkWell(
-                onTap: () {
-                  setState(() {
-                    _colorList.forEach((element) => element.isSelected = false);
-                    _colorList[i].isSelected = true;
-                  });
-                },
-                child: ColorRadioItem(_colorList[i]),
+                ],
               ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-class StyleRadioItem extends StatelessWidget {
-  final StyleRadioModel _item;
-  StyleRadioItem(this._item);
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(right: 10),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(width: 20),
+                  for (var i = 6; i < 12; i++)
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          _colorList
+                              .forEach((element) => element.isSelected = false);
+                          _colorList[i].isSelected = true;
+                        });
+                      },
+                      child: ColorRadioItem(_colorList[i]),
+                    ),
+                ],
+              ),
+            ],
+          ),
           Container(
-            padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
-            height: 40.0,
-            child: Center(
-              child: Text(_item.buttonText,
-                  style: TextStyle(
-                      color: _item.isSelected ? Colors.white : Colors.black,
-                      fontSize: 18.0)),
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                // search man, woman해서 스타일 불러오기
+                Navigator.pop(context); // drawer 닫기
+                // TODO: gender, style, red, green, blue를 반환하든 뭐든 해서 선택된 성별, 스타일, 색상을 띄워야함.
+              },
+              child: Text(
+                '선택 완료',
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+              ),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10))),
             ),
-            decoration: BoxDecoration(
-                color: _item.isSelected
-                    ? const Color.fromARGB(255, 0, 0, 0)
-                    : Colors.transparent,
-                border: Border.all(
-                    width: 1.0,
-                    color: _item.isSelected
-                        ? Color.fromARGB(255, 0, 0, 0)
-                        : Colors.grey),
-                borderRadius: BorderRadius.circular(10)),
-          ),
+          )
         ],
       ),
     );
   }
-}
-
-class ColorRadioItem extends StatelessWidget {
-  final ColorRadioModel _item;
-  ColorRadioItem(this._item);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(right: 10),
-      child: Row(
-        children: <Widget>[
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-                color: Color.fromRGBO(_item.Red, _item.Green, _item.Blue, 1),
-                borderRadius: BorderRadius.circular(50),
-                border: Border.all(width: 0.3, color: Colors.black)),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class StyleRadioModel {
-  bool isSelected;
-  final String buttonText;
-  final String keyward;
-
-  StyleRadioModel(this.isSelected, this.buttonText, this.keyward);
-}
-
-class ColorRadioModel {
-  bool isSelected;
-  final int Red;
-  final int Green;
-  final int Blue;
-
-  ColorRadioModel(this.isSelected, this.Red, this.Green, this.Blue);
 }
