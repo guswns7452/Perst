@@ -53,11 +53,13 @@ public class PersonalColorController {
             @ApiResponse(responseCode = "404", description = "오류 발생")
     })
     @PostMapping("/color")
-    public ResponseEntity registPersonalColor(@RequestHeader("Authorization") String token, @RequestParam PersonalColorVO personalColor) throws Exception {
+    public ResponseEntity registPersonalColor(@RequestHeader("Authorization") String token, @RequestBody PersonalColorVO personalColor) throws Exception {
         int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
 
-        logger.info("[퍼스널 컬러 등록하기] 회원 번호 : %d / 퍼스널 컬러 : %s", memberNumber, personalColor.getPersonalColorType());
-
+        logger.info(String.format("[퍼스널 컬러 등록하기] 회원 번호 : %d / 퍼스널 컬러 : %s", memberNumber, personalColor.getPersonalColorType()));
+        personalColor.setMemberNumber(memberNumber); // 멤버 번호 할당하기
+        
+        // 퍼스널 컬러 코드 실행하기
         personalColorService.registPersonalColor(personalColor);
 
         try{
