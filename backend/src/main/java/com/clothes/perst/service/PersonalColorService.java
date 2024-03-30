@@ -23,7 +23,11 @@ public class PersonalColorService {
 
     }
 
-
+    /**
+     * 퍼스널 컬러 진단 후 등록하는 코드ㄱㄷ
+     * @param personalColor
+     * @return
+     */
     public PersonalColorVO registPersonalColor(PersonalColorVO personalColor){
         List<PersonalSelectVO> personalSelectVOList = personalColor.getPersonalSelects();
 
@@ -42,6 +46,7 @@ public class PersonalColorService {
         // 명도, 채도, 색상, 상 중 하 정의
         personalColor.setPersonalColorInfo(PersonalColorDTO.getSeasonTone(personalColor.getPersonalColorType()));
         return personalColor;
+        
         // TODO 응답 데이터 구성 (✅명도, 채도, 색상 / 어울리는 색상 정의 / ✅선택한 것중 순위)
     }
 }
