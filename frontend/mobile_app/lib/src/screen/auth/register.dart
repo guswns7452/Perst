@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:perst/src/controller/user_controller.dart';
 import 'package:perst/src/screen/auth/intro.dart';
 import 'package:perst/src/screen/auth/login.dart';
 
@@ -10,7 +12,7 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  // final userController = Get.put(UserController());
+  final userController = Get.put(UserController());
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   final TextEditingController _memberNameController = TextEditingController();
   final TextEditingController _memberPhoneController = TextEditingController();
@@ -36,24 +38,24 @@ class _RegisterState extends State<Register> {
     int memberWeightInt = int.parse(memberWeight);
 
     // 회원가입 통신 로직
-    // bool result = await userController.register(
-    //     memberName,
-    //     memberPhone,
-    //     memberPassword,
-    //     memberBirth,
-    //     _selectedGender,
-    //     memberHeightInt,
-    //     memberWeightInt);
+    bool result = await userController.register(
+        memberName,
+        memberPhone,
+        memberPassword,
+        memberBirth,
+        _selectedGender,
+        memberHeightInt,
+        memberWeightInt);
 
     // 회원가입 성공시 다음 화면으로 이동처리
-    // if (result) {
-    //   Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //       builder: (context) => Intro(),
-    //     ),
-    //   );
-    // }
+    if (result) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Intro(),
+        ),
+      );
+    }
   }
 
   @override
@@ -68,7 +70,7 @@ class _RegisterState extends State<Register> {
               children: [
                 Container(
                   width: double.infinity,
-                  margin: EdgeInsets.fromLTRB(20, 80, 0, 0),
+                  margin: EdgeInsets.fromLTRB(20, 25, 0, 0),
                   child: Text(
                     '반갑습니다! 회원가입 정보를 입력해주세요!',
                     textAlign: TextAlign.left,
@@ -81,7 +83,7 @@ class _RegisterState extends State<Register> {
                 Container(
                   margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
                   decoration: BoxDecoration(
-                    color: Color.fromRGBO(234, 234, 234, 1),
+                    color: Color.fromRGBO(245, 245, 245, 1),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   padding: EdgeInsets.all(20),

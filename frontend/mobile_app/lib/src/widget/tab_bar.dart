@@ -1,38 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:perst/src/screen/style/myPage.dart';
 import 'package:perst/src/screen/style/myStyle.dart';
+import 'package:perst/src/screen/style/personalColor.dart';
 import 'package:perst/src/screen/style/styleAnalysis.dart';
 import 'package:perst/src/screen/style/styleTour.dart';
 
-class Tapbar extends StatefulWidget {
-  const Tapbar({super.key});
+class Tabbar extends StatefulWidget {
+  const Tabbar({super.key});
 
   @override
-  State<Tapbar> createState() => _TapbarState();
+  State<Tabbar> createState() => _TabbarState();
 }
 
-class _TapbarState extends State<Tapbar> {
+class _TabbarState extends State<Tabbar> {
   int _selectedIndex = 0;
 
   final List<Widget> _widgetOptions = <Widget>[
     StyleTour(),
     StyleAnalysis(),
     MyStyle(),
-    MyPage(),
+    PersonalColor(),
   ]; // 선택된 tabbar마다 띄울 페이지 배열
 
   final List<List<String>> _tabIcons = <List<String>>[
     ['assets/lookOutlined.png', 'assets/lookColor.png'],
     ['assets/analysisOutlined.png', 'assets/analysisColor.png'],
     ['assets/mystyleOutlined.png', 'assets/mystyleColor.png'],
-    ['assets/mypageOutlined.png', 'assets/mypageColor.png'],
+    ['assets/personalOutlined.png', 'assets/personalColor.png'],
   ];
 
   final List<String> _tabLabels = <String>[
     'StyleTour',
     'StyleAnalysis',
     'MyStyle',
-    'MyPage'
+    'PersonalColor'
   ];
 
   void _onItemTapped(int index) {

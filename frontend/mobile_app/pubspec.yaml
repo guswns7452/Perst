@@ -38,6 +38,7 @@ dependencies:
   get: ^4.6.6
   get_storage: ^2.1.1
   dio: ^5.4.2
+  image_picker: ^1.0.7
 
 dev_dependencies:
   flutter_test:
@@ -72,6 +73,10 @@ flutter:
     - assets/mystyleColor.png
     - assets/mystyleOutlined.png
     - assets/filter.png
+    - assets/personalColor.png
+    - assets/personalOutlined.png
+    - assets/colorCircle.png
+    - assets/faceDetection.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
