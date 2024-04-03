@@ -45,10 +45,14 @@ public class PersonalColorService {
 
         // 선택 순위 정렬하기
         Collections.sort(personalSelectVOList, Comparator.comparingInt(PersonalSelectVO::getPersonalSelectTimes).reversed());
-        
+
+        // 선택한 이력은 두개만 전달
+        personalColor.setPersonalSelects(personalColor.getPersonalSelects().subList(0,2));
+
         // 명도, 채도, 색상, 상 중 하 정의
         personalColor.setPersonalColorInfo(PersonalColorDTO.getSeasonTone(personalColor.getPersonalColorType()));
 
+        // 대표색 불러오기
         personalColor.setPersonalColorRepresentative(representativeColorJPA.representativeColor(personalColor.getPersonalColorType()));
 
         return personalColor;
