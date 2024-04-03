@@ -49,10 +49,8 @@ public class PersonalColorService {
         // 명도, 채도, 색상, 상 중 하 정의
         personalColor.setPersonalColorInfo(PersonalColorDTO.getSeasonTone(personalColor.getPersonalColorType()));
 
-        personalColor.setPersonalColorRepresentative(representativeColorJPA.findAllByRepresentativeColorPersonalColor(personalColor.getPersonalColorType()));
+        personalColor.setPersonalColorRepresentative(representativeColorJPA.representativeColor(personalColor.getPersonalColorType()));
 
         return personalColor;
-        
-        // TODO 응답 데이터 구성 (✅명도, 채도, 색상 / 어울리는 색상 정의 / ✅선택한 것중 순위)
     }
 }
