@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "representative_color") // 테이블 이름을 명시해줄 수 있습니다.
-public class representativeColorVO {
+public class RepresentativeColorVO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int representativeColorNumber;

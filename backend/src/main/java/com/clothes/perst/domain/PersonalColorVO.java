@@ -1,6 +1,7 @@
 package com.clothes.perst.domain;
 
 import com.clothes.perst.DTO.PersonalColorInfo;
+import com.clothes.perst.DTO.RepresentativeColorDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -31,6 +32,9 @@ public class PersonalColorVO {
 
     @Transient // DB에 포함하지 않는 변수
     private PersonalColorInfo personalColorInfo;
+
+    @Transient // DB에 포함하지 않는 변수
+    private List<RepresentativeColorDTO> personalColorRepresentative;
 
     private int memberNumber; // 외래키
 }
