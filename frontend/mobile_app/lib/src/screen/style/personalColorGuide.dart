@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:perst/src/screen/style/personalColorAnalyze.dart';
 import 'package:perst/src/widget/tab_bar.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -47,17 +48,67 @@ class _PersonalColorGuideState extends State<PersonalColorGuide> {
                 children: [
                   Container(
                     width: double.infinity,
-                    color: Color.fromRGBO(255, 157, 157, 1),
+                    color: Colors.black,
                   ),
                   Center(
                     child: Container(
-                      width: 350,
-                      height: 500,
+                      width: 250,
+                      height: 300,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(200),
-                        child: Image.file(File(_image!.path), fit: BoxFit.none),
+                        child: Image.file(File(_image!.path),
+                            fit: BoxFit.cover, width: 200, height: 300),
                       ),
                     ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(bottom: 20, left: 15),
+                        alignment: Alignment.bottomCenter,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            _getImage(ImageSource.camera);
+                          },
+                          child: Text(
+                            '재촬영하기',
+                            style: TextStyle(
+                                color: const Color.fromARGB(255, 0, 0, 0),
+                                fontSize: 19,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15))),
+                        ),
+                      ),
+                      Container(
+                        margin:
+                            EdgeInsets.only(bottom: 20, left: 15, right: 15),
+                        alignment: Alignment.bottomCenter,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) =>
+                                  PersonalColorAnalyze(image: _image),
+                            ));
+                          },
+                          child: Text(
+                            '분석 시작하기',
+                            style: TextStyle(
+                                color: const Color.fromARGB(255, 0, 0, 0),
+                                fontSize: 19,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15))),
+                        ),
+                      )
+                    ],
                   ),
                 ],
               )
