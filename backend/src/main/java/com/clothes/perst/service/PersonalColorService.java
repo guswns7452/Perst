@@ -5,6 +5,7 @@ import com.clothes.perst.domain.PersonalColorVO;
 import com.clothes.perst.domain.PersonalSelectVO;
 import com.clothes.perst.persistance.PersonalColorRepository;
 import com.clothes.perst.persistance.PersonalSelectRepository;
+import com.clothes.perst.persistance.RepresentativeColorRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -16,10 +17,12 @@ public class PersonalColorService {
 
     private final PersonalColorRepository personalColorJPA;
     private final PersonalSelectRepository personalSelectJPA;
+    private final RepresentativeColorRepository representativeColorJPA;
 
-    public PersonalColorService(PersonalColorRepository personalColorJPA, PersonalSelectRepository personalSelectJPA){
+    public PersonalColorService(PersonalColorRepository personalColorJPA, PersonalSelectRepository personalSelectJPA, RepresentativeColorRepository representativeColorJPA){
         this.personalColorJPA = personalColorJPA;
         this.personalSelectJPA = personalSelectJPA;
+        this.representativeColorJPA = representativeColorJPA;
 
     }
 
@@ -45,6 +48,9 @@ public class PersonalColorService {
         
         // 명도, 채도, 색상, 상 중 하 정의
         personalColor.setPersonalColorInfo(PersonalColorDTO.getSeasonTone(personalColor.getPersonalColorType()));
+
+        personalColor.setPersonalColorRepresentative(representativeColorJPA.findAllByRepresentativeColorPersonalColor(personalColor.getPersonalColorType()));
+
         return personalColor;
         
         // TODO 응답 데이터 구성 (✅명도, 채도, 색상 / 어울리는 색상 정의 / ✅선택한 것중 순위)
