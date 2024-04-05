@@ -5,7 +5,7 @@ import 'package:perst/src/screen/style/styleAnalysis.dart';
 import 'package:perst/src/screen/style/styleTour.dart';
 
 class Tabbar extends StatefulWidget {
-  const Tabbar({super.key});
+  const Tabbar({Key? key}) : super(key: key);
 
   @override
   State<Tabbar> createState() => _TabbarState();
@@ -35,6 +35,8 @@ class _TabbarState extends State<Tabbar> {
     'PersonalColor'
   ];
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -44,6 +46,52 @@ class _TabbarState extends State<Tabbar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      appBar: AppBar(
+        leading: Container(
+          decoration:
+              BoxDecoration(border: Border(bottom: BorderSide(width: 1.0))),
+          child: IconButton(
+            icon: Icon(Icons.person),
+            onPressed: () {
+              _scaffoldKey.currentState
+                  ?.openDrawer(); // Scaffold key를 사용하여 Drawer 열기
+            },
+          ),
+        ),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            UserAccountsDrawerHeader(
+              accountName: Text(
+                '이다현',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              accountEmail: Text(
+                '여름라이트',
+                style: TextStyle(color: Colors.lime[900]),
+              ), // 퍼스널컬러 정의한거 띄우기 없으면 "퍼스널 컬러 정의 없음" 띄울까..
+              decoration: BoxDecoration(
+                color: Colors.pink[100],
+              ),
+            ),
+            ListTile(
+              title: Text("스타일 조회 이력"),
+              onTap: () => {print("style")},
+            ),
+            ListTile(
+              title: Text("퍼스널 컬러 진단결과"),
+              onTap: () => {print("personal")},
+            ),
+            ListTile(
+              title: Text("내 정보 수정"),
+              onTap: () => {print("information")},
+            ),
+          ],
+        ),
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         type: BottomNavigationBarType.fixed,
