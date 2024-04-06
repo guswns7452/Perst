@@ -37,7 +37,7 @@ public class StyleAnalyzeController {
     private final JwtTokenService jwtTokenService;
 
     @Autowired
-    public StyleAnalyzeController(StyleAnalyzeService styleAnalyzeService, MemberService memberService, JwtTokenService jwtTokenService){
+    public StyleAnalyzeController(StyleAnalyzeService styleAnalyzeService, MemberService memberService, JwtTokenService jwtTokenService) {
         this.styleAnalyzeService = styleAnalyzeService;
         this.memberService = memberService;
         this.jwtTokenService = jwtTokenService;
@@ -50,15 +50,15 @@ public class StyleAnalyzeController {
     @Operation(summary = "스타일 분석하기", description = "스타일 분석하기. 헤더에 토큰을 넣어주시고, image 파라미터에 파일을 담아 보내주세요")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "분석 성공",
-                    content = { @Content(mediaType = "application/json",
+                    content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = RestResponse.class),
-                            examples = @ExampleObject(name = "스타일 분석 성공")) }),
+                            examples = @ExampleObject(name = "스타일 분석 성공"))}),
             @ApiResponse(responseCode = "500", description = "스타일 분석 시 오류 발생")
     })
     @PostMapping("")
     public ResponseEntity Analyze(@RequestHeader("Authorization") String token, @RequestParam("image") MultipartFile file) throws Exception {
         logger.info("[스타일 분석하기]");
-        try{
+        try {
             int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
 
             /* 구글 드라이브로 업로드 하기 */
@@ -67,7 +67,7 @@ public class StyleAnalyzeController {
             /* Flask로 요청 보내기 */
             String gender = memberService.findMemberGenderByMemberNumber(memberNumber);
 
-            String requestBody = "{\"fileID\": \""+ fileID + "\", \"gender\": \""+gender+"\"}";
+            String requestBody = "{\"fileID\": \"" + fileID + "\", \"gender\": \"" + gender + "\"}";
             RestResponse responseBody = styleAnalyzeService.ConnectFlaskServer(requestBody);
 
             LinkedHashMap data = (LinkedHashMap) responseBody.getData();
@@ -77,13 +77,15 @@ public class StyleAnalyzeController {
             StyleAnalyzeVO styleAnalyzed = new StyleAnalyzeVO((String) data.get("fashionType"), fileID, memberNumber);
 
             /* 결과값 받아 DB에 저장하기 */
-            StyleAnalyzeVO newstyleAnalyzeVO =  styleAnalyzeService.saveStyleAnalyze(styleAnalyzed);
+            StyleAnalyzeVO newstyleAnalyzeVO = styleAnalyzeService.saveStyleAnalyze(styleAnalyzed);
             int styleNumber = newstyleAnalyzeVO.getStyleNumber();
 
             /* DB에 색상 저장하기 */
             List<StyleColorVO> colors = new ArrayList();
-            colors.add(new StyleColorVO((String) data.get("color1"), styleNumber));  colors.add(new StyleColorVO((String) data.get("color2"), styleNumber));
-            colors.add(new StyleColorVO((String) data.get("color3"), styleNumber));  colors.add(new StyleColorVO((String) data.get("color4"), styleNumber));
+            colors.add(new StyleColorVO((String) data.get("color1"), styleNumber));
+            colors.add(new StyleColorVO((String) data.get("color2"), styleNumber));
+            colors.add(new StyleColorVO((String) data.get("color3"), styleNumber));
+            colors.add(new StyleColorVO((String) data.get("color4"), styleNumber));
             styleAnalyzeService.saveStyleColor(colors);
             newstyleAnalyzeVO.setStyleColor(colors);
 
@@ -100,7 +102,7 @@ public class StyleAnalyzeController {
         }
 
         // 일치 하는 의류가 없을 때, IllegalArgumentException 발생
-        catch (IllegalArgumentException e){
+        catch (IllegalArgumentException e) {
             logger.info(e.getMessage());
             restResponse = RestResponse.builder()
                     .code(HttpStatus.FORBIDDEN.value())
@@ -108,14 +110,37 @@ public class StyleAnalyzeController {
                     .message(e.getMessage())
                     .build();
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
-        }
-
-        catch (ConnectException e){
+        } catch (ConnectException e) {
             logger.info(e.getMessage());
             restResponse = RestResponse.builder()
                     .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
                     .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
                     .message("Flask Server 오류입니다. Flask 서버 상태를 확인해주세요.")
+                    .build();
+            return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
+        }
+    }
+
+    @GetMapping("")
+    public ResponseEntity findMyStyle(@RequestHeader("Authorization") String token, @RequestParam("number") int styleNumber) throws Exception {
+        StyleAnalyzeVO newstyleAnalyzeVO = styleAnalyzeService.findMyStyle(styleNumber);
+
+        logger.info("[내 분석 이력 불러오기]");
+        try{
+            restResponse = RestResponse.builder()
+                    .code(HttpStatus.OK.value())
+                    .httpStatus(HttpStatus.OK)
+                    .message("내 스타일을 분석 이력을 보여드립니다.")
+                    .data(newstyleAnalyzeVO)
+                    .build();
+            return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
+        }
+        catch(Exception e){
+            logger.info("내 분석 이력 불러오기 중 오류");
+            restResponse = RestResponse.builder()
+                    .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .message(e.toString())
                     .build();
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
         }

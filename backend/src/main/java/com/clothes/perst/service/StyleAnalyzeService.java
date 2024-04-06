@@ -35,7 +35,7 @@ import java.util.List;
 @Service
 public class StyleAnalyzeService {
     private final StyleAnalyzeRepository styleAnalyzeJPA;
-    private final StyleAnalyzeColorRepository styleAnalyzeColorRepository;
+    private final StyleAnalyzeColorRepository styleAnalyzeColorJPA;
     private final GoogleDriveAPI googleDriveAPI;
 
     @Value("${folderId.ClothesAnalyze}")
@@ -85,7 +85,7 @@ public class StyleAnalyzeService {
     @Autowired
     public StyleAnalyzeService(StyleAnalyzeRepository styleAnalyzeJPA, StyleAnalyzeColorRepository styleAnalyzeColorRepository, GoogleDriveAPI googleDriveAPI) {
         this.styleAnalyzeJPA = styleAnalyzeJPA;
-        this.styleAnalyzeColorRepository = styleAnalyzeColorRepository;
+        this.styleAnalyzeColorJPA = styleAnalyzeColorRepository;
         this.googleDriveAPI = googleDriveAPI;
     }
 
@@ -98,7 +98,7 @@ public class StyleAnalyzeService {
 
     public void saveStyleColor(List<StyleColorVO> colors) {
         for (StyleColorVO color : colors) {
-            styleAnalyzeColorRepository.save(color);
+            styleAnalyzeColorJPA.save(color);
         }
     }
 
@@ -153,5 +153,12 @@ public class StyleAnalyzeService {
         RestResponse responseBody = response.getBody();
 
         return responseBody;
+    }
+
+    public StyleAnalyzeVO findMyStyle(int styleNumber){
+        StyleAnalyzeVO vo = styleAnalyzeJPA.findByStyleNumber(styleNumber);
+        vo.setStyleColor(styleAnalyzeColorJPA.findAllByStyleNumber(styleNumber));
+
+        return vo;
     }
 }
