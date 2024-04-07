@@ -65,4 +65,14 @@ public class MemberService {
     public String findMemberGenderByMemberNumber(int memberNumber) throws Exception{
         return memberRepository.findByMemberNumber(memberNumber).getMemberGender();
     }
+
+    /**
+     * 회원 번호로 객체 찾기
+     * @param memberNumber
+     * @return
+     * @throws Exception
+     */
+    public MemberVO findByMemberNumber(int memberNumber) throws Exception{
+        return memberRepository.findByMemberNumber(memberNumber);
+    }
 }
