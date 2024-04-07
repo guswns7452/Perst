@@ -1,6 +1,7 @@
 package com.clothes.perst.controller;
 
 import com.clothes.perst.DTO.RestResponse;
+import com.clothes.perst.DTO.TransferStyleAnalyzeDTO;
 import com.clothes.perst.config.JwtTokenService;
 import com.clothes.perst.domain.StyleAnalyzeVO;
 import com.clothes.perst.domain.StyleColorVO;
@@ -121,16 +122,57 @@ public class StyleAnalyzeController {
         }
     }
 
+    /**
+     * 상세 분석 이력 호출하기
+     * @param token
+     * @param styleNumber
+     * @return
+     * @throws Exception
+     */
     @GetMapping("")
     public ResponseEntity findMyStyle(@RequestHeader("Authorization") String token, @RequestParam("number") int styleNumber) throws Exception {
         StyleAnalyzeVO newstyleAnalyzeVO = styleAnalyzeService.findMyStyle(styleNumber);
 
-        logger.info("[내 분석 이력 불러오기]");
+        logger.info("[내 상세 분석 이력 불러오기]");
         try{
             restResponse = RestResponse.builder()
                     .code(HttpStatus.OK.value())
                     .httpStatus(HttpStatus.OK)
                     .message("내 스타일을 분석 이력을 보여드립니다.")
+                    .data(newstyleAnalyzeVO)
+                    .build();
+            return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
+        }
+        catch(Exception e){
+            logger.info("내 분석 이력 불러오기 중 오류");
+            restResponse = RestResponse.builder()
+                    .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .message(e.toString())
+                    .build();
+            return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
+        }
+    }
+
+
+    /**
+     * 나의 분석 이력들 호출하기
+     * @param token
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/my")
+    public ResponseEntity findMyStyleList(@RequestHeader("Authorization") String token) throws Exception {
+        int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
+
+        TransferStyleAnalyzeDTO newstyleAnalyzeVO = styleAnalyzeService.findMyStyleList(memberNumber);
+
+        logger.info("[내 분석 이력 리스튼 불러오기]");
+        try{
+            restResponse = RestResponse.builder()
+                    .code(HttpStatus.OK.value())
+                    .httpStatus(HttpStatus.OK)
+                    .message("내 스타일을 분석 이력들을 보여드립니다.")
                     .data(newstyleAnalyzeVO)
                     .build();
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());

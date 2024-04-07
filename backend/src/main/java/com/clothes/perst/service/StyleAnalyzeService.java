@@ -1,6 +1,7 @@
 package com.clothes.perst.service;
 
 import com.clothes.perst.DTO.RestResponse;
+import com.clothes.perst.DTO.TransferStyleAnalyzeDTO;
 import com.clothes.perst.config.GoogleDriveAPI;
 import com.clothes.perst.domain.StyleAnalyzeVO;
 import com.clothes.perst.domain.StyleColorVO;
@@ -160,5 +161,13 @@ public class StyleAnalyzeService {
         vo.setStyleColor(styleAnalyzeColorJPA.findAllByStyleNumber(styleNumber));
 
         return vo;
+    }
+
+    public TransferStyleAnalyzeDTO findMyStyleList(int memberNumber){
+        List<StyleAnalyzeVO> vo = styleAnalyzeJPA.findAllByMemberNumber(memberNumber);
+
+        // 전송용 DTO로 변경하기
+        TransferStyleAnalyzeDTO transfer = new TransferStyleAnalyzeDTO(vo);
+        return transfer;
     }
 }
