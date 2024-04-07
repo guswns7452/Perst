@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:perst/src/screen/personalColor/personalColor.dart';
 import 'package:perst/src/screen/style/myStyle.dart';
-import 'package:perst/src/screen/style/personalColor.dart';
 import 'package:perst/src/screen/style/styleAnalysis.dart';
 import 'package:perst/src/screen/style/styleTour.dart';
 
@@ -71,23 +71,36 @@ class _TabbarState extends State<Tabbar> {
               ),
               accountEmail: Text(
                 '여름라이트',
-                style: TextStyle(color: Colors.lime[900]),
+                style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
               ), // 퍼스널컬러 정의한거 띄우기 없으면 "퍼스널 컬러 정의 없음" 띄울까..
               decoration: BoxDecoration(
-                color: Colors.pink[100],
+                color: Color.fromARGB(255, 124, 124, 124),
               ),
             ),
             ListTile(
+              leading: Icon(
+                Icons.favorite,
+                color: const Color.fromARGB(255, 0, 0, 0),
+              ),
               title: Text("스타일 조회 이력"),
-              onTap: () => {print("style")},
+              onTap: () => {print("style")}, // 스타일 이력 조회 페이지로 이동하기
             ),
             ListTile(
+              leading: Icon(
+                Icons.colorize,
+                color: const Color.fromARGB(255, 0, 0, 0),
+              ),
               title: Text("퍼스널 컬러 진단결과"),
-              onTap: () => {print("personal")},
+              onTap: () =>
+                  {print("personal")}, // 퍼스널 컬러 진단결과 페이지 또는 퍼스널 컬러 진단 페이지로 이동
             ),
             ListTile(
+              leading: Icon(
+                Icons.manage_accounts,
+                color: const Color.fromARGB(255, 0, 0, 0),
+              ),
               title: Text("내 정보 수정"),
-              onTap: () => {print("information")},
+              onTap: () => {print("information")}, // 내 정보 수정 페이지로 이동하기
             ),
           ],
         ),

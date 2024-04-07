@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:perst/src/widget/radio_item.dart';
+import 'package:perst/src/widget/style_filter.dart';
 
 class StyleTour extends StatefulWidget {
   const StyleTour({Key? key});
@@ -7,6 +8,15 @@ class StyleTour extends StatefulWidget {
   @override
   State<StyleTour> createState() => _StyleTourState();
 }
+
+late String _currentStyle = '로맨틱';
+late String _searchCurrentStyle = 'romantic';
+late String _seletedGender = "man";
+late Color _currentColor = Color.fromRGBO(236, 20, 20, 1);
+
+int _seletedGenderInt = 0;
+int _currentStyleInt = 0;
+int _currentColorInt = 0;
 
 class _StyleTourState extends State<StyleTour> {
   @override
@@ -51,7 +61,16 @@ class _StyleTourState extends State<StyleTour> {
                         showModalBottomSheet(
                           context: context,
                           builder: (BuildContext context) {
-                            return CustomDrawer();
+                            return CustomDrawer(
+                              onSelectionComplete: (selectedStyle,
+                                  selectedGender, selectedColor) {
+                                setState(() {
+                                  _currentStyle = selectedStyle;
+                                  _seletedGender = selectedGender;
+                                  _currentColor = selectedColor;
+                                });
+                              },
+                            );
                           },
                         );
                       },
@@ -65,55 +84,10 @@ class _StyleTourState extends State<StyleTour> {
                           width: 20, height: 20),
                     ),
                     SizedBox(width: 5),
-                    Container(
-                      padding: EdgeInsets.fromLTRB(10, 4, 10, 4),
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                              width: 1,
-                              color: Color.fromRGBO(133, 133, 133, 1)),
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Text(
-                        '남성',
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    SizedBox(width: 5),
-                    Container(
-                      padding: EdgeInsets.fromLTRB(10, 4, 10, 4),
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                              width: 1,
-                              color: Color.fromRGBO(133, 133, 133, 1)),
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Text(
-                        '로맨틱',
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    SizedBox(width: 5),
-                    Container(
-                      padding: EdgeInsets.fromLTRB(10, 4, 10, 4),
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                              width: 1,
-                              color: Color.fromRGBO(133, 133, 133, 1)),
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Container(
-                        width: 30,
-                        height: 30,
-                        decoration: BoxDecoration(
-                          color: Color.fromRGBO(236, 20, 20, 1),
-                          borderRadius: BorderRadius.circular(50),
-                          border: Border.all(width: 0.3, color: Colors.black),
-                        ),
-                      ),
-                    ),
+                    StyleFilter(
+                        currentColor: _currentColor,
+                        currentStyle: _currentStyle,
+                        seletedGender: _seletedGender)
                   ],
                 ),
               ],
@@ -126,7 +100,10 @@ class _StyleTourState extends State<StyleTour> {
 }
 
 class CustomDrawer extends StatefulWidget {
-  const CustomDrawer({Key? key}) : super(key: key);
+  final Function(String, String, Color) onSelectionComplete; // 추가
+
+  const CustomDrawer({Key? key, required this.onSelectionComplete})
+      : super(key: key);
 
   @override
   _CustomDrawerState createState() => _CustomDrawerState();
@@ -177,10 +154,6 @@ class _CustomDrawerState extends State<CustomDrawer>
     ColorRadioModel(false, 113, 132, 47),
     ColorRadioModel(false, 131, 22, 192),
   ];
-
-  late String _currentStyle = '로맨틱';
-  late String _searchCurrentStyle = 'romantic';
-  late String _seletedGender = "man";
 
   @override
   void initState() {
@@ -265,12 +238,16 @@ class _CustomDrawerState extends State<CustomDrawer>
             onChanged: (String? value) {
               setState(() {
                 _seletedGender = value!;
+                _seletedGenderInt = 0;
               });
             },
           ),
-          const Text(
-            style: TextStyle(fontSize: 18),
+          Text(
             'MAN',
+            style: TextStyle(
+              fontSize: 18,
+              color: _seletedGender == 'man' ? Colors.black : Colors.grey,
+            ),
           ),
           SizedBox(width: 100),
           Radio<String>(
@@ -279,12 +256,16 @@ class _CustomDrawerState extends State<CustomDrawer>
             onChanged: (String? value) {
               setState(() {
                 _seletedGender = value!;
+                _seletedGenderInt = 1;
               });
             },
           ),
-          const Text(
+          Text(
             'WOMEN',
-            style: TextStyle(fontSize: 18),
+            style: TextStyle(
+              fontSize: 18,
+              color: _seletedGender == 'woman' ? Colors.black : Colors.grey,
+            ),
           ),
         ],
       ),
@@ -309,12 +290,14 @@ class _CustomDrawerState extends State<CustomDrawer>
                       _manstyleKeyward[i].isSelected = true;
                       _searchCurrentStyle = _manstyleKeyward[i].keyward;
                       _currentStyle = _manstyleKeyward[i].buttonText;
+                      _currentStyleInt = i;
                     } else {
                       _womanstyleKeyward
                           .forEach((element) => element.isSelected = false);
                       _womanstyleKeyward[i].isSelected = true;
                       _searchCurrentStyle = _womanstyleKeyward[i].keyward;
                       _currentStyle = _womanstyleKeyward[i].buttonText;
+                      _currentStyleInt = i;
                     }
                   });
                 },
@@ -339,12 +322,14 @@ class _CustomDrawerState extends State<CustomDrawer>
                       _manstyleKeyward[i].isSelected = true;
                       _searchCurrentStyle = _manstyleKeyward[i].keyward;
                       _currentStyle = _manstyleKeyward[i].buttonText;
+                      _currentStyleInt = i;
                     } else {
                       _womanstyleKeyward
                           .forEach((element) => element.isSelected = false);
                       _womanstyleKeyward[i].isSelected = true;
                       _searchCurrentStyle = _womanstyleKeyward[i].keyward;
                       _currentStyle = _womanstyleKeyward[i].buttonText;
+                      _currentStyleInt = i;
                     }
                   });
                 },
@@ -369,12 +354,14 @@ class _CustomDrawerState extends State<CustomDrawer>
                       _manstyleKeyward[i].isSelected = true;
                       _searchCurrentStyle = _manstyleKeyward[i].keyward;
                       _currentStyle = _manstyleKeyward[i].buttonText;
+                      _currentStyleInt = i;
                     } else {
                       _womanstyleKeyward
                           .forEach((element) => element.isSelected = false);
                       _womanstyleKeyward[i].isSelected = true;
                       _searchCurrentStyle = _womanstyleKeyward[i].keyward;
                       _currentStyle = _womanstyleKeyward[i].buttonText;
+                      _currentStyleInt = i;
                     }
                   });
                 },
@@ -409,6 +396,7 @@ class _CustomDrawerState extends State<CustomDrawer>
                               _colorList.forEach(
                                   (element) => element.isSelected = false);
                               _colorList[i].isSelected = true;
+                              _currentColorInt = i;
                             });
                           },
                           child: ColorRadioItem(_colorList[i]),
@@ -429,6 +417,7 @@ class _CustomDrawerState extends State<CustomDrawer>
                           _colorList
                               .forEach((element) => element.isSelected = false);
                           _colorList[i].isSelected = true;
+                          _currentColorInt = i;
                         });
                       },
                       child: ColorRadioItem(_colorList[i]),
@@ -441,9 +430,30 @@ class _CustomDrawerState extends State<CustomDrawer>
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
-                // search man, woman해서 스타일 불러오기
-                Navigator.pop(context); // drawer 닫기
-                // TODO: gender, style, red, green, blue를 반환하든 뭐든 해서 선택된 성별, 스타일, 색상을 띄워야함.
+                setState(() {
+                  if (_seletedGenderInt == 0) {
+                    _searchCurrentStyle =
+                        _manstyleKeyward[_currentStyleInt].keyward;
+                    _currentStyle =
+                        _manstyleKeyward[_currentStyleInt].buttonText;
+                    _seletedGender = 'man';
+                  } else if (_seletedGenderInt == 1) {
+                    _searchCurrentStyle =
+                        _womanstyleKeyward[_currentStyleInt].keyward;
+                    _currentStyle =
+                        _womanstyleKeyward[_currentStyleInt].buttonText;
+                    _seletedGender = 'woman';
+                  }
+                  _currentColor = Color.fromRGBO(
+                    _colorList[_currentColorInt].Red,
+                    _colorList[_currentColorInt].Green,
+                    _colorList[_currentColorInt].Blue,
+                    1,
+                  );
+                  widget.onSelectionComplete(
+                      _currentStyle, _seletedGender, _currentColor);
+                  Navigator.pop(context); // drawer 닫기
+                });
               },
               child: Text(
                 '선택 완료',

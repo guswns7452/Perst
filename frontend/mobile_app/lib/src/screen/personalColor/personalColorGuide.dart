@@ -1,8 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:perst/src/screen/style/personalColorAnalyze.dart';
-import 'package:perst/src/widget/tab_bar.dart';
+import 'package:perst/src/screen/personalColor/personalColorAnalyze.dart';
 import 'package:image_picker/image_picker.dart';
 
 class PersonalColorGuide extends StatefulWidget {
