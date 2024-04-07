@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:perst/src/screen/auth/register.dart';
-import 'package:perst/src/widget/tap_bar.dart';
+import 'package:perst/src/widget/tab_bar.dart';
 
 class Intro extends StatelessWidget {
   const Intro({super.key});
@@ -58,7 +58,7 @@ class Intro extends StatelessWidget {
                   onPressed: () {
                     // 로그인을 클릭하면 로그인 창으로 이동
                     Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const Tapbar(),
+                      builder: (context) => const Tabbar(),
                     ));
                   },
                   style: ElevatedButton.styleFrom(
