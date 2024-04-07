@@ -167,4 +167,46 @@ public class HomeController {
         }
     }
 
+    /**
+     * 마이페이지 내 정보 수정
+     * @param token
+     * @return
+     */
+    @ResponseBody
+    @Operation(summary = "마이페이지", description = "마이페이지 수정")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = RestResponse.class),
+                            examples = @ExampleObject(name = "")) }),
+            @ApiResponse(responseCode = "403", description = "")
+    })
+    @PatchMapping("/mypage")
+    public ResponseEntity editMyInfo(@RequestHeader("Authorization") String token, @RequestBody MemberVO member){
+        logger.info("[마이페이지 변경]");
+        int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
+        try{
+            MemberVO full_member = memberService.editMyInfo(member);
+            full_member.setMemberPassword("secret");
+
+            restResponse = RestResponse.builder()
+                    .code(HttpStatus.OK.value())
+                    .httpStatus(HttpStatus.OK)
+                    .message("회원 조회 완료")
+                    .data(full_member)
+                    .build();
+            return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
+        }
+        // 이메일 또는 비밀번호가 일치하지 않음, IllegalArgumentException 발생
+        catch (IllegalArgumentException e){
+            restResponse = RestResponse.builder()
+                    .code(HttpStatus.FORBIDDEN.value())
+                    .httpStatus(HttpStatus.FORBIDDEN)
+                    .message("이메일 또는 비밀번호가 틀렸습니다.")
+                    .build();
+            return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

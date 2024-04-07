@@ -75,4 +75,14 @@ public class MemberService {
     public MemberVO findByMemberNumber(int memberNumber) throws Exception{
         return memberRepository.findByMemberNumber(memberNumber);
     }
+
+    /**
+     * 회원 정보를 수정하는 코드
+     * @param member
+     * @return
+     * @throws Exception
+     */
+    public MemberVO editMyInfo(MemberVO member) throws Exception{
+        return memberRepository.save(member); // save가 등록도 되지만, 수정도 됨
+    }
 }
