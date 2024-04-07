@@ -154,16 +154,14 @@ public class HomeController {
                     .build();
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
         }
-        // 이메일 또는 비밀번호가 일치하지 않음, IllegalArgumentException 발생
-        catch (IllegalArgumentException e){
+        // 회원이 존재하지 않을 떄, IllegalArgumentException 발생
+        catch (Exception e){
             restResponse = RestResponse.builder()
                     .code(HttpStatus.FORBIDDEN.value())
                     .httpStatus(HttpStatus.FORBIDDEN)
-                    .message("이메일 또는 비밀번호가 틀렸습니다.")
+                    .message("회원 정보가 존재하지 않습니다.")
                     .build();
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -197,12 +195,12 @@ public class HomeController {
                     .build();
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
         }
-        // 이메일 또는 비밀번호가 일치하지 않음, IllegalArgumentException 발생
-        catch (IllegalArgumentException e){
+        // 전화번호 중복일 때
+        catch (IllegalAccessException e){
             restResponse = RestResponse.builder()
-                    .code(HttpStatus.FORBIDDEN.value())
-                    .httpStatus(HttpStatus.FORBIDDEN)
-                    .message("이메일 또는 비밀번호가 틀렸습니다.")
+                    .code(HttpStatus.UNAUTHORIZED.value())
+                    .httpStatus(HttpStatus.UNAUTHORIZED)
+                    .message(e.getMessage())
                     .build();
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
         } catch (Exception e) {

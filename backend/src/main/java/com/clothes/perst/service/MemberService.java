@@ -73,7 +73,11 @@ public class MemberService {
      * @throws Exception
      */
     public MemberVO findByMemberNumber(int memberNumber) throws Exception{
-        return memberRepository.findByMemberNumber(memberNumber);
+        MemberVO member = memberRepository.findByMemberNumber(memberNumber);
+        if (member == null) {
+            throw new IllegalArgumentException("일치하는 회원이 없습니다.");
+        }
+        return member;
     }
 
     /**
@@ -83,6 +87,9 @@ public class MemberService {
      * @throws Exception
      */
     public MemberVO editMyInfo(MemberVO member) throws Exception{
+        if (memberRepository.findAllByMemberPhone(member.getMemberPhone()).size() > 1){
+            throw new IllegalAccessException("이미 중복된 전화번호가 존재합니다.");
+        }
         return memberRepository.save(member); // save가 등록도 되지만, 수정도 됨
     }
 }
