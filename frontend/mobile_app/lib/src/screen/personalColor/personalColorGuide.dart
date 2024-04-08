@@ -141,12 +141,9 @@ class _PersonalColorGuideState extends State<PersonalColorGuide> {
                   ),
                   Center(
                     child: Container(
-                      height: 290,
-                      width: 210,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(200),
-                          color: Colors.white),
-                      child: Image.asset('assets/faceDetection.png'),
+                      height: 400,
+                      width: double.infinity,
+                      child: Image.asset('assets/personalColorGuide.png'),
                     ),
                   ),
                   Container(
