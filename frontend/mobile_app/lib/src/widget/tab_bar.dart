@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:perst/src/screen/camera/cameraIntro.dart';
 import 'package:perst/src/screen/personalColor/personalColor.dart';
 import 'package:perst/src/screen/style/myStyle.dart';
-import 'package:perst/src/screen/style/styleAnalysis.dart';
 import 'package:perst/src/screen/style/styleTour.dart';
 
 class Tabbar extends StatefulWidget {
@@ -16,7 +16,7 @@ class _TabbarState extends State<Tabbar> {
 
   final List<Widget> _widgetOptions = <Widget>[
     StyleTour(),
-    StyleAnalysis(),
+    CameraIntro(),
     MyStyle(),
     PersonalColor(),
   ]; // 선택된 tabbar마다 띄울 페이지 배열
