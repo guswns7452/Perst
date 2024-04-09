@@ -24,18 +24,11 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
   int summerCnt = 0;
   int fallCnt = 0;
   int winterCnt = 0;
-  bool spr = false;
-  bool spb = false;
-  bool sur = false;
-  bool sub = false;
-  bool sum = false;
-  bool fm = false;
-  bool fd = false;
-  bool fs = false;
-  bool wd = false;
-  bool wb = false;
   int personalCnt = 0;
   String season = '';
+
+  PersonalColorModel updatePCM =
+      PersonalColorModel(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
   late Color firstBackgroundColor,
       secondBackgroundColor,
@@ -130,348 +123,394 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                      padding: EdgeInsets.only(right: 15),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: Colors.black),
-                          borderRadius: BorderRadius.circular(10)),
-                      child: personalCnt > -1 && personalCnt <= 8
-                          ? Row(
-                              children: [
-                                Radio(
-                                  value: firstColorIndex,
-                                  groupValue: index,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      index = value as int;
-                                    });
-                                  },
-                                ),
-                                Container(
-                                  width: 70,
-                                  height: 20,
-                                  decoration: BoxDecoration(
-                                      color: firstBackgroundColor,
-                                      borderRadius: BorderRadius.circular(8)),
-                                ),
-                                Radio(
-                                  value: secondColorIndex,
-                                  groupValue: index,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      index = value as int;
-                                    });
-                                  },
-                                ),
-                                Container(
-                                  width: 70,
-                                  height: 20,
-                                  decoration: BoxDecoration(
-                                      color: secondBackgroundColor,
-                                      borderRadius: BorderRadius.circular(8)),
-                                ),
-                              ],
-                            )
-                          : ((summerCnt > winterCnt || fallCnt > springCnt)
-                              ? Row(
-                                  children: [
-                                    Radio(
-                                      value: firstColorIndex,
-                                      groupValue: index,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          index = value as int;
-                                          if (personalCnt == 9) {
-                                            if (winterCnt + summerCnt >
-                                                springCnt + fallCnt) {
-                                              backgroundColor = Color.fromRGBO(
-                                                  summer[0].Red,
-                                                  summer[0].Green,
-                                                  summer[0].Blue,
-                                                  summer[0].O);
-                                            } else {
-                                              backgroundColor = Color.fromRGBO(
-                                                  fall[0].Red,
-                                                  fall[0].Green,
-                                                  fall[0].Blue,
-                                                  fall[0].O);
-                                            }
-                                          }
-                                        });
-                                      },
-                                    ),
-                                    smallBackground(
-                                        firstBackgroundColor: personalCnt == 9
-                                            ? (winterCnt + summerCnt >
-                                                    fallCnt + springCnt
-                                                ? Color.fromRGBO(
-                                                    summer[0].Red,
-                                                    summer[0].Green,
-                                                    summer[0].Blue,
-                                                    summer[0].O)
-                                                : Color.fromRGBO(
-                                                    fall[0].Red,
-                                                    fall[0].Green,
-                                                    fall[0].Blue,
-                                                    fall[0].O))
-                                            : firstBackgroundColor),
-                                    Radio(
-                                      value: secondColorIndex,
-                                      groupValue: index,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          index = value as int;
-                                          if (personalCnt == 9) {
-                                            if (winterCnt + summerCnt >
-                                                springCnt + fallCnt) {
-                                              backgroundColor = Color.fromRGBO(
-                                                  summer[1].Red,
-                                                  summer[1].Green,
-                                                  summer[1].Blue,
-                                                  summer[1].O);
-                                            } else {
-                                              backgroundColor = Color.fromRGBO(
-                                                  fall[1].Red,
-                                                  fall[1].Green,
-                                                  fall[1].Blue,
-                                                  fall[1].O);
-                                            }
-                                          }
-                                        });
-                                      },
-                                    ),
-                                    smallBackground(
-                                        firstBackgroundColor: personalCnt == 9
-                                            ? (winterCnt + summerCnt >
-                                                    fallCnt + springCnt
-                                                ? Color.fromRGBO(
-                                                    summer[1].Red,
-                                                    summer[1].Green,
-                                                    summer[1].Blue,
-                                                    summer[1].O)
-                                                : Color.fromRGBO(
-                                                    fall[1].Red,
-                                                    fall[1].Green,
-                                                    fall[1].Blue,
-                                                    fall[1].O))
-                                            : firstBackgroundColor),
-                                    Radio(
-                                      value: thirdColorIndex,
-                                      groupValue: index,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          index = value as int;
-                                          if (personalCnt == 9) {
-                                            if (winterCnt + summerCnt >
-                                                springCnt + fallCnt) {
-                                              backgroundColor = Color.fromRGBO(
-                                                  summer[2].Red,
-                                                  summer[2].Green,
-                                                  summer[2].Blue,
-                                                  summer[2].O);
-                                            } else {
-                                              backgroundColor = Color.fromRGBO(
-                                                  fall[2].Red,
-                                                  fall[2].Green,
-                                                  fall[2].Blue,
-                                                  fall[2].O);
-                                            }
-                                          }
-                                        });
-                                      },
-                                    ),
-                                    smallBackground(
-                                        firstBackgroundColor: personalCnt == 9
-                                            ? (winterCnt + summerCnt >
-                                                    fallCnt + springCnt
-                                                ? Color.fromRGBO(
-                                                    summer[2].Red,
-                                                    summer[2].Green,
-                                                    summer[2].Blue,
-                                                    summer[2].O)
-                                                : Color.fromRGBO(
-                                                    fall[2].Red,
-                                                    fall[2].Green,
-                                                    fall[2].Blue,
-                                                    fall[2].O))
-                                            : firstBackgroundColor),
-                                  ],
-                                )
-                              : Row(
-                                  children: [
-                                    Radio(
-                                      value: firstColorIndex,
-                                      groupValue: index,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          index = value as int;
-                                          if (personalCnt == 9) {
-                                            if (winterCnt + summerCnt >
-                                                springCnt + fallCnt) {
-                                              backgroundColor = Color.fromRGBO(
-                                                  winter[0].Red,
-                                                  winter[0].Green,
-                                                  winter[0].Blue,
-                                                  winter[0].O);
-                                            } else {
-                                              backgroundColor = Color.fromRGBO(
-                                                  spring[0].Red,
-                                                  spring[0].Green,
-                                                  spring[0].Blue,
-                                                  spring[0].O);
-                                            }
-                                          }
-                                        });
-                                      },
-                                    ),
-                                    bigBackground(
-                                        firstBackgroundColor: personalCnt == 9
-                                            ? (winterCnt + summerCnt >
-                                                    springCnt + fallCnt
-                                                ? Color.fromRGBO(
-                                                    winter[0].Red,
-                                                    winter[0].Green,
-                                                    winter[0].Blue,
-                                                    winter[0].O)
-                                                : Color.fromRGBO(
-                                                    spring[0].Red,
-                                                    spring[0].Green,
-                                                    spring[0].Blue,
-                                                    spring[0].O))
-                                            : firstBackgroundColor),
-                                    Radio(
-                                      value: secondColorIndex,
-                                      groupValue: index,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          index = value as int;
-                                          if (personalCnt == 9) {
-                                            if (winterCnt + summerCnt >
-                                                springCnt + fallCnt) {
-                                              backgroundColor = Color.fromRGBO(
-                                                  winter[1].Red,
-                                                  winter[1].Green,
-                                                  winter[1].Blue,
-                                                  winter[1].O);
-                                            } else {
-                                              backgroundColor = Color.fromRGBO(
-                                                  spring[1].Red,
-                                                  spring[1].Green,
-                                                  spring[1].Blue,
-                                                  spring[1].O);
-                                            }
-                                          }
-                                        });
-                                      },
-                                    ),
-                                    bigBackground(
-                                        firstBackgroundColor: personalCnt == 9
-                                            ? (winterCnt + summerCnt >
-                                                    springCnt + fallCnt
-                                                ? Color.fromRGBO(
-                                                    winter[1].Red,
-                                                    winter[1].Green,
-                                                    winter[1].Blue,
-                                                    winter[1].O)
-                                                : Color.fromRGBO(
-                                                    spring[1].Red,
-                                                    spring[1].Green,
-                                                    spring[1].Blue,
-                                                    spring[1].O))
-                                            : secondBackgroundColor),
-                                  ],
-                                ))),
-                  SizedBox(width: 10),
-                  Container(
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          if (warm + cool < 4) {
-                            firstColorIndex = firstColorIndex + 2;
-                            secondColorIndex = secondColorIndex + 2;
-                            if (index % 2 == 1) {
-                              cool = cool + 1;
-                              print(personalCnt);
-                            } else if (index % 2 == 0) {
-                              warm = warm + 1;
-                              print(personalCnt);
-                            }
-                            personalCnt = personalCnt + 1;
-                            PCM = personalColorCnt(
-                                warmCool[index].PersonalColor, PCM);
-                          }
-
-                          if (warm + cool == 4 && personalCnt <= 8) {
-                            if (fallCnt + springCnt == 0 &&
-                                winterCnt + summerCnt == 0) {
-                              firstColorIndex = -2;
-                              secondColorIndex = -1;
-                              if (index % 2 == 1) {
-                                springCnt = springCnt - 1;
-                                winterCnt = winterCnt - 1;
-                              } else if (index % 2 == 0) {
-                                fallCnt = fallCnt - 1;
-                                summerCnt = summerCnt - 1;
-                              }
-                            }
-                            if (warm > cool) {
-                              firstColorIndex = firstColorIndex + 2;
-                              secondColorIndex = secondColorIndex + 2;
-
-                              if (index % 2 == 1) {
-                                springCnt = springCnt + 1;
-                                print(springCnt.toString() +
-                                    "   " +
-                                    fallCnt.toString());
-                              } else if (index % 2 == 0) {
-                                fallCnt = fallCnt + 1;
-                                print(springCnt.toString() +
-                                    "   " +
-                                    fallCnt.toString());
-                              }
-                              personalCnt = personalCnt + 1;
-                              PCM = personalColorCnt(
-                                  fallspring[index].PersonalColor, PCM);
-                            } else if (warm < cool) {
-                              firstColorIndex = firstColorIndex + 2;
-                              secondColorIndex = secondColorIndex + 2;
-                              if (index % 2 == 1) {
-                                winterCnt = winterCnt + 1;
-                                print(winterCnt);
-                              } else if (index % 2 == 0) {
-                                summerCnt = summerCnt + 1;
-                              }
-                              personalCnt = personalCnt + 1;
-                              PCM = personalColorCnt(
-                                  fallspring[index].PersonalColor, PCM);
-                            }
-                          }
-                          if (personalCnt == 9) {
-                            // Navigator.of(context).push(MaterialPageRoute(
-                            //   builder: (context) =>
-                            //       const PersonalColorResult(PCM: ),
-                            // ));
-                          }
-                        });
-                      },
-                      child: Text(
-                        '선택 완료',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                      style: OutlinedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          side: BorderSide(
-                              color: const Color.fromARGB(255, 46, 46, 46),
-                              width: 1)),
-                    ),
+                    padding: EdgeInsets.only(right: 15),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(
+                            color: personalCnt == 10
+                                ? Colors.transparent
+                                : Colors.black),
+                        borderRadius: BorderRadius.circular(10)),
+                    child: personalCnt > -1 && personalCnt <= 8
+                        ? Row(
+                            children: [
+                              Radio(
+                                value: firstColorIndex,
+                                groupValue: index,
+                                onChanged: (value) {
+                                  setState(() {
+                                    index = value as int;
+                                  });
+                                },
+                              ),
+                              Container(
+                                width: 70,
+                                height: 20,
+                                decoration: BoxDecoration(
+                                    color: firstBackgroundColor,
+                                    borderRadius: BorderRadius.circular(8)),
+                              ),
+                              Radio(
+                                value: secondColorIndex,
+                                groupValue: index,
+                                onChanged: (value) {
+                                  setState(() {
+                                    index = value as int;
+                                  });
+                                },
+                              ),
+                              Container(
+                                width: 70,
+                                height: 20,
+                                decoration: BoxDecoration(
+                                    color: secondBackgroundColor,
+                                    borderRadius: BorderRadius.circular(8)),
+                              ),
+                            ],
+                          )
+                        : personalCnt == 9 &&
+                                (winterCnt + summerCnt > fallCnt + springCnt)
+                            ? winterCnt < summerCnt
+                                ? Row(
+                                    children: [
+                                      Radio(
+                                        value: firstColorIndex,
+                                        groupValue: index,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            index = value as int;
+                                            backgroundColor = Color.fromRGBO(
+                                                summer[0].Red,
+                                                summer[0].Green,
+                                                summer[0].Blue,
+                                                summer[0].O);
+                                            season = "여름 라이트";
+                                          });
+                                        },
+                                      ),
+                                      smallBackground(
+                                          firstBackgroundColor: Color.fromRGBO(
+                                              summer[0].Red,
+                                              summer[0].Green,
+                                              summer[0].Blue,
+                                              summer[0].O)),
+                                      Radio(
+                                        value: secondColorIndex,
+                                        groupValue: index,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            index = value as int;
+                                            backgroundColor = Color.fromRGBO(
+                                                summer[1].Red,
+                                                summer[1].Green,
+                                                summer[1].Blue,
+                                                summer[1].O);
+                                            season = "여름 브라이트";
+                                          });
+                                        },
+                                      ),
+                                      smallBackground(
+                                          firstBackgroundColor: Color.fromRGBO(
+                                              summer[1].Red,
+                                              summer[1].Green,
+                                              summer[1].Blue,
+                                              summer[1].O)),
+                                      Radio(
+                                        value: thirdColorIndex,
+                                        groupValue: index,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            index = value as int;
+                                            backgroundColor = Color.fromRGBO(
+                                                summer[2].Red,
+                                                summer[2].Green,
+                                                summer[2].Blue,
+                                                summer[2].O);
+                                            season = "여름 뮤트";
+                                          });
+                                        },
+                                      ),
+                                      smallBackground(
+                                          firstBackgroundColor: Color.fromRGBO(
+                                              summer[2].Red,
+                                              summer[2].Green,
+                                              summer[2].Blue,
+                                              summer[2].O)),
+                                    ],
+                                  )
+                                : Row(
+                                    children: [
+                                      Radio(
+                                        value: firstColorIndex,
+                                        groupValue: index,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            index = value as int;
+                                            backgroundColor = Color.fromRGBO(
+                                                winter[0].Red,
+                                                winter[0].Green,
+                                                winter[0].Blue,
+                                                winter[0].O);
+                                            season = "겨울 브라이트";
+                                          });
+                                        },
+                                      ),
+                                      bigBackground(
+                                          firstBackgroundColor: Color.fromRGBO(
+                                              winter[0].Red,
+                                              winter[0].Green,
+                                              winter[0].Blue,
+                                              winter[0].O)),
+                                      Radio(
+                                        value: secondColorIndex,
+                                        groupValue: index,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            index = value as int;
+                                            backgroundColor = Color.fromRGBO(
+                                                winter[1].Red,
+                                                winter[1].Green,
+                                                winter[1].Blue,
+                                                winter[1].O);
+                                            season = "겨울 딥";
+                                          });
+                                        },
+                                      ),
+                                      bigBackground(
+                                          firstBackgroundColor: Color.fromRGBO(
+                                              winter[1].Red,
+                                              winter[1].Green,
+                                              winter[1].Blue,
+                                              winter[1].O)),
+                                    ],
+                                  )
+                            : fallCnt > springCnt && personalCnt == 9
+                                ? Row(
+                                    children: [
+                                      Radio(
+                                        value: firstColorIndex,
+                                        groupValue: index,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            index = value as int;
+                                            backgroundColor = Color.fromRGBO(
+                                                fall[0].Red,
+                                                fall[0].Green,
+                                                fall[0].Blue,
+                                                fall[0].O);
+                                            season = "가을 뮤트";
+                                          });
+                                        },
+                                      ),
+                                      smallBackground(
+                                          firstBackgroundColor: Color.fromRGBO(
+                                              fall[0].Red,
+                                              fall[0].Green,
+                                              fall[0].Blue,
+                                              fall[0].O)),
+                                      Radio(
+                                        value: secondColorIndex,
+                                        groupValue: index,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            index = value as int;
+                                            backgroundColor = Color.fromRGBO(
+                                                fall[1].Red,
+                                                fall[1].Green,
+                                                fall[1].Blue,
+                                                fall[1].O);
+                                            season = "가을 스트롱";
+                                          });
+                                        },
+                                      ),
+                                      smallBackground(
+                                          firstBackgroundColor: Color.fromRGBO(
+                                              fall[1].Red,
+                                              fall[1].Green,
+                                              fall[1].Blue,
+                                              fall[1].O)),
+                                      Radio(
+                                        value: thirdColorIndex,
+                                        groupValue: index,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            index = value as int;
+                                            backgroundColor = Color.fromRGBO(
+                                                fall[2].Red,
+                                                fall[2].Green,
+                                                fall[2].Blue,
+                                                fall[2].O);
+                                            season = "가을 딥";
+                                          });
+                                        },
+                                      ),
+                                      smallBackground(
+                                          firstBackgroundColor: Color.fromRGBO(
+                                              fall[2].Red,
+                                              fall[2].Green,
+                                              fall[2].Blue,
+                                              fall[2].O)),
+                                    ],
+                                  )
+                                : personalCnt == 9
+                                    ? Row(
+                                        children: [
+                                          Radio(
+                                            value: firstColorIndex,
+                                            groupValue: index,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                index = value as int;
+                                                backgroundColor =
+                                                    Color.fromRGBO(
+                                                        spring[0].Red,
+                                                        spring[0].Green,
+                                                        spring[0].Blue,
+                                                        spring[0].O);
+                                                season = "봄 라이트";
+                                              });
+                                            },
+                                          ),
+                                          bigBackground(
+                                              firstBackgroundColor:
+                                                  Color.fromRGBO(
+                                                      spring[0].Red,
+                                                      spring[0].Green,
+                                                      spring[0].Blue,
+                                                      spring[0].O)),
+                                          Radio(
+                                            value: secondColorIndex,
+                                            groupValue: index,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                index = value as int;
+                                                backgroundColor =
+                                                    Color.fromRGBO(
+                                                        spring[1].Red,
+                                                        spring[1].Green,
+                                                        spring[1].Blue,
+                                                        spring[1].O);
+                                                season = "봄 브라이트";
+                                              });
+                                            },
+                                          ),
+                                          bigBackground(
+                                              firstBackgroundColor:
+                                                  Color.fromRGBO(
+                                                      spring[1].Red,
+                                                      spring[1].Green,
+                                                      spring[1].Blue,
+                                                      spring[1].O)),
+                                        ],
+                                      )
+                                    : Container(
+                                        color: Colors.white,
+                                        width: 380,
+                                        height: 780,
+                                      ),
                   ),
+                  SizedBox(width: 10),
+                  personalCnt == 10
+                      ? SizedBox()
+                      : Container(
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                if (warm + cool < 4) {
+                                  firstColorIndex = firstColorIndex + 2;
+                                  secondColorIndex = secondColorIndex + 2;
+                                  if (index % 2 == 1) {
+                                    cool = cool + 1;
+                                    print(personalCnt);
+                                  } else if (index % 2 == 0) {
+                                    warm = warm + 1;
+                                    print(personalCnt);
+                                  }
+                                  personalCnt = personalCnt + 1;
+                                  updatePCM = personalColorCnt(
+                                      warmCool[index].PersonalColor, updatePCM);
+                                }
+                                if (warm + cool == 4 && personalCnt <= 8) {
+                                  if (fallCnt + springCnt == 0 &&
+                                      winterCnt + summerCnt == 0) {
+                                    firstColorIndex = -2;
+                                    secondColorIndex = -1;
+                                    if (index % 2 == 1) {
+                                      springCnt = springCnt - 1;
+                                      winterCnt = winterCnt - 1;
+                                    } else if (index % 2 == 0) {
+                                      fallCnt = fallCnt - 1;
+                                      summerCnt = summerCnt - 1;
+                                    }
+                                  }
+                                  if (warm > cool) {
+                                    firstColorIndex = firstColorIndex + 2;
+                                    secondColorIndex = secondColorIndex + 2;
+
+                                    if (index % 2 == 1) {
+                                      springCnt = springCnt + 1;
+                                    } else if (index % 2 == 0) {
+                                      fallCnt = fallCnt + 1;
+                                    }
+                                    personalCnt = personalCnt + 1;
+                                    updatePCM = personalColorCnt(
+                                        fallspring[index].PersonalColor,
+                                        updatePCM);
+                                  } else if (warm < cool) {
+                                    firstColorIndex = firstColorIndex + 2;
+                                    secondColorIndex = secondColorIndex + 2;
+                                    if (index % 2 == 1) {
+                                      winterCnt = winterCnt + 1;
+                                    } else if (index % 2 == 0) {
+                                      summerCnt = summerCnt + 1;
+                                    }
+                                    personalCnt = personalCnt + 1;
+                                    updatePCM = personalColorCnt(
+                                        summerWinter[index].PersonalColor,
+                                        updatePCM);
+                                  }
+                                }
+                                if (season == "봄 라이트" ||
+                                    season == "봄 브라이트" ||
+                                    season == "여름 브라이트" ||
+                                    season == "여름 라이트" ||
+                                    season == "여름 뮤트" ||
+                                    season == "가을 뮤트" ||
+                                    season == "가을 딥" ||
+                                    season == "가을 스트롱" ||
+                                    season == "겨울 브라이트" ||
+                                    season == "겨울 딥") {
+                                  personalCnt = personalCnt + 1;
+                                }
+                                if (personalCnt == 10) {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => PersonalColorResult(
+                                        PCM: updatePCM,
+                                        season: season,
+                                        personalCnt: personalCnt),
+                                  ));
+                                }
+                              });
+                            },
+                            child: Text(
+                              '선택 완료',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            style: OutlinedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                side: BorderSide(
+                                    color:
+                                        const Color.fromARGB(255, 46, 46, 46),
+                                    width: 1)),
+                          ),
+                        ),
                 ],
               ),
-              SizedBox(height: 40),
+              personalCnt == 10 ? SizedBox(height: 1) : SizedBox(height: 40),
             ],
           ),
         ],
@@ -479,8 +518,6 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
     );
   }
 }
-
-PersonalColorModel PCM = PersonalColorModel(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
 PersonalColorModel personalColorCnt(
     String personalColor, PersonalColorModel PCM) {
