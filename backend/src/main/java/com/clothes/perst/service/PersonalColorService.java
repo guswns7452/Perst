@@ -27,11 +27,18 @@ public class PersonalColorService {
     }
 
     /**
-     * 퍼스널 컬러 진단 후 등록하는 코드ㄱㄷ
+     * 퍼스널 컬러 진단 후 등록하는 코드
      * @param personalColor
      * @return
      */
     public PersonalColorVO registPersonalColor(PersonalColorVO personalColor){
+        // 기존에 퍼스널 컬러 진단 이력이 있다면, 기존 이력들 지우기
+        // personalSelect 테이블은 On Delete시 [CASCADE] 설정 해둠
+        if (personalColorJPA.findByMemberNumber(personalColor.getMemberNumber()) != null){
+            personalColorJPA.deleteByMemberNumber(personalColor.getMemberNumber());
+        }
+
+        // 퍼스널 컬러 등록
         List<PersonalSelectVO> personalSelectVOList = personalColor.getPersonalSelects();
 
         // DB에 등록
@@ -52,6 +59,36 @@ public class PersonalColorService {
         // 명도, 채도, 색상, 상 중 하 정의
         personalColor.setPersonalColorInfo(PersonalColorDTO.getSeasonTone(personalColor.getPersonalColorType()));
 
+        // 대표색 불러오기
+        personalColor.setPersonalColorRepresentative(representativeColorJPA.representativeColor(personalColor.getPersonalColorType()));
+
+        return personalColor;
+    }
+
+    /** 퍼스널 컬러 진단 이력 조회하기
+     * @param memberNumber
+     * @return PersonalColorVO
+     */
+    public PersonalColorVO findMyPersonalColor(int memberNumber){
+        PersonalColorVO personalColor = personalColorJPA.findByMemberNumber(memberNumber);
+
+        if(personalColor == null){
+            throw new IllegalArgumentException("퍼스널 컬러 진단 이력이 없습니다.");
+        }
+
+        // 선택한 횟수 보여주기
+        List<PersonalSelectVO> personalSelectVOList = personalSelectJPA.findAllByPersonalColorNumber(personalColor.getPersonalColorNumber());
+        personalColor.setPersonalSelects(personalSelectVOList);
+
+        // 선택 순위 정렬하기
+        Collections.sort(personalSelectVOList, Comparator.comparingInt(PersonalSelectVO::getPersonalSelectTimes).reversed());
+
+        // 선택한 이력은 두개만 전달
+        personalColor.setPersonalSelects(personalColor.getPersonalSelects().subList(0,2));
+
+        // 명도, 채도, 색상, 상 중 하 정의
+        personalColor.setPersonalColorInfo(PersonalColorDTO.getSeasonTone(personalColor.getPersonalColorType()));
+        
         // 대표색 불러오기
         personalColor.setPersonalColorRepresentative(representativeColorJPA.representativeColor(personalColor.getPersonalColorType()));
 
