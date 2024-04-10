@@ -82,4 +82,49 @@ public class PersonalColorController {
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
         }
     }
+
+    /**
+     * Personal Color를 등록하는 API
+     * @param token
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @Operation(summary = "퍼스널 컬러 이력 조회하기", description = "퍼스널 컬러를 조회 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "퍼스널 컬러 조회 성공",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = RestResponse.class),
+                            examples = @ExampleObject(name = "퍼스널 컬러 등록 성공")) }),
+            @ApiResponse(responseCode = "404", description = "오류 발생")
+    })
+    @GetMapping("/color")
+    public ResponseEntity findMyPersonalColor(@RequestHeader("Authorization") String token) throws Exception {
+        int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
+
+        logger.info(String.format("[퍼스널 컬러 조회하기] 회원 번호 : %d", memberNumber));
+
+        // 퍼스널 컬러 조회 코드 실행
+        PersonalColorVO personalColor = personalColorService.findMyPersonalColor(memberNumber);
+
+        try{
+            restResponse = RestResponse.builder()
+                    .code(HttpStatus.OK.value())
+                    .httpStatus(HttpStatus.OK)
+                    .message("고객님의 퍼스널 컬러 진단 이력입니다.")
+                    .data(personalColor)
+                    .build();
+            return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
+        }
+
+        // 퍼스널 컬러이 없을 때, IllegalArgumentException 발생
+        catch (IllegalArgumentException e){
+            restResponse = RestResponse.builder()
+                    .code(HttpStatus.NOT_FOUND.value())
+                    .httpStatus(HttpStatus.NOT_FOUND)
+                    .message(e.getMessage())
+                    .build();
+            return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
+        }
+    }
 }

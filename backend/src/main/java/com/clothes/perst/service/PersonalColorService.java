@@ -64,4 +64,34 @@ public class PersonalColorService {
 
         return personalColor;
     }
+
+    /** 퍼스널 컬러 진단 이력 조회하기
+     * @param memberNumber
+     * @return PersonalColorVO
+     */
+    public PersonalColorVO findMyPersonalColor(int memberNumber){
+        PersonalColorVO personalColor = personalColorJPA.findByMemberNumber(memberNumber);
+
+        if(personalColor == null){
+            throw new IllegalArgumentException("퍼스널 컬러 진단 이력이 없습니다.");
+        }
+
+        // 선택한 횟수 보여주기
+        List<PersonalSelectVO> personalSelectVOList = personalSelectJPA.findAllByPersonalColorNumber(personalColor.getPersonalColorNumber());
+        personalColor.setPersonalSelects(personalSelectVOList);
+
+        // 선택 순위 정렬하기
+        Collections.sort(personalSelectVOList, Comparator.comparingInt(PersonalSelectVO::getPersonalSelectTimes).reversed());
+
+        // 선택한 이력은 두개만 전달
+        personalColor.setPersonalSelects(personalColor.getPersonalSelects().subList(0,2));
+
+        // 명도, 채도, 색상, 상 중 하 정의
+        personalColor.setPersonalColorInfo(PersonalColorDTO.getSeasonTone(personalColor.getPersonalColorType()));
+        
+        // 대표색 불러오기
+        personalColor.setPersonalColorRepresentative(representativeColorJPA.representativeColor(personalColor.getPersonalColorType()));
+
+        return personalColor;
+    }
 }
