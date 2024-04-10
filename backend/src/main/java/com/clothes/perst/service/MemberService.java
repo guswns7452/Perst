@@ -87,9 +87,14 @@ public class MemberService {
      * @throws Exception
      */
     public MemberVO editMyInfo(MemberVO member) throws Exception{
-        if (memberRepository.findAllByMemberPhone(member.getMemberPhone()).size() > 1){
+        String phone = member.getMemberPhone();
+        if (memberRepository.findAllByMemberPhone(phone).size() > 1){
             throw new IllegalAccessException("이미 중복된 전화번호가 존재합니다.");
+        } else{
+            member.setMemberNumber(memberRepository.findMemberNumberByMemberPhone(phone));
+            // save가 등록도 되지만, 수정도 됨 (하지만, 일부 값이 Null이라면 문제가 될 수 있음)
+            return memberRepository.save(member);  
+            
         }
-        return memberRepository.save(member); // save가 등록도 되지만, 수정도 됨
     }
 }
