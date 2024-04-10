@@ -14,6 +14,5 @@ public interface MemberRepository extends JpaRepository<MemberVO, Integer> {
     MemberVO findByMemberNumber(int memberNumber);
     MemberVO save(MemberVO member);
 
-    int findMemberNumberByMemberPhone(String memberPhone);
 
 }

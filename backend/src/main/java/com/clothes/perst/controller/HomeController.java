@@ -182,8 +182,10 @@ public class HomeController {
     @PatchMapping("/mypage")
     public ResponseEntity editMyInfo(@RequestHeader("Authorization") String token, @RequestBody MemberVO member){
         logger.info("[마이페이지 변경]");
-        int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
         try{
+            int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
+            member.setMemberNumber(memberNumber);
+
             MemberVO full_member = memberService.editMyInfo(member);
             full_member.setMemberPassword("secret");
 
