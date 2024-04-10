@@ -27,11 +27,18 @@ public class PersonalColorService {
     }
 
     /**
-     * 퍼스널 컬러 진단 후 등록하는 코드ㄱㄷ
+     * 퍼스널 컬러 진단 후 등록하는 코드
      * @param personalColor
      * @return
      */
     public PersonalColorVO registPersonalColor(PersonalColorVO personalColor){
+        // 기존에 퍼스널 컬러 진단 이력이 있다면, 기존 이력들 지우기
+        // personalSelect 테이블은 On Delete시 [CASCADE] 설정 해둠
+        if (personalColorJPA.findByMemberNumber(personalColor.getMemberNumber()) != null){
+            personalColorJPA.deleteByMemberNumber(personalColor.getMemberNumber());
+        }
+
+        // 퍼스널 컬러 등록
         List<PersonalSelectVO> personalSelectVOList = personalColor.getPersonalSelects();
 
         // DB에 등록

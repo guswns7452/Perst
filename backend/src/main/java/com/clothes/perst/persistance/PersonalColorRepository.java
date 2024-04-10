@@ -5,4 +5,8 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface PersonalColorRepository extends CrudRepository<PersonalColorVO, PersonalColorVO> {
     PersonalColorVO save(PersonalColorVO personalColorVO);
+
+    PersonalColorVO findByMemberNumber(int memberNumber);
+
+    void deleteByMemberNumber(int memberNumber);
 }
