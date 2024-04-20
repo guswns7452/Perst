@@ -6,10 +6,15 @@
 ## 분석 내용 2 : 상의 컬러 추출 -> 퍼스널 컬러 진단
 ## ✅   -> HSV로 저장하기
 
-import colorsys
+import colorsys, cv2
 import pymysql
-import json
-import os
+import json, numpy as np
+import os, sys
+import personal_color
+
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+import cnn_model
+
 
 PATH =  os.getcwd()
 
@@ -27,6 +32,22 @@ def database_SetUp():
         
     return data
 
+
+def imgLoad(folder_path, file_name):
+    # 한글 파일 경로도 읽을 수 있도록
+    img_array = np.fromfile(folder_path+"/"+file_name, dtype=np.uint8)
+    img_file = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+    
+    if img_file is None:
+        print(
+            "이미지 파일을 불러오는데 실패했습니다. 해당 파일이 존재하는지 확인해주세요"
+        )
+        return
+    else:
+        # 색상 공간을 RGB 형태로 변경
+        img_file = cv2.cvtColor(img_file, cv2.COLOR_BGR2RGB)
+        return img_file
+    
 ##
 # DB에 색상 업로드와 퍼스널 컬러 추가
 #
@@ -42,56 +63,34 @@ def dataChange():
     conn = pymysql.connect(host = data['host'] ,port = data['port'], user = data['user'], password = data['password'], db = data['db'], charset='utf8')	# 접속정보
     cur = conn.cursor()	# 커서생성
 
-    # codishop Data
-    for gender in ['man','woman']:
-        for bottomFolder in ['고프코어', '골프', '댄디', '로맨틱', '미니멀', '비즈니스캐주얼', '스트릿', '스포티', '시크', '아메카지', '캐주얼' , '걸리시', '레트로']:
-            try:
-                folderPath = PATH + "/images/" + gender + "/" + bottomFolder
-                
-                # 폴더 내의 파일명 가져오기
-                files = os.listdir(folderPath)
-
-                # 파일명 출력
-                for file_name in files:
-                    print(file_name)
-                    
-                    musinsa_number = file_name.split("_")[1]
-                    
-                    ##########################################
-                    # 머신러닝을 통해 퍼스널 컬러를 진단하는 곳 #
-                    ##########################################
-                    
-                    musinsa_personal = ""    # 퍼스널 컬러가 담길 변수
-                    
-                    sql = f"UPDATE musinsa SET musinsa_personal = '{musinsa_personal}' where musinsa_number = {musinsa_number}"	# 퍼스널 컬러
-                    cur.execute(sql)	# 커서로 sql문 실행
-                    conn.commit()
-            
-            except FileNotFoundError:
-                continue
-            
     # brandsnap Data
     for gender in ['man','woman']:
-        for bottomFolder in ['Amekaji', 'businessCasual', 'casual',' chic', 'dandy', 'gofcore', 'golf', 'minimal', 'sporty', 'street', 'girlish', 'retro', 'romantic']:
+        for bottomFolder in ['아메카지', 'businessCasual', 'casual','chic', 'dandy', 'gofcore', 'golf', 'minimal', 'sporty', 'street', 'girlish', 'retro', 'romantic']:
             try:
-                folderPath = PATH + "/images/" + gender + "/" + bottomFolder
+                folderPath = PATH + "/newimages/Musinsa Data/" + gender + "/" + bottomFolder
                 
                 # 폴더 내의 파일명 가져오기
                 files = os.listdir(folderPath)
-
+                print(gender, " / " ,bottomFolder, " / " , folderPath)
+                
                 # 파일명 출력
                 for file_name in files:
                     print(file_name)
                     
                     musinsa_number = file_name.split("_")[1]
                     
-                    ##########################################
-                    # 머신러닝을 통해 퍼스널 컬러를 진단하는 곳 #
-                    ##########################################
+                    ori_img = imgLoad(folderPath, file_name)
+                    if ori_img is None:
+                        print("이미지 파일을 불러오는데 실패하였습니다.")
+
+                    # CNN 으로 정보 추출
+                    output_dict = cnn_model.cnn_model_main(ori_img, gender)
                     
-                    musinsa_personal = ""    # 퍼스널 컬러가 담길 변수
+                    personal_rgb = output_dict['personal_color_rgb']    # 퍼스널 컬러가 담길 변수
+                    musinsa_personal = personal_color.get_season_tone(personal_rgb) # 의류에 어울리는 퍼스널 컬러
                     
-                    sql = f"UPDATE musinsa SET musinsa_personal = '{musinsa_personal}' where musinsa_number = {musinsa_number}"	# 퍼스널 컬러
+                    # 퍼스널 컬러, RGB 값 DB에 업데이트
+                    sql = f"UPDATE musinsa SET musinsa_personal = '{musinsa_personal}', musinsa_red  = {personal_rgb[0]}, musinsa_green  = {personal_rgb[1]}, musinsa_blue  = {personal_rgb[2]} where musinsa_number = {musinsa_number}"	# 퍼스널 컬러
                     cur.execute(sql)	# 커서로 sql문 실행
                     conn.commit()
             
@@ -100,30 +99,5 @@ def dataChange():
 
     conn.close()	# 종료
 
-##
-# RGB to HSV
-#
-def rgb_to_hsv(r, g, b):
-    # RGB 값을 0~1 범위로 정규화
-    r /= 255.0
-    g /= 255.0
-    b /= 255.0
-    
-    # RGB를 HSV로 변환
-    hsv = colorsys.rgb_to_hsv(r, g, b)
-    
-    # HSV값을 반환
-    return hsv
-
-# 예시 RGB 값
-r, g, b = 255, 0, 0
-
-# RGB를 HSV로 변환
-h, s, v = rgb_to_hsv(r, g, b)
-
-# 변환된 HSV 값 출력
-print("Hue:", h)
-print("Saturation:", s)
-print("Value:", v)
 
 dataChange()
