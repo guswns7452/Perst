@@ -5,6 +5,7 @@
 # 기존에는 마스크가 [0,1]로만 구분했지만, 이제는 [0~5]까지 구분해내므로 colorExtract()함수의 코드 일부를 수정하였습니다.
 # 기존에는 색상의 대표값을 추출할 때, 평균(mean)값을 사용하였지만, 이상값의 영향을 줄이기 위해 중간값(median)을 사용하도록 변경하였습니다.
 # 색상 출력형태를 RGB에서 HSV로 변경할까했지만, 통상적으로 사용하는 HSV 색공간과는 숫자범위가 달라서 그대로 RGB형식으로 출력하고있습니다.
+# 경로에 한글이 포함된 이미지도 불러올 수 있도록 imgLoad() 함수를 개선하였습니다.
 
 
 # 이미지 처리
@@ -33,10 +34,12 @@ def imgLoad(input_type):
         # 여성 샘플 이미지 불러오기
         img_path = model_dir_path + 'img_sample_female.jpg'
     else:
-        print("img_type 변수의 입력 형태가 올바르지 않습니다. male과 female중 하나를 입력해주세요")
-        return
-    
-    img_file = cv2.imread(img_path)
+        img_path = input_type
+
+    # 한글 파일 경로도 읽을 수 있도록
+    img_array = np.fromfile(img_path, dtype=np.uint8)
+    img_file = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+
     if img_file is None:
         print("이미지 파일을 불러오는데 실패했습니다. 해당 파일이 존재하는지 확인해주세요")
         return
