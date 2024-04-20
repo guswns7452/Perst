@@ -63,19 +63,21 @@ def dataChange():
     conn = pymysql.connect(host = data['host'] ,port = data['port'], user = data['user'], password = data['password'], db = data['db'], charset='utf8')	# 접속정보
     cur = conn.cursor()	# 커서생성
 
+    count = 0
     # brandsnap Data
     for gender in ['man','woman']:
-        for bottomFolder in ['아메카지', 'businessCasual', 'casual','chic', 'dandy', 'gofcore', 'golf', 'minimal', 'sporty', 'street', 'girlish', 'retro', 'romantic']:
+        for bottomFolder in ['amekaji', 'businessCasual', 'casual','chic', 'dandy', 'gofcore', 'golf', 'minimal', 'sporty', 'street', 'girlish', 'retro', 'romantic']:
             try:
                 folderPath = PATH + "/newimages/Musinsa Data/" + gender + "/" + bottomFolder
                 
                 # 폴더 내의 파일명 가져오기
                 files = os.listdir(folderPath)
-                print(gender, " / " ,bottomFolder, " / " , folderPath)
+                print(gender, " / " ,bottomFolder, " / " , folderPath, " / 현재 완료 갯수 : ", count)
                 
                 # 파일명 출력
                 for file_name in files:
-                    print(file_name)
+                    count += 1
+                    print(file_name, " / 현재 완료 갯수 : ", count)
                     
                     musinsa_number = file_name.split("_")[1]
                     
