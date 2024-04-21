@@ -6,12 +6,13 @@
 ## 분석 내용 2 : 상의 컬러 추출 -> 퍼스널 컬러 진단
 ## ✅   -> HSV로 저장하기
 
-import colorsys, cv2
+import cv2
 import pymysql
 import json, numpy as np
 import os, sys
 import personal_color
 from multiprocessing import Process, freeze_support
+from test_data.call_data import call_data  
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 import cnn_model
@@ -57,13 +58,36 @@ def connect_to_database():
     cur = conn.cursor()	# 커서생성
     
     return conn, cur
-    
 
-def update_personalColor_to_DB(genders, styles):
+# 현재 지금 스타일이 분석 완료 되었는지 판단
+def is_completed(Data_status, nowStyle, gender):
+    man_complete_list = Data_status["man"]
+    woman_complete_list = Data_status["woman"]
+    
+    if gender == "man":
+        for i in man_complete_list:
+            try:
+                if i[nowStyle] > 0:
+                    return i[nowStyle]//10 # 완료된 번호
+            except KeyError:
+                pass
+        
+        return False
+    
+    else:
+        for i in woman_complete_list:
+            try:
+                if i[nowStyle] > 0:
+                    return i[nowStyle]//10 # 완료된 번호
+            except KeyError:
+                pass
+        
+        return False
+        
+def update_personalColor_to_DB(genders, styles, Data_status):
     # 전역변수 선언부
     conn = None
     cur = None
-    count = 0
     
     # 데이터베이스에 연결
     conn, cur = connect_to_database()
@@ -72,24 +96,31 @@ def update_personalColor_to_DB(genders, styles):
     for gender in genders:  
         for bottomFolder in styles:
             try:
-                folderPath = PATH + "/newimages/Musinsa Data/" + gender + "/" + bottomFolder
+                count = 0
+                
+                # 이미 이미지가 분석되었는지 판단하는 코드
+                # 이미지가 분석이 완료된 번호가 analyze_completed_number에 담긴다
+                data = is_completed(Data_status, bottomFolder, gender)
+                if data == False:
+                    analyze_completed_number = 0
+                else:
+                    analyze_completed_number = data
                 
                 # 폴더 내의 파일명 가져오기
+                folderPath = PATH + "/newimages/Musinsa Data/" + gender + "/" + bottomFolder
                 files = os.listdir(folderPath)
                 print(gender, " / " ,bottomFolder, " / " , folderPath, " / 현재 완료 갯수 : ", count)
                 
                 # 파일명 출력
                 for file_name in files:
                     count += 1
+                    
                     print(f"[Thread-{Process.name}] Processing {file_name} ({count}/{len(files)})")
                     
                     musinsa_number = file_name.split("_")[1]
-                    
-                    # 기존에 이미 진행한 파일은 제거
                     m = int(musinsa_number[0:5])
-                    if (bottomFolder == "amekaji" and m < 39350 and gender == "man") or (bottomFolder == "businessCasual" and m < 24339 and gender == "man"):
-                        continue
-                    elif ((bottomFolder == "gofcore" and m < 39389 and gender == "woman") or (bottomFolder == "golf" and m < 30815 and gender == "woman")):
+                            
+                    if m < analyze_completed_number-1:
                         continue
                     
                     ori_img = imgLoad(folderPath, file_name)
@@ -127,18 +158,20 @@ def dataChange():
     style_args2 = ['golf', 'minimal', 'sporty', 'street', 'dandy']
     style_args3 = ['girlish', 'gofcore', 'retro', 'romantic']
     
+    Data_status = call_data()
+    
     # brandsnap Data
     # 여섯개의 멀티스레드로 구성
     processes = []
     
     freeze_support()  # Windows에서 multiprocessing 사용 시 필요
     
-    t1 = Process(target=update_personalColor_to_DB, args=(['woman'], style_args1), name="1"); t1.start(); processes.append(t1);
-    t2 = Process(target=update_personalColor_to_DB, args=(['woman'], style_args2), name="2"); t2.start(); processes.append(t2);
-    t3 = Process(target=update_personalColor_to_DB, args=(['woman'], style_args3), name="3"); t3.start(); processes.append(t3);
-    t4 = Process(target=update_personalColor_to_DB, args=(['man'], style_args1), name="4"); t4.start(); processes.append(t4);
-    # t5 = Process(target=update_personalColor_to_DB, args=(['man'], style_args2), name="5"); t5.start(); processes.append(t5);
-    # t6 = Process(target=update_personalColor_to_DB, args=(['man'], style_args3), name="6"); t6.start(); processes.append(t6);
+    t1 = Process(target=update_personalColor_to_DB, args=(['woman'], style_args1, Data_status), name="1"); t1.start(); processes.append(t1);
+    t2 = Process(target=update_personalColor_to_DB, args=(['woman'], style_args2, Data_status), name="2"); t2.start(); processes.append(t2);
+    t3 = Process(target=update_personalColor_to_DB, args=(['woman'], style_args3, Data_status), name="3"); t3.start(); processes.append(t3);
+    t4 = Process(target=update_personalColor_to_DB, args=(['man'], style_args1, Data_status), name="4"); t4.start(); processes.append(t4);
+    # t5 = Process(target=update_personalColor_to_DB, args=(['man'], style_args2, Data_status), name="5"); t5.start(); processes.append(t5);
+    # t6 = Process(target=update_personalColor_to_DB, args=(['man'], style_args3, Data_status), name="6"); t6.start(); processes.append(t6);
     
     for precess in processes:
         precess.join()
