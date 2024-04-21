@@ -11,7 +11,7 @@ import pymysql
 import json, numpy as np
 import os, sys
 import personal_color
-import threading
+from multiprocessing import Process, freeze_support
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 import cnn_model
@@ -49,6 +49,7 @@ def imgLoad(folder_path, file_name):
         return img_file
     
 
+# 데이터베이스에 연결하는 코드
 def connect_to_database():
     # 메인 코드
     data = read_database_info()
@@ -59,6 +60,15 @@ def connect_to_database():
     
 
 def update_personalColor_to_DB(genders, styles):
+    # 전역변수 선언부
+    conn = None
+    cur = None
+    count = 0
+    
+    # 데이터베이스에 연결
+    conn, cur = connect_to_database()
+    sql=""
+    
     for gender in genders:  
         for bottomFolder in styles:
             try:
@@ -71,9 +81,16 @@ def update_personalColor_to_DB(genders, styles):
                 # 파일명 출력
                 for file_name in files:
                     count += 1
-                    print(file_name, " / 현재 완료 갯수 : ", count)
+                    print(f"[Thread-{Process.name}] Processing {file_name} ({count}/{len(files)})")
                     
                     musinsa_number = file_name.split("_")[1]
+                    
+                    # 기존에 이미 진행한 파일은 제거
+                    m = int(musinsa_number[0:5])
+                    if (bottomFolder == "amekaji" and m < 39350 and gender == "man") or (bottomFolder == "businessCasual" and m < 24339 and gender == "man"):
+                        continue
+                    elif ((bottomFolder == "gofcore" and m < 39389 and gender == "woman") or (bottomFolder == "golf" and m < 30815 and gender == "woman")):
+                        continue
                     
                     ori_img = imgLoad(folderPath, file_name)
                     if ori_img is None:
@@ -92,6 +109,12 @@ def update_personalColor_to_DB(genders, styles):
             
             except FileNotFoundError:
                 continue
+            
+            # 커넥션이 끊기면 다시 DB에 연동함
+            except ConnectionResetError:
+                conn, cur = connect_to_database()
+
+    conn.close()	# 종료
 
 ##
 # DB에 색상 업로드와 퍼스널 컬러 추가
@@ -99,11 +122,6 @@ def update_personalColor_to_DB(genders, styles):
 # ConnectionResetError 예외처리 -> DB에 재 접속하기
 #
 def dataChange():
-    
-    # 데이터베이스에 연결
-    conn, cur = connect_to_database()
-    sql=""
-    
     # Style 정의
     style_args1 = ['amekaji', 'businessCasual', 'casual', 'chic', ]
     style_args2 = ['golf', 'minimal', 'sporty', 'street', 'dandy']
@@ -111,24 +129,20 @@ def dataChange():
     
     # brandsnap Data
     # 여섯개의 멀티스레드로 구성
-    threads = []
+    processes = []
     
-    t1 = threading.Thread(target=update_personalColor_to_DB, args=('woman', style_args1)); t1.start(); threads.append(t1);
-    t2 = threading.Thread(target=update_personalColor_to_DB, args=('woman', style_args2)); t2.start(); threads.append(t2);
-    t3 = threading.Thread(target=update_personalColor_to_DB, args=('woman', style_args3)); t3.start(); threads.append(t3);
-    t4 = threading.Thread(target=update_personalColor_to_DB, args=('man', style_args1)); t4.start(); threads.append(t4);
-    t5 = threading.Thread(target=update_personalColor_to_DB, args=('man', style_args2)); t5.start(); threads.append(t5);
-    t6 = threading.Thread(target=update_personalColor_to_DB, args=('man', style_args3)); t6.start(); threads.append(t6);
+    freeze_support()  # Windows에서 multiprocessing 사용 시 필요
     
-    for thread in threads:
-        thread.join()
+    t1 = Process(target=update_personalColor_to_DB, args=(['woman'], style_args1), name="1"); t1.start(); processes.append(t1);
+    t2 = Process(target=update_personalColor_to_DB, args=(['woman'], style_args2), name="2"); t2.start(); processes.append(t2);
+    t3 = Process(target=update_personalColor_to_DB, args=(['woman'], style_args3), name="3"); t3.start(); processes.append(t3);
+    t4 = Process(target=update_personalColor_to_DB, args=(['man'], style_args1), name="4"); t4.start(); processes.append(t4);
+    # t5 = Process(target=update_personalColor_to_DB, args=(['man'], style_args2), name="5"); t5.start(); processes.append(t5);
+    # t6 = Process(target=update_personalColor_to_DB, args=(['man'], style_args3), name="6"); t6.start(); processes.append(t6);
     
+    for precess in processes:
+        precess.join()
+    
+if __name__ == '__main__':
+    dataChange()
 
-
-# 전역변수 선언부
-conn = None
-cur = None
-    
-dataChange()
-
-conn.close()	# 종료
