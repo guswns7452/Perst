@@ -11,17 +11,17 @@ import pymysql
 import json, numpy as np
 import os, sys
 import personal_color
+import threading
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 import cnn_model
-
 
 PATH =  os.getcwd()
 
 ##
 # DB 세팅 값 불러오기
 #
-def database_SetUp():
+def read_database_info():
     # JSON 파일 경로
     jsonFilePath = PATH+'/database.json'
     
@@ -48,25 +48,19 @@ def imgLoad(folder_path, file_name):
         img_file = cv2.cvtColor(img_file, cv2.COLOR_BGR2RGB)
         return img_file
     
-##
-# DB에 색상 업로드와 퍼스널 컬러 추가
-#
-def dataChange():
-    # 전역변수 선언부
-    conn = None
-    cur = None
 
-    sql=""
-
+def connect_to_database():
     # 메인 코드
-    data = database_SetUp()
+    data = read_database_info()
     conn = pymysql.connect(host = data['host'] ,port = data['port'], user = data['user'], password = data['password'], db = data['db'], charset='utf8')	# 접속정보
     cur = conn.cursor()	# 커서생성
+    
+    return conn, cur
+    
 
-    count = 0
-    # brandsnap Data
-    for gender in ['man','woman']:
-        for bottomFolder in ['amekaji', 'businessCasual', 'casual','chic', 'dandy', 'gofcore', 'golf', 'minimal', 'sporty', 'street', 'girlish', 'retro', 'romantic']:
+def update_personalColor_to_DB(genders, styles):
+    for gender in genders:  
+        for bottomFolder in styles:
             try:
                 folderPath = PATH + "/newimages/Musinsa Data/" + gender + "/" + bottomFolder
                 
@@ -99,7 +93,42 @@ def dataChange():
             except FileNotFoundError:
                 continue
 
-    conn.close()	# 종료
+##
+# DB에 색상 업로드와 퍼스널 컬러 추가
+# TODO : (0421) 4개의 스레드로 분리 후 코드 실행
+# ConnectionResetError 예외처리 -> DB에 재 접속하기
+#
+def dataChange():
+    
+    # 데이터베이스에 연결
+    conn, cur = connect_to_database()
+    sql=""
+    
+    # Style 정의
+    style_args1 = ['amekaji', 'businessCasual', 'casual', 'chic', ]
+    style_args2 = ['golf', 'minimal', 'sporty', 'street', 'dandy']
+    style_args3 = ['girlish', 'gofcore', 'retro', 'romantic']
+    
+    # brandsnap Data
+    # 여섯개의 멀티스레드로 구성
+    threads = []
+    
+    t1 = threading.Thread(target=update_personalColor_to_DB, args=('woman', style_args1)); t1.start(); threads.append(t1);
+    t2 = threading.Thread(target=update_personalColor_to_DB, args=('woman', style_args2)); t2.start(); threads.append(t2);
+    t3 = threading.Thread(target=update_personalColor_to_DB, args=('woman', style_args3)); t3.start(); threads.append(t3);
+    t4 = threading.Thread(target=update_personalColor_to_DB, args=('man', style_args1)); t4.start(); threads.append(t4);
+    t5 = threading.Thread(target=update_personalColor_to_DB, args=('man', style_args2)); t5.start(); threads.append(t5);
+    t6 = threading.Thread(target=update_personalColor_to_DB, args=('man', style_args3)); t6.start(); threads.append(t6);
+    
+    for thread in threads:
+        thread.join()
+    
 
 
+# 전역변수 선언부
+conn = None
+cur = None
+    
 dataChange()
+
+conn.close()	# 종료
