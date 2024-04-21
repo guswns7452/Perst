@@ -1,9 +1,9 @@
 ## ✅ 로컬 이미지 파일에서, 이미지들을 가져옴
-## 이미지를 기반으로 분석하는 코드로 넘김
+## ✅ 이미지를 기반으로 분석하는 코드로 넘김
 ## ✅ 분석한 내용을 기반으로 DB에 저장
 
-## 분석 내용 1 : 컬러 추출 (여러가지 색) -> DB에 저장
-## 분석 내용 2 : 상의 컬러 추출 -> 퍼스널 컬러 진단
+## ✅ 분석 내용 1 : 컬러 추출 (상의 색) -> DB에 저장
+## ✅ 분석 내용 2 : 상의 컬러 추출 -> 퍼스널 컬러 진단
 ## ✅   -> HSV로 저장하기
 
 import cv2
@@ -115,7 +115,7 @@ def update_personalColor_to_DB(genders, styles, Data_status):
                 for file_name in files:
                     count += 1
                     
-                    print(f"[Thread-{Process.name}] Processing {file_name} ({count}/{len(files)})")
+                    print(f"[Thread-{os.getpid()}] Processing {file_name} ({count}/{len(files)})")
                     
                     musinsa_number = file_name.split("_")[1]
                     m = int(musinsa_number[0:5])
