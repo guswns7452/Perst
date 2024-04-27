@@ -58,7 +58,7 @@ class Intro extends StatelessWidget {
                   onPressed: () {
                     // 로그인을 클릭하면 로그인 창으로 이동
                     Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const Tabbar(),
+                      builder: (context) => Tabbar(),
                     ));
                   },
                   style: ElevatedButton.styleFrom(

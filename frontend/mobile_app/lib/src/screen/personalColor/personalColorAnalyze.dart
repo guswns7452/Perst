@@ -1,19 +1,42 @@
 import 'dart:io';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:perst/src/model/color_radio_model.dart';
 import 'package:perst/src/screen/personalColor/personalColorResult.dart';
 import 'package:perst/src/widget/personal_color_analyze_widget.dart';
 
 class PersonalColorAnalyze extends StatefulWidget {
-  final File? image;
-  const PersonalColorAnalyze({required this.image, Key? key}) : super(key: key);
+  const PersonalColorAnalyze({super.key});
 
   @override
   State<PersonalColorAnalyze> createState() => _PersonalColorAnalyzeState();
 }
 
 class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
+  late CameraController _controller;
+  late Future<void> _initializeControllerFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    // 카메라 초기화
+    _initializeCamera();
+  }
+
+  Future<void> _initializeCamera() async {
+    // 사용 가능한 카메라 목록 가져오기
+    final cameras = await availableCameras();
+    // 전면 카메라 사용
+    _controller = CameraController(
+        cameras.firstWhere(
+            (camera) => camera.lensDirection == CameraLensDirection.front),
+        ResolutionPreset.high);
+
+    // 컨트롤러 초기화
+    _initializeControllerFuture = _controller.initialize();
+    setState(() {});
+  }
+
   int firstColorIndex = 0;
   int secondColorIndex = 1;
   int thirdColorIndex = 2;
@@ -103,16 +126,17 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
             child: Container(
               width: 250,
               height: 300,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(200),
-                child: widget.image != null
-                    ? Image.file(
-                        File(widget.image!.path),
-                        fit: BoxFit.cover,
-                        width: 200,
-                        height: 300,
-                      )
-                    : Placeholder(),
+              child: FutureBuilder<void>(
+                future: _initializeControllerFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    // 카메라 미리보기가 준비되면 카메라 미리보기를 반환
+                    return _buildCameraPreview();
+                  } else {
+                    // 그렇지 않으면 로딩 인디케이터를 반환
+                    return Center(child: CircularProgressIndicator());
+                  }
+                },
               ),
             ),
           ),
@@ -514,6 +538,24 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildCameraPreview() {
+    // 카메라 미리보기 위젯
+    return Center(
+      child: SizedBox(
+        width: 250,
+        height: 300,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(200),
+          child: SizedBox(
+            width: 300,
+            height: 300,
+            child: CameraPreview(_controller),
+          ),
+        ),
       ),
     );
   }
