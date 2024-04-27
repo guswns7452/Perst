@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:perst/src/screen/personalColor/personalColorGuide.dart';
+import 'package:perst/src/screen/personalColor/personalColorAnalyze.dart';
 
 class PersonalColor extends StatelessWidget {
   const PersonalColor({super.key});
@@ -78,7 +78,7 @@ class PersonalColor extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => PersonalColorGuide(),
+                    builder: (context) => PersonalColorAnalyze(),
                   ));
                 },
                 child: Text(
