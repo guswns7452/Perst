@@ -1,17 +1,24 @@
 package com.clothes.perst;
 
+import com.clothes.perst.domain.MusinsaVO;
+import com.clothes.perst.service.MusinsaService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Arrays;
 public class ColorToHSVTest {
+    private final MusinsaService musinsaService;
+
+    public ColorToHSVTest(MusinsaService musinsaService) {
+        this.musinsaService = musinsaService;
+    }
+
     @Test
     public static void main(String[] args) {
         // JSON 파일 경로
@@ -29,11 +36,13 @@ public class ColorToHSVTest {
             // HashMap 출력 (테스트)
             System.out.println("HashMap 출력:");
 
-            for (Map<String, int[]> i : colorMap.get("sky")){
-                System.out.println(i.get("H")[0]);
-                System.out.println(i.get("S").toString());
-                System.out.println(i.get("V").toString());
-            }
+            MusinsaVO musinsaVO = new MusinsaVO();
+            musinsaVO.setMusinsaStyle("dandy");
+            musinsaVO.setMusinsaGender("man");
+
+            List<String> color = new ArrayList<>();
+            color.add("sky");
+
 
             /*
             for (Map.Entry<String, List<Map<String, int[]>>> entry : colorMap.entrySet()) {

@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class ColorToRGB {
 
-    public List<Map<String, int[]>> getHSV(String color){
+    public static List<Map<String, int[]>> getHSV(String color){
         String jsonFilePath = "src/main/resources/colorToHSV.json";
 
         // ObjectMapper 객체 생성
