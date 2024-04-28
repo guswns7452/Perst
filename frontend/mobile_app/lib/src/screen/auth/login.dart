@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:perst/src/controller/user_controller.dart';
 import 'package:perst/src/screen/auth/intro.dart';
+import 'package:perst/src/widget/tab_bar.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -31,7 +32,7 @@ class _LoginState extends State<Login> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => Intro(),
+            builder: (context) => Tabbar(),
           ),
         );
       }

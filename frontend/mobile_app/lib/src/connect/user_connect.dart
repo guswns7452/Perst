@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:perst/shared/global.dart';
@@ -36,12 +37,21 @@ class UserConnect extends GetConnect {
       'memberWeight': memberWeight
     });
     Map<String, dynamic> body = response.body;
+    print(body);
     _storage.remove('gender');
-    _storage.write('gender', body['data']['memberGender']);
+    _storage.write('gender', memberGender);
 
     if (body['code'] == 201) {
       return body['message']; // 토큰 반환
-    } else if (body['code'] == 403) {}
+    } else if (body['code'] == 403) {
+      ScaffoldMessenger.of(Get.context!).showSnackBar(
+        SnackBar(
+          content: Text('전화번호가 중복되었습니다.'),
+        ),
+      );
+    } else {
+      throw Exception(body['code']);
+    }
   }
 
   // 로그인 통신
