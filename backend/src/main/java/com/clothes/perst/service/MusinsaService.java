@@ -21,18 +21,21 @@ public class MusinsaService {
 
     public List<MusinsaVO> findByMusinsaGenderAndMusinsaStyle(MusinsaVO musinsaVO, List<String> colors){
         List<MusinsaVO> musinsaVOList = new ArrayList<>();
-
-        if (!colors.isEmpty()){
-            for(String color: colors){
-                for(Map<String, int[]> map: ColorToRGB.getHSV(color)){
-                    int[] Hue = map.get("H"); // [0, 360]의 범위
-                    int[] Saturation = map.get("S");
-                    int[] Value = map.get("V");
-                    musinsaVOList.addAll(musinsaJPA.findByMusinsaGenderAndMusinsaStyleAndMusinsaHueBetweenAndMusinsaSaturationBetweenAndMusinsaValueBetween(musinsaVO.getMusinsaGender(), musinsaVO.getMusinsaStyle(),Hue[0],Hue[1], Saturation[0], Saturation[1], Value[0], Value[1]));
+        try{
+            if (!colors.isEmpty()){
+                for(String color: colors){
+                    for(Map<String, int[]> map: ColorToRGB.getHSV(color)){
+                        int[] Hue = map.get("H"); // [0, 360]의 범위
+                        int[] Saturation = map.get("S");
+                        int[] Value = map.get("V");
+                        musinsaVOList.addAll(musinsaJPA.findByMusinsaGenderAndMusinsaStyleAndMusinsaHueBetweenAndMusinsaSaturationBetweenAndMusinsaValueBetween(musinsaVO.getMusinsaGender(), musinsaVO.getMusinsaStyle(),Hue[0],Hue[1], Saturation[0], Saturation[1], Value[0], Value[1]));
+                    }
                 }
-            }
 
-            return musinsaVOList;
+                return musinsaVOList;
+            }
+        }catch (NullPointerException e){
+            throw new IllegalArgumentException("정의되지 않은 색상입니다.");
         }
 
 
