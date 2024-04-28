@@ -30,7 +30,7 @@ def call_data():
     conn = pymysql.connect(host = data['host'] ,port = data['port'], user = data['user'], password = data['password'], db = data['db'], charset='utf8')	# 접속정보
     cur = conn.cursor()	# 커서생성
     
-    sql="select max(musinsa_number), musinsa_style, musinsa_gender from musinsa where musinsa_personal != 'null' group by musinsa_style;"
+    sql="select max(musinsa_number), musinsa_style, musinsa_gender from musinsa where musinsa_personal != 'null' group by musinsa_style, musinsa_gender;"
     
     cur.execute(sql)	# 커서로 sql문 실행
     

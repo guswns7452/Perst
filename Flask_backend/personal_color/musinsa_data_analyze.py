@@ -158,6 +158,9 @@ def dataChange():
     style_args2 = ['golf', 'minimal', 'sporty', 'street', 'dandy']
     style_args3 = ['girlish', 'gofcore', 'retro', 'romantic']
     
+    style_args4 = ['dandy'];
+    style_args5 = ['businessCasual'];
+    
     Data_status = call_data()
     
     # brandsnap Data
@@ -166,12 +169,14 @@ def dataChange():
     
     freeze_support()  # Windows에서 multiprocessing 사용 시 필요
     
-    t1 = Process(target=update_personalColor_to_DB, args=(['woman'], style_args1, Data_status), name="1"); t1.start(); processes.append(t1);
-    t2 = Process(target=update_personalColor_to_DB, args=(['woman'], style_args2, Data_status), name="2"); t2.start(); processes.append(t2);
-    t3 = Process(target=update_personalColor_to_DB, args=(['woman'], style_args3, Data_status), name="3"); t3.start(); processes.append(t3);
-    t4 = Process(target=update_personalColor_to_DB, args=(['man'], style_args1, Data_status), name="4"); t4.start(); processes.append(t4);
-    # t5 = Process(target=update_personalColor_to_DB, args=(['man'], style_args2, Data_status), name="5"); t5.start(); processes.append(t5);
-    # t6 = Process(target=update_personalColor_to_DB, args=(['man'], style_args3, Data_status), name="6"); t6.start(); processes.append(t6);
+    #[완료] t1 = Process(target=update_personalColor_to_DB, args=(['woman'], style_args1, Data_status), name="1"); t1.start(); processes.append(t1);
+    #[완료] t2 = Process(target=update_personalColor_to_DB, args=(['woman'], style_args2, Data_status), name="2"); t2.start(); processes.append(t2);
+    #[완료] t3 = Process(target=update_personalColor_to_DB, args=(['woman'], style_args3, Data_status), name="3"); t3.start(); processes.append(t3);
+    #[완료] t4 = Process(target=update_personalColor_to_DB, args=(['man'], style_args1, Data_status), name="4"); t4.start(); processes.append(t4);
+    #[완료] t5 = Process(target=update_personalColor_to_DB, args=(['man'], style_args2, Data_status), name="5"); t5.start(); processes.append(t5);
+    #[완료] t6 = Process(target=update_personalColor_to_DB, args=(['man'], style_args3, Data_status), name="6"); t6.start(); processes.append(t6);
+    t7 = Process(target=update_personalColor_to_DB, args=(['man'], style_args4, Data_status), name="6"); t7.start(); processes.append(t7);
+    t8 = Process(target=update_personalColor_to_DB, args=(['woman'], style_args5, Data_status), name="6"); t8.start(); processes.append(t8);
     
     for precess in processes:
         precess.join()
