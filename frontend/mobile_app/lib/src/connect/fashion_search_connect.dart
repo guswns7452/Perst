@@ -29,9 +29,12 @@ class FashionSearchConnect extends GetConnect {
       if (womanFashionKeyword == 'Subculture') {
         womanFashionKeyword = 'street';
       }
-      Response response = await get(
-          '/clothes/search/woman?style=$womanFashionKeyword',
-          headers: {'Authorization': await getToken});
+      Response response =
+          await post('/clothes/search/woman?style=$womanFashionKeyword', {
+        "color": ["red"]
+      }, headers: {
+        'Authorization': await getToken
+      });
       Map<String, dynamic> body = response.body;
 
       if (body['code'] != 200) {

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:perst/src/connect/user_connect.dart';
 import 'package:perst/src/model/user_model.dart';
-
-import '../connect/user_connect.dart';
 
 final GetStorage _storage = GetStorage();
 
@@ -33,12 +32,12 @@ class UserController extends GetxController {
         memberHeight,
         memberWeight,
       );
+      print('여기야?');
       await _storage.write('access_token', token);
+      print('여기는?');
       return true;
     } catch (e) {
-      ScaffoldMessenger.of(Get.context!).showSnackBar(SnackBar(
-        content: Text("$e"),
-      ));
+      print('Error : $e');
       return false;
     }
   }

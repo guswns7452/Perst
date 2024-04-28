@@ -8,15 +8,15 @@ class google_drive_image extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 300,
-      height: 500,
+      width: 150,
+      height: 200,
       decoration: BoxDecoration(
-        image: DecorationImage(
-          fit: BoxFit.fill,
-          image:
-              NetworkImage("https://drive.google.com/thumbnail?id=$id&sz=w300"),
-        ),
-      ),
+          image: DecorationImage(
+            fit: BoxFit.fill,
+            image: NetworkImage(
+                "https://drive.google.com/thumbnail?id=$id&sz=w300"),
+          ),
+          borderRadius: BorderRadius.circular(7)),
     );
   }
 }

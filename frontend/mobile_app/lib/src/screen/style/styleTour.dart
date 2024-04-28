@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:perst/src/controller/fashion_search_controller.dart';
+import 'package:perst/src/model/fashion_search_model.dart';
+import 'package:perst/src/screen/style/fashionDetail.dart';
+import 'package:perst/src/widget/google_drive_image.dart';
 import 'package:perst/src/widget/radio_item.dart';
 import 'package:perst/src/widget/style_filter.dart';
+
+final GetStorage _storage = GetStorage();
 
 class StyleTour extends StatefulWidget {
   const StyleTour({Key? key});
@@ -19,88 +27,158 @@ int _currentStyleInt = 0;
 int _currentColorInt = 0;
 
 class _StyleTourState extends State<StyleTour> {
+  final fashionSearchController = Get.put(FashionSearchController());
+  late Future<List<FashionSearchModel>>? fashions;
+
+  @override
+  void initState() {
+    super.initState();
+    if (_seletedGender == "women") {
+      fashions = fashionSearchController.searchWoman(_searchCurrentStyle);
+    } else if (_seletedGender == "man") {
+      fashions = fashionSearchController.searchMan(_searchCurrentStyle);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        children: [
-          Container(
-            margin: EdgeInsets.fromLTRB(15, 10, 15, 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Perst',
-                  style: TextStyle(
-                    fontSize: 45,
-                    fontWeight: FontWeight.bold,
-                    color: Color.fromRGBO(255, 191, 25, 1),
-                  ),
+        body: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          margin: EdgeInsets.fromLTRB(15, 10, 15, 0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Perst',
+                style: TextStyle(
+                  fontSize: 45,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromRGBO(255, 191, 25, 1),
                 ),
-                Text(
-                  '스타일 둘러보기',
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.w800),
-                ),
-                Text(
-                  '원하는 스타일을 선택하고 의류를 둘러보세요!',
-                  style: TextStyle(fontSize: 15),
-                ),
-                SizedBox(height: 15),
-                Container(
-                  width: double.infinity,
-                  height: 1,
-                  decoration: BoxDecoration(
-                      color: Color.fromRGBO(240, 240, 240, 1),
-                      borderRadius: BorderRadius.circular(50)),
-                ),
-                SizedBox(height: 15),
-                Row(
-                  children: [
-                    OutlinedButton(
-                      onPressed: () {
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return CustomDrawer(
-                              onSelectionComplete: (selectedStyle,
-                                  selectedGender, selectedColor) {
-                                setState(() {
-                                  _currentStyle = selectedStyle;
-                                  _seletedGender = selectedGender;
-                                  _currentColor = selectedColor;
-                                });
-                              },
-                            );
-                          },
-                        );
-                      },
-                      style: OutlinedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        padding: EdgeInsets.symmetric(horizontal: 10),
+              ),
+              Text(
+                '스타일 둘러보기',
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.w800),
+              ),
+              Text(
+                '원하는 스타일을 선택하고 의류를 둘러보세요!',
+                style: TextStyle(fontSize: 15),
+              ),
+              SizedBox(height: 15),
+              Container(
+                width: double.infinity,
+                height: 1,
+                decoration: BoxDecoration(
+                    color: Color.fromRGBO(240, 240, 240, 1),
+                    borderRadius: BorderRadius.circular(50)),
+              ),
+              SizedBox(height: 15),
+              Row(
+                children: [
+                  OutlinedButton(
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return CustomDrawer(
+                            onSelectionComplete:
+                                (selectedStyle, selectedGender, selectedColor) {
+                              setState(() {
+                                _currentStyle = selectedStyle;
+                                _seletedGender = selectedGender;
+                                _currentColor = selectedColor;
+                              });
+                            },
+                          );
+                        },
+                      );
+                    },
+                    style: OutlinedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Image.asset('assets/filter.png',
-                          width: 20, height: 20),
+                      padding: EdgeInsets.symmetric(horizontal: 10),
                     ),
-                    SizedBox(width: 5),
-                    StyleFilter(
-                        currentColor: _currentColor,
-                        currentStyle: _currentStyle,
-                        seletedGender: _seletedGender)
-                  ],
-                ),
-              ],
-            ),
+                    child:
+                        Image.asset('assets/filter.png', width: 20, height: 20),
+                  ),
+                  SizedBox(width: 5),
+                  StyleFilter(
+                      currentColor: _currentColor,
+                      currentStyle: _currentStyle,
+                      seletedGender: _seletedGender)
+                ],
+              ),
+            ],
           ),
-        ],
-      ),
-    );
+        ),
+        SizedBox(height: 10),
+        Container(
+          decoration: BoxDecoration(
+              color: Color.fromRGBO(255, 191, 25, 0.3),
+              borderRadius: BorderRadius.circular(50)),
+          height: 3,
+          width: double.infinity,
+          margin: EdgeInsets.only(left: 15, right: 15),
+        ),
+        SizedBox(height: 15),
+        Expanded(
+          child: FutureBuilder<List<FashionSearchModel>>(
+            future: fashions,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                return GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10),
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      var fashion = snapshot.data![index];
+                      return Stack(children: [
+                        Row(
+                          children: [
+                            SizedBox(width: 25),
+                            google_drive_image(
+                              id: fashion.musinsaFileid!,
+                            ),
+                          ],
+                        ),
+                        Positioned.fill(
+                            child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => FashionDetail(
+                                        fashion: fashion,
+                                      ),
+                                    ),
+                                  );
+                                })))
+                      ]);
+                    });
+              }
+            },
+          ),
+        ),
+      ],
+    ));
   }
 }
 
 class CustomDrawer extends StatefulWidget {
-  final Function(String, String, Color) onSelectionComplete; // 추가
+  final Function(String, String, Color) onSelectionComplete;
 
   const CustomDrawer({Key? key, required this.onSelectionComplete})
       : super(key: key);
@@ -142,9 +220,9 @@ class _CustomDrawerState extends State<CustomDrawer>
 
   final List<ColorRadioModel> _colorList = [
     ColorRadioModel(true, 236, 20, 20),
-    ColorRadioModel(false, 236, 20, 20),
     ColorRadioModel(false, 244, 170, 36),
     ColorRadioModel(false, 241, 242, 35),
+    ColorRadioModel(false, 160, 255, 181),
     ColorRadioModel(false, 55, 180, 0),
     ColorRadioModel(false, 152, 208, 233),
     ColorRadioModel(false, 29, 44, 133),
@@ -376,6 +454,19 @@ class _CustomDrawerState extends State<CustomDrawer>
   }
 
   Widget _buildColorTab() {
+    final fashionSearchController = Get.put(FashionSearchController());
+    late Future<List<FashionSearchModel>>? fashions;
+
+    void _handleSelectionComplete() {
+      setState(() {
+        if (_seletedGenderInt == 1) {
+          fashions = fashionSearchController.searchWoman(_searchCurrentStyle);
+        } else if (_seletedGenderInt == 0) {
+          fashions = fashionSearchController.searchMan(_searchCurrentStyle);
+        }
+      });
+    }
+
     return Container(
       margin: EdgeInsets.fromLTRB(10, 30, 10, 30),
       child: Column(
@@ -454,6 +545,7 @@ class _CustomDrawerState extends State<CustomDrawer>
                       _currentStyle, _seletedGender, _currentColor);
                   Navigator.pop(context); // drawer 닫기
                 });
+                _handleSelectionComplete();
               },
               child: Text(
                 '선택 완료',
