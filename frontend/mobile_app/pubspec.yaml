@@ -84,6 +84,7 @@ flutter:
     - assets/line.png
     - assets/add.png
     - assets/Closets.png
+    - assets/arrow-right.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
