@@ -14,6 +14,8 @@ import java.util.Map;
 public class MusinsaService {
     private final MusinsaRepository musinsaJPA;
 
+    // TODO 퍼스널 컬러 반영한 의류 검색하기
+
     @Autowired
     public MusinsaService(MusinsaRepository musinsaJPA) {
         this.musinsaJPA = musinsaJPA;
