@@ -1,7 +1,25 @@
 ##
 # 퍼스널 컬러 범위를 정의한 코드입니다.
 #
-def get_season_tone(h, s, v):
+
+import colorsys
+
+def rgb_to_hsv(r, g, b):
+    temp = colorsys.rgb_to_hsv(r, g, b)
+    h = int(temp[0] * 360)
+    s = int(temp[1] * 100)
+    v = round(temp[2] * 100 / 255)
+    return [h, s, v]
+
+
+## input : list(r,g,b)
+## call : rgv_to_hsv
+## return : personal_type
+def get_season_tone(args):
+    r,g,b = map(float, args)
+    
+    h,s,v = map(float, rgb_to_hsv(r,g,b))
+    
     conditions = {
         "봄 라이트": [
             (330 <= h <= 360 or 0 <= h < 150, 0 <= s < 50, 75 <= v <= 100)
@@ -45,9 +63,4 @@ def get_season_tone(h, s, v):
             return tone
     return "해당되는 계절/톤이 없습니다."
 
-# 예시값
-h_value = 20
-s_value = 75
-v_value = 80
 
-print(get_season_tone(h_value, s_value, v_value))
