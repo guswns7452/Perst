@@ -10,4 +10,13 @@ import java.util.List;
 public interface MusinsaRepository extends JpaRepository<MusinsaVO, Long> {
 
     List<MusinsaVO> findAllByMusinsaGenderAndMusinsaStyle(String musinsaGender, String musinsaStyle);
+
+    List<MusinsaVO> findByMusinsaGenderAndMusinsaStyleAndMusinsaHueBetweenAndMusinsaSaturationBetweenAndMusinsaValueBetween(
+            String musinsaGender, String musinsaStyle,
+            int minHue, int maxHue,
+            int minSaturation, int maxSaturation,
+            int minValue, int maxValue
+    );
+
 }
+

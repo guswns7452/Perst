@@ -1,5 +1,6 @@
 package com.clothes.perst.controller;
 
+import com.clothes.perst.DTO.ColorRequest;
 import com.clothes.perst.DTO.RestResponse;
 import com.clothes.perst.domain.MusinsaVO;
 import com.clothes.perst.service.MusinsaService;
@@ -17,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -45,12 +47,12 @@ public class ClothesSearchController {
                             examples = @ExampleObject(name = "스타일 조회 성공")) }),
             @ApiResponse(responseCode = "404", description = "일치하는 스타일이 없음")
     })
-    @GetMapping("/man")
-    public ResponseEntity findMaleSearch(@RequestHeader("Authorization") String token, @RequestParam String style) throws Exception {
-        logger.info("[남성 스타일 둘러보기] Style : " + style);
+    @PostMapping("/man")
+    public ResponseEntity findMaleSearch(@RequestHeader("Authorization") String token, @RequestParam String style, @RequestBody ColorRequest color) throws Exception {
+        logger.info("[남성 스타일 둘러보기] Style : " + style + " / Color : " + color.getColor());
         try{
             MusinsaVO manInfo = new MusinsaVO(); manInfo.setMusinsaGender("man"); manInfo.setMusinsaStyle(style);
-            List<MusinsaVO> maleClothes = musinsaService.findByMusinsaGenderAndMusinsaStyle(manInfo); // 맨날 불러오는 것이 성능적으로 괜찮은가?
+            List<MusinsaVO> maleClothes = musinsaService.findByMusinsaGenderAndMusinsaStyle(manInfo, color.getColor()); // 맨날 불러오는 것이 성능적으로 괜찮은가?
 
             restResponse = RestResponse.builder()
                     .code(HttpStatus.OK.value())
@@ -80,18 +82,18 @@ public class ClothesSearchController {
                             examples = @ExampleObject(name = "스타일 조회 성공")) }),
             @ApiResponse(responseCode = "404", description = "일치하는 스타일이 없음")
     })
-    @GetMapping("/woman")
-    public ResponseEntity findFemaleSearch(@RequestHeader("Authorization") String token, @RequestParam String style) throws Exception {
-        logger.info("[여성 스타일 둘러보기] Style : " + style);
+    @PostMapping("/woman")
+    public ResponseEntity findFemaleSearch(@RequestHeader("Authorization") String token, @RequestParam String style, @RequestBody ColorRequest color) throws Exception {
+        logger.info("[여성 스타일 둘러보기] Style : " + style + " / Color : " + color.getColor());
         try{
             MusinsaVO womanInfo = new MusinsaVO(); womanInfo.setMusinsaGender("woman"); womanInfo.setMusinsaStyle(style);
-            List<MusinsaVO> maleClothes = musinsaService.findByMusinsaGenderAndMusinsaStyle(womanInfo); // 맨날 불러오는 것이 성능적으로 괜찮은가?
+            List<MusinsaVO> femaleClothes = musinsaService.findByMusinsaGenderAndMusinsaStyle(womanInfo, color.getColor()); // 맨날 불러오는 것이 성능적으로 괜찮은가?
 
             restResponse = RestResponse.builder()
                     .code(HttpStatus.OK.value())
                     .httpStatus(HttpStatus.OK)
-                    .message(style + " 스타일 조회 성공했습니다. " + maleClothes.size() + "장")
-                    .data(maleClothes)
+                    .message(style + " 스타일 조회 성공했습니다. " + femaleClothes.size() + "장")
+                    .data(femaleClothes)
                     .build();
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
         }
