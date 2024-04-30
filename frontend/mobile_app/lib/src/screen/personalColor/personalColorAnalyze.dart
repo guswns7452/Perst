@@ -50,8 +50,27 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
   int personalCnt = 0;
   String season = '';
 
-  PersonalColorModel updatePCM =
-      PersonalColorModel(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  PersonalColorModel updatePCM = PersonalColorModel(
+      0,
+      "봄 라이트",
+      0,
+      "봄 브라이트",
+      0,
+      "여름 라이트",
+      0,
+      "여름 브라이트",
+      0,
+      "여름 뮤트",
+      0,
+      "가을 뮤트",
+      0,
+      "가을 스트롱",
+      0,
+      "가을 딥",
+      0,
+      "겨울 브라이트",
+      0,
+      "겨울 딥");
 
   late Color firstBackgroundColor,
       secondBackgroundColor,
@@ -77,7 +96,7 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
           warmCool[index].Green, warmCool[index].Blue, warmCool[index].O);
     }
     if (warm + cool == 4 && personalCnt >= 4 && personalCnt <= 8) {
-      if (warm > cool) {
+      if (warm >= cool) {
         firstBackgroundColor = Color.fromRGBO(
             fallspring[firstColorIndex].Red,
             fallspring[firstColorIndex].Green,
@@ -194,7 +213,7 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
                           )
                         : personalCnt == 9 &&
                                 (winterCnt + summerCnt > fallCnt + springCnt)
-                            ? winterCnt < summerCnt
+                            ? winterCnt <= summerCnt
                                 ? Row(
                                     children: [
                                       Radio(
@@ -308,7 +327,7 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
                                               winter[1].O)),
                                     ],
                                   )
-                            : fallCnt > springCnt && personalCnt == 9
+                            : fallCnt >= springCnt && personalCnt == 9
                                 ? Row(
                                     children: [
                                       Radio(
@@ -468,7 +487,7 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
                                       summerCnt = summerCnt - 1;
                                     }
                                   }
-                                  if (warm > cool) {
+                                  if (warm >= cool) {
                                     firstColorIndex = firstColorIndex + 2;
                                     secondColorIndex = secondColorIndex + 2;
 
@@ -510,9 +529,7 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
                                 if (personalCnt == 10) {
                                   Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => PersonalColorResult(
-                                        PCM: updatePCM,
-                                        season: season,
-                                        personalCnt: personalCnt),
+                                        PCM: updatePCM, season: season),
                                   ));
                                 }
                               });

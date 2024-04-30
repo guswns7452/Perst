@@ -10,28 +10,47 @@ class ColorRadioModel {
 
 class PersonalColorModel {
   int SpringRight;
+  String SSpringRight;
   int SpringBright;
+  String SSpringBright;
   int SummerRight;
+  String SSummerRight;
   int SummerBright;
+  String SSummerBright;
   int SummerMute;
+  String SSummerMute;
   int FallMute;
+  String SFallMute;
   int FallStrong;
+  String SFallStrong;
   int FallDeep;
+  String SFallDeep;
   int WinterBright;
+  String SWinterBright;
   int WinterDeep;
+  String SWinterDeep;
 
   PersonalColorModel(
-    this.SpringRight,
-    this.SpringBright,
-    this.SummerRight,
-    this.SummerBright,
-    this.SummerMute,
-    this.FallMute,
-    this.FallStrong,
-    this.FallDeep,
-    this.WinterBright,
-    this.WinterDeep,
-  );
+      this.SpringRight,
+      this.SSpringRight,
+      this.SpringBright,
+      this.SSpringBright,
+      this.SummerRight,
+      this.SSummerRight,
+      this.SummerBright,
+      this.SSummerBright,
+      this.SummerMute,
+      this.SSummerMute,
+      this.FallMute,
+      this.SFallMute,
+      this.FallStrong,
+      this.SFallStrong,
+      this.FallDeep,
+      this.SFallDeep,
+      this.WinterBright,
+      this.SWinterBright,
+      this.WinterDeep,
+      this.SWinterDeep);
 }
 
 final List<ColorRadioModel> warmCool = [

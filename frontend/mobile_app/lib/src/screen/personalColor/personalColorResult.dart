@@ -1,16 +1,16 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:perst/src/controller/personal_color_controller.dart';
+import 'package:perst/src/model/color_model.dart';
 import 'package:perst/src/model/color_radio_model.dart';
 
 class PersonalColorResult extends StatefulWidget {
   final PersonalColorModel PCM;
   final String season;
-  final int personalCnt;
 
-  const PersonalColorResult(
-      {required this.PCM,
-      required this.season,
-      required this.personalCnt,
-      Key? key})
+  const PersonalColorResult({required this.PCM, required this.season, Key? key})
       : super(key: key);
 
   @override
@@ -18,27 +18,43 @@ class PersonalColorResult extends StatefulWidget {
 }
 
 class _PersonalColorResultState extends State<PersonalColorResult> {
+  final personalColorController = Get.put(PersonalColorController());
+  late Future<PersonalColor> personalColor;
+
+  @override
+  Future<void> fetchData() async {
+    List<personalResultModel> values = [
+      personalResultModel(widget.PCM.SpringRight, widget.PCM.SSpringRight),
+      personalResultModel(widget.PCM.SpringBright, widget.PCM.SSpringBright),
+      personalResultModel(widget.PCM.SummerBright, widget.PCM.SSummerBright),
+      personalResultModel(widget.PCM.SummerMute, widget.PCM.SSummerMute),
+      personalResultModel(widget.PCM.SummerRight, widget.PCM.SSummerRight),
+      personalResultModel(widget.PCM.FallMute, widget.PCM.SFallMute),
+      personalResultModel(widget.PCM.FallDeep, widget.PCM.SFallDeep),
+      personalResultModel(widget.PCM.FallStrong, widget.PCM.SFallStrong),
+      personalResultModel(widget.PCM.WinterDeep, widget.PCM.SWinterDeep),
+      personalResultModel(widget.PCM.WinterBright, widget.PCM.SWinterBright),
+    ];
+
+    values.sort((a, b) => b.count.compareTo(a.count));
+
+    personalColor = await personalColorController.sendPersonalColor(
+      widget.season,
+      9,
+      values[0].personalColor,
+      values[1].personalColor,
+      values[2].personalColor,
+      values[0].count,
+      values[1].count,
+      values[2].count,
+    );
+    print(personalColor);
+  }
+
   @override
   void initState() {
     super.initState();
-    List<int> values = [
-      widget.PCM.SpringRight,
-      widget.PCM.SpringBright,
-      widget.PCM.SummerBright,
-      widget.PCM.SummerMute,
-      widget.PCM.SummerRight,
-      widget.PCM.FallMute,
-      widget.PCM.FallDeep,
-      widget.PCM.FallStrong,
-      widget.PCM.WinterDeep,
-      widget.PCM.WinterBright,
-    ];
-
-    values.sort((a, b) => b.compareTo(a));
-
-    for (int i = 0; i < 3 && i < values.length; i++) {
-      print(values[i]);
-    }
+    fetchData();
   }
 
   Widget build(BuildContext context) {
@@ -109,7 +125,7 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
                     ),
                     Container(
                         width: 150,
-                        child: Text('여름 뮤트',
+                        child: Text("여름 라이트",
                             style: TextStyle(
                                 fontSize: 12, fontWeight: FontWeight.w600))),
                     SizedBox(height: 10),
@@ -180,7 +196,7 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
                     ),
                     Container(
                         width: 150,
-                        child: Text('여름 라이트',
+                        child: Text("봄 라이트",
                             style: TextStyle(
                                 fontSize: 12, fontWeight: FontWeight.w600))),
                     SizedBox(height: 10),
@@ -275,7 +291,7 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
             height: 1,
             width: double.infinity,
             decoration: BoxDecoration(
-                color: Color.fromRGBO(189, 189, 189, 0.298),
+                color: Color.fromRGBO(189, 189, 189, 0.298 as int),
                 borderRadius: BorderRadius.circular(50)),
             margin: EdgeInsets.fromLTRB(15, 8, 15, 8),
           ),
@@ -301,7 +317,7 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
                 width: 233,
                 height: 15,
                 decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 123, 123, 123),
+                    color: Color.fromRGBO(255, 123, 123, 1),
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(10),
                         bottomLeft: Radius.circular(10))),
@@ -310,7 +326,7 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
                 width: 116,
                 height: 15,
                 decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 255, 255, 255),
+                    color: Color.fromRGBO(255, 255, 255, 1),
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(10),
                         bottomLeft: Radius.circular(10)),
@@ -341,7 +357,7 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
                 width: 233,
                 height: 15,
                 decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 123, 123, 123),
+                    color: Color.fromRGBO(255, 123, 123, 1),
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(10),
                         bottomLeft: Radius.circular(10))),
@@ -350,7 +366,7 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
                 width: 116,
                 height: 15,
                 decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 255, 255, 255),
+                    color: Color.fromRGBO(255, 255, 255, 1),
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(10),
                         bottomLeft: Radius.circular(10)),
@@ -381,7 +397,7 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
                 width: 175,
                 height: 15,
                 decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 255, 255, 255),
+                    color: Color.fromRGBO(255, 255, 255, 1),
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(10),
                         bottomLeft: Radius.circular(10)),
