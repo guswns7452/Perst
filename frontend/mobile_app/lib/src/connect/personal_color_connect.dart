@@ -1,9 +1,8 @@
 import 'package:get/get_connect/connect.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:intl/intl.dart';
 import 'package:perst/shared/global.dart';
 import 'dart:convert';
-
-import 'package:perst/src/model/personal_color_model.dart';
 
 final GetStorage _storage = GetStorage();
 
@@ -28,20 +27,33 @@ class PersonalColorConnect extends GetConnect {
   Future personalAnalyze(
       String personalColorType,
       int personalColorAllTimes,
-      DateTime personalColorDate,
-      List<PersonalAnalyzeModel> personalSelects) async {
-    // personalColorDate를 문자열로 변환합니다.
-    String formattedDate = personalColorDate.toString();
-
-    // personalSelects 리스트 map으로 변환
-    List selectsJsonList =
-        personalSelects.map((select) => select.toJson()).toList();
-
-    Response response = await post('/clothes/analyze', {
+      String personalSelectTypeOne,
+      String personalSelectTypeTwo,
+      String personalSelectTypeThree,
+      int personalSelectTimesOne,
+      int personalSelectTimesTwo,
+      int personalSelectTimesThree) async {
+    DateTime nowDate = DateTime.now();
+    String personalColorDate =
+        DateFormat('yyyy-mm-ddTHH:mm:ss').format(nowDate);
+    Response response = await post('/personal/color', {
       'personalColorType': personalColorType,
       'personalColorAllTimes': personalColorAllTimes,
       'personalColorDate': personalColorDate,
-      'personalSelets': selectsJsonList,
+      'personalSelects': [
+        {
+          'personalSelectType': personalSelectTypeOne,
+          'personalSelectTimes': personalSelectTimesOne
+        },
+        {
+          'personalSelectType': personalSelectTypeTwo,
+          'personalSelectTimes': personalSelectTimesTwo
+        },
+        {
+          'personalSelectType': personalSelectTypeThree,
+          'personalSelectTimes': personalSelectTimesThree
+        },
+      ],
     }, headers: {
       'Authorization': await getToken
     });
