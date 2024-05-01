@@ -76,6 +76,15 @@ public class ClothesSearchController {
                     .build();
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
         }
+        // 퍼스널 컬러 진단을 하지 않고, 퍼스널 컬러 반영한 검색 요청 할 때
+        catch (NullPointerException e){
+            restResponse = RestResponse.builder()
+                    .code(HttpStatus.NOT_FOUND.value())
+                    .httpStatus(HttpStatus.NOT_FOUND)
+                    .message(e.getMessage())
+                    .build();
+            return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
+        }
     }
 
     @ResponseBody
@@ -108,6 +117,15 @@ public class ClothesSearchController {
             restResponse = RestResponse.builder()
                     .code(HttpStatus.FORBIDDEN.value())
                     .httpStatus(HttpStatus.FORBIDDEN)
+                    .message(e.getMessage())
+                    .build();
+            return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
+        }
+        // 퍼스널 컬러 진단을 하지 않고, 퍼스널 컬러 반영한 검색 요청 할 때
+        catch (NullPointerException e){
+            restResponse = RestResponse.builder()
+                    .code(HttpStatus.NOT_FOUND.value())
+                    .httpStatus(HttpStatus.NOT_FOUND)
                     .message(e.getMessage())
                     .build();
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());

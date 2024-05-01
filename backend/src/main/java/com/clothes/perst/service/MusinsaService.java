@@ -28,10 +28,15 @@ public class MusinsaService {
         List<MusinsaVO> musinsaVOList = new ArrayList<>();
         String memberPersonal = "none";
 
-        // 회원의 퍼스널 컬러를 반영할 것인가?
-        if(musinsaSearchRequest.getIsPersonal()){
-            memberPersonal = personalColorJPA.findByMemberNumber(musinsaSearchRequest.getMemberNumber()).getPersonalColorType();
+        try{
+            // 회원의 퍼스널 컬러를 반영할 것인가?
+            if(musinsaSearchRequest.getIsPersonal()){
+                memberPersonal = personalColorJPA.findByMemberNumber(musinsaSearchRequest.getMemberNumber()).getPersonalColorType();
+            }
+        } catch (NullPointerException e){
+            throw new NullPointerException("회원님 아직 퍼스널 컬러 진단 이력이 없어요!");
         }
+
 
         try {
             if (!musinsaSearchRequest.getColor().isEmpty()) {
@@ -43,7 +48,7 @@ public class MusinsaService {
 
                         // gender, style, personal, color 모두 반영하여 검색
                         if (!memberPersonal.equals("none")) {
-                            musinsaVOList.addAll(musinsaJPA.findAllByMusinsaGenderAndMusinsaStyleAndMusinsaPeronsalAndMusinsaHueBetweenAndMusinsaSaturationBetweenAndMusinsaValueBetween(musinsaVO.getMusinsaGender(), musinsaVO.getMusinsaStyle(), memberPersonal, Hue[0], Hue[1], Saturation[0], Saturation[1], Value[0], Value[1]));
+                            musinsaVOList.addAll(musinsaJPA.findAllByMusinsaGenderAndMusinsaStyleAndMusinsaPersonalAndMusinsaHueBetweenAndMusinsaSaturationBetweenAndMusinsaValueBetween(musinsaVO.getMusinsaGender(), musinsaVO.getMusinsaStyle(), memberPersonal, Hue[0], Hue[1], Saturation[0], Saturation[1], Value[0], Value[1]));
 
                         }
                         // gender, style, color 만 반영함
@@ -58,7 +63,7 @@ public class MusinsaService {
             }
         } catch (NullPointerException e) {
             throw new IllegalArgumentException("정의되지 않은 색상입니다.");
-        } // TODO 퍼스널 컬러를 검사하지 않은 인원은 어떤 오류를 반환할까
+        }
 
         // Color가 없으면, 모두 리턴함
         if (!musinsaSearchRequest.getIsPersonal()) {

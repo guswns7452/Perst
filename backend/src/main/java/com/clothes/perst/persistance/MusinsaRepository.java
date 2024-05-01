@@ -27,7 +27,7 @@ public interface MusinsaRepository extends JpaRepository<MusinsaVO, Long> {
     );
 
     // Gender, Style, Personal, Color로 검색
-    List<MusinsaVO> findAllByMusinsaGenderAndMusinsaStyleAndMusinsaPeronsalAndMusinsaHueBetweenAndMusinsaSaturationBetweenAndMusinsaValueBetween(
+    List<MusinsaVO> findAllByMusinsaGenderAndMusinsaStyleAndMusinsaPersonalAndMusinsaHueBetweenAndMusinsaSaturationBetweenAndMusinsaValueBetween(
             String musinsaGender, String musinsaStyle, String musinsaPersonal,
             int minHue, int maxHue,
             int minSaturation, int maxSaturation,
