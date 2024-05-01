@@ -1,7 +1,8 @@
 package com.clothes.perst.controller;
 
-import com.clothes.perst.DTO.ColorRequest;
+import com.clothes.perst.DTO.MusinsaSearchRequest;
 import com.clothes.perst.DTO.RestResponse;
+import com.clothes.perst.config.JwtTokenService;
 import com.clothes.perst.domain.MusinsaVO;
 import com.clothes.perst.service.MusinsaService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -31,9 +31,13 @@ public class ClothesSearchController {
 
     private static final Logger logger = LoggerFactory.getLogger(ClothesSearchController.class);
 
+    private final JwtTokenService jwtTokenService;
+
+
     @Autowired
-    public ClothesSearchController(MusinsaService musinsaService){
+    public ClothesSearchController(MusinsaService musinsaService, JwtTokenService jwtTokenService){
         this.musinsaService = musinsaService;
+        this.jwtTokenService = jwtTokenService;
     }
 
     // TODO 토큰 활용하여 정상적인 사용자를 식별하는 코드 추가
@@ -48,11 +52,12 @@ public class ClothesSearchController {
             @ApiResponse(responseCode = "404", description = "일치하는 스타일이 없음")
     })
     @PostMapping("/man")
-    public ResponseEntity findMaleSearch(@RequestHeader("Authorization") String token, @RequestParam String style, @RequestBody ColorRequest color) throws Exception {
-        logger.info("[남성 스타일 둘러보기] Style : " + style + " / Color : " + color.getColor());
+    public ResponseEntity findMaleSearch(@RequestHeader("Authorization") String token, @RequestParam String style, @RequestBody MusinsaSearchRequest musinsaSearchVO) throws Exception {
+        logger.info("[남성 스타일 둘러보기] Style : " + style + " / Color : " + musinsaSearchVO.getColor());
         try{
+            int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
             MusinsaVO manInfo = new MusinsaVO(); manInfo.setMusinsaGender("man"); manInfo.setMusinsaStyle(style);
-            List<MusinsaVO> maleClothes = musinsaService.findByMusinsaGenderAndMusinsaStyle(manInfo, color.getColor()); // 맨날 불러오는 것이 성능적으로 괜찮은가?
+            List<MusinsaVO> maleClothes = musinsaService.findByMusinsaGenderAndMusinsaStyle(manInfo, musinsaSearchVO); // 맨날 불러오는 것이 성능적으로 괜찮은가?
 
             restResponse = RestResponse.builder()
                     .code(HttpStatus.OK.value())
@@ -83,11 +88,12 @@ public class ClothesSearchController {
             @ApiResponse(responseCode = "404", description = "일치하는 스타일이 없음")
     })
     @PostMapping("/woman")
-    public ResponseEntity findFemaleSearch(@RequestHeader("Authorization") String token, @RequestParam String style, @RequestBody ColorRequest color) throws Exception {
-        logger.info("[여성 스타일 둘러보기] Style : " + style + " / Color : " + color.getColor());
+    public ResponseEntity findFemaleSearch(@RequestHeader("Authorization") String token, @RequestParam String style, @RequestBody MusinsaSearchRequest searchVO) throws Exception {
+        logger.info("[여성 스타일 둘러보기] Style : " + style + " / Color : " + searchVO.getColor());
         try{
+            int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
             MusinsaVO womanInfo = new MusinsaVO(); womanInfo.setMusinsaGender("woman"); womanInfo.setMusinsaStyle(style);
-            List<MusinsaVO> femaleClothes = musinsaService.findByMusinsaGenderAndMusinsaStyle(womanInfo, color.getColor()); // 맨날 불러오는 것이 성능적으로 괜찮은가?
+            List<MusinsaVO> femaleClothes = musinsaService.findByMusinsaGenderAndMusinsaStyle(womanInfo, searchVO); // 맨날 불러오는 것이 성능적으로 괜찮은가?
 
             restResponse = RestResponse.builder()
                     .code(HttpStatus.OK.value())
