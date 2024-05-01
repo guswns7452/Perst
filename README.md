@@ -2,7 +2,7 @@
 
 <br>
 
-## 프로젝트 소개
+## 📜 프로젝트 소개
 #### 🏫 [2024] 한국공학대학교 컴퓨터공학부 졸업작품 
 📅 **기간** : 2024.01.01 ~ 
 
@@ -20,3 +20,13 @@
 - 소비자가 입고 있는 옷과 비슷한 스타일 추천
 - 초 개인화를 반영한 퍼스널 컬러에 맞는 스타일 추천
 - 개인의 퍼스널 컬러 진단하기
+
+
+<br>
+
+## 🙋🏻‍♀️ 팀원 소개
+
+| **전현준** | **이다현** | **김하연** | 
+| :------: | :------: | :------: |
+| [<img width="140px" src="https://avatars.githubusercontent.com/u/31847789?v=4" height=150 width=150> <br/> @guswns7452](https://github.com/guswns7452) | [<img width="140px" src="https://avatars.githubusercontent.com/u/68106298?v=4" height=150 width=150> <br/> @dahyeon-da](https://github.com/dahyeon-da) | [<img width="140px" src="https://avatars.githubusercontent.com/u/156054899?v=4" height=150 width=150> <br/> @KimHayeon0824](https://github.com/KimHayeon0824) |
+| Leader, Backend | Frontend | AI | 
