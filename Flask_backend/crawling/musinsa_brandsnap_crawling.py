@@ -4,6 +4,7 @@ import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import os
+from multiprocessing import Process, freeze_support
 
 import google.auth
 from google.auth.transport.requests import Request
@@ -24,7 +25,7 @@ from googleapiclient.http import MediaFileUpload
 
 SCOPES = ["https://www.googleapis.com/auth/drive"]
 
-def man_download_images(url):
+def man_download_images(url = "https://www.musinsa.com/mz/brandsnap"):
     styles = ['dandy', 'street', 'americancasual', 'gorpcore', 'chic', 'formal', 'sports', 'golf', 'minimal']
 
     # 크롬 브라우저 열기 (버전 업그레이드 후 인자가 필요없음)
@@ -129,12 +130,16 @@ def man_download_images(url):
             else:
                 print("숫자를 찾을 수 없습니다.")
             
+            
+            if int(index) <= 394370: 
+                break
+            
             # 이미지 태그 찾기
             img_tag = driver.find_element(By.CLASS_NAME, 'view-photo')
             
             # 폴더가 없으면 생성 (image/성별/스타일)
-            if not os.path.exists("newimages/" + gender + "/" + style):
-                os.makedirs("newimages/" + gender + "/" + style)
+            if not os.path.exists("newimages/0502_brand/" + gender + "/" + style):
+                os.makedirs("newimages/0502_brand/" + gender + "/" + style)
             
             # 이미지 다운로드
             img_url = img_tag.get_attribute('src')
@@ -142,14 +147,14 @@ def man_download_images(url):
                 
             filename = gender+"_"+str(index)+"_"+str(height)+"_"+str(weight)+"_"+season+"_"+style+".jpg"
             print(filename)
-            img_path = os.path.join("newimages/" + gender + "/" + style, f"{filename}")
+            img_path = os.path.join("newimages/0502_brand/" + gender + "/" + style, f"{filename}")
                 
             with open(img_path, "wb") as f:
                 f.write(img_data)
                 # upload_basic(filename, img_path, gender, index, height, weight, season, style)
 
 ## TODO 여성용도 만들기
-def woman_download_images(url):
+def woman_download_images(url = "https://www.musinsa.com/mz/brandsnap"):
     styles = ['casual', 'girlish', 'chic', 'romantic', 'street', 'formal', 'sports', 'golf', 'gorpcore', 'americancasual',  'retro']
 
     # 크롬 브라우저 열기 (버전 업그레이드 후 인자가 필요없음)
@@ -178,7 +183,7 @@ def woman_download_images(url):
         
         # 웹페이지 열기 (여기서 성별 변경하기)
         driver.get(url+"?style_type="+urlStyle+"&p=1")
-        time.sleep(3)
+        time.sleep(10)
         
         # for문 중단을 위한 변수
         vary = True
@@ -254,32 +259,48 @@ def woman_download_images(url):
             else:
                 print("숫자를 찾을 수 없습니다.")
             
+            if int(index) <= 394370:
+                break
+            
             # 이미지 태그 찾기
             img_tag = driver.find_element(By.CLASS_NAME, 'view-photo')
             
             # 폴더가 없으면 생성 (image/성별/스타일)
-            if not os.path.exists("newimages/" + gender + "/" + style):
-                os.makedirs("newimages/" + gender + "/" + style)
+            if not os.path.exists("newimages/0502_brand/" + gender + "/" + style):
+                os.makedirs("newimages/0502_brand/" + gender + "/" + style)
             
             # 이미지 다운로드
             img_url = img_tag.get_attribute('src')
             img_data = requests.get(img_url).content
                 
-            filename = gender+"_"+str(index)+"_"+height+"_"+weight+"_"+season+"_"+style+".jpg"
+            filename = gender+"_"+index+"_"+height+"_"+weight+"_"+season+"_"+style+".jpg"
             print(filename)
-            img_path = os.path.join("newimages/" + gender + "/" + style, f"{filename}")
+            img_path = os.path.join("newimages/0502_brand/" + gender + "/" + style, f"{filename}")
                 
             with open(img_path, "wb") as f:
                 f.write(img_data)
                 # upload_basic(filename, img_path, gender, index, height, weight, season, style)
 
-# 크롤링할 페이지 URL
-# 2024/03/06 01:37 393585 
-url = "https://www.musinsa.com/mz/brandsnap"
+if __name__ == '__main__':
+    # 크롤링할 페이지 URL
+    # 2024/03/06 01:37 393585 
+    url = "https://www.musinsa.com/mz/brandsnap"
 
-# 크롤링 및 이미지 다운로드 실행
-man_download_images(url)    
+    # brandsnap Data
+    # 여섯개의 멀티스레드로 구성
+    processes = []
+        
+    freeze_support()  # Windows에서 multiprocessing 사용 시 필요
     
+    t1 = Process(target=man_download_images, args=(), name="1"); t1.start(); processes.append(t1);
+    t2 = Process(target=woman_download_images, args=(), name="2"); t2.start(); processes.append(t2);
+
+    for precess in processes:
+        precess.join()
+
+
+
+
 
 ## 고려해야 할 수 있는 요소
 ## TODO 파일명에 "/" 있는 경우 FileNotFoundError 오류 -> line. 77
