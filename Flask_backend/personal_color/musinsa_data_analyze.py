@@ -16,7 +16,7 @@ from test_data.call_data import call_data
 sys.path.append(os.getcwd())
 
 import cnn_model
-from DB.db_setting import connect_to_database
+from DB.DB_setting import connect_to_database
 
 PATH =  os.getcwd()
 

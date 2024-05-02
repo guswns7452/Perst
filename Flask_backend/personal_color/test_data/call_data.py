@@ -2,7 +2,7 @@ import os, sys
 
 sys.path.append(os.getcwd())
 
-from DB.db_setting import connect_to_database
+from DB.DB_setting import connect_to_database
 
 ##
 # 현재 DB에 반영된 퍼스널 컬러 반영된 마지막 번호 출력하기
