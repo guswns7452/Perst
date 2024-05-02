@@ -9,7 +9,7 @@
 import cv2
 import numpy as np
 import os, sys
-import personal_color
+from personal_color.personal_color import rgb_to_hsv, get_season_tone
 from multiprocessing import Process, freeze_support
 from test_data.call_data import call_data  
 
@@ -17,6 +17,7 @@ sys.path.append(os.getcwd())
 
 import cnn_model
 from DB.DB_setting import connect_to_database
+from crawling.google_upload_image import upload_basic
 
 PATH =  os.getcwd()
 
@@ -61,7 +62,7 @@ def is_completed(Data_status, nowStyle, gender):
         
         return False
         
-def update_personalColor_to_DB(genders, styles, Data_status):
+def update_personalColor_to_DB(genders, styles, Data_status, save_folderPath, musinsa_type):
     # 전역변수 선언부
     conn = None
     cur = None
@@ -84,7 +85,7 @@ def update_personalColor_to_DB(genders, styles, Data_status):
                     analyze_completed_number = data
                 
                 # 폴더 내의 파일명 가져오기
-                folderPath = PATH + "/newimages/Musinsa Data/" + gender + "/" + bottomFolder
+                folderPath = PATH + "/" + save_folderPath + gender + "/" + bottomFolder
                 files = os.listdir(folderPath)
                 print(gender, " / " ,bottomFolder, " / " , folderPath, " / 현재 완료 갯수 : ", count)
                 
@@ -94,12 +95,12 @@ def update_personalColor_to_DB(genders, styles, Data_status):
                     
                     print(f"[Thread-{os.getpid()}] Processing {file_name} ({count}/{len(files)})")
                     
-                    musinsa_number = file_name.split("_")[1]
-                    m = int(musinsa_number[0:5])
+                    file_metaData = file_name.split("_")
+                    musinsa_number = int(file_metaData[1])
+                    musinsa_height = int(file_metaData[2])
+                    musinsa_weight = int(file_metaData[3])
+                    musinsa_season = file_metaData[4]
                             
-                    if m < analyze_completed_number-1:
-                        continue
-                    
                     ori_img = imgLoad(folderPath, file_name)
                     if ori_img is None:
                         print("이미지 파일을 불러오는데 실패하였습니다.")
@@ -108,10 +109,15 @@ def update_personalColor_to_DB(genders, styles, Data_status):
                     output_dict = cnn_model.cnn_model_main(ori_img, gender)
                     
                     personal_rgb = output_dict['personal_color_rgb']    # 퍼스널 컬러가 담길 변수
-                    musinsa_personal = personal_color.get_season_tone(personal_rgb) # 의류에 어울리는 퍼스널 컬러
+                    r,g,b = map(float, personal_rgb)
+                    h,s,v = rgb_to_hsv(r,g,b)
+                    musinsa_personal = get_season_tone(personal_rgb) # 의류에 어울리는 퍼스널 컬러
+                    
+                    ## 데이터 업데이트 코드
+                    file_id = upload_basic(file_name, folderPath+"/"+file_name, gender, bottomFolder)
                     
                     # 퍼스널 컬러, RGB 값 DB에 업데이트
-                    sql = f"UPDATE musinsa SET musinsa_personal = '{musinsa_personal}', musinsa_red  = {personal_rgb[0]}, musinsa_green  = {personal_rgb[1]}, musinsa_blue  = {personal_rgb[2]} where musinsa_number = {musinsa_number}"	# 퍼스널 컬러
+                    sql = f"INSERT INTO musinsa(musinsa_number, musinsa_gender, musinsa_height, musinsa_weight, musinsa_season, musinsa_style, musinsa_fileid, musinsa_type, musinsa_personal, musinsa_red, musinsa_green, musinsa_blue, musinsa_hue, musinsa_saturation, musinsa_value) VALUES ({musinsa_number}, '{gender}', {musinsa_height}, {musinsa_weight}, '{musinsa_season}', '{bottomFolder}', '{file_id}', '{musinsa_type}', '{musinsa_personal}' '{r}', '{g}', '{b}', '{h}','{s}','{v}')"	# DB 반영
                     cur.execute(sql)	# 커서로 sql문 실행
                     conn.commit()
             
@@ -126,17 +132,11 @@ def update_personalColor_to_DB(genders, styles, Data_status):
 
 ##
 # DB에 색상 업로드와 퍼스널 컬러 추가
-# TODO : (0421) 4개의 스레드로 분리 후 코드 실행
 # ConnectionResetError 예외처리 -> DB에 재 접속하기
 #
-def dataChange():
+def dataChange(save_folderPath, musinsa_type):
     # Style 정의
-    style_args1 = ['amekaji', 'businessCasual', 'casual', 'chic', ]
-    style_args2 = ['golf', 'minimal', 'sporty', 'street', 'dandy']
-    style_args3 = ['girlish', 'gofcore', 'retro', 'romantic']
-    
-    style_args4 = ['dandy'];
-    style_args5 = ['businessCasual'];
+    style_args = ['amekaji', 'businessCasual', 'casual', 'chic', 'golf', 'minimal', 'sporty', 'street', 'dandy', 'girlish', 'gofcore', 'retro', 'romantic']
     
     Data_status = call_data()
     
@@ -146,18 +146,11 @@ def dataChange():
     
     freeze_support()  # Windows에서 multiprocessing 사용 시 필요
     
-    #[완료] t1 = Process(target=update_personalColor_to_DB, args=(['woman'], style_args1, Data_status), name="1"); t1.start(); processes.append(t1);
-    #[완료] t2 = Process(target=update_personalColor_to_DB, args=(['woman'], style_args2, Data_status), name="2"); t2.start(); processes.append(t2);
-    #[완료] t3 = Process(target=update_personalColor_to_DB, args=(['woman'], style_args3, Data_status), name="3"); t3.start(); processes.append(t3);
-    #[완료] t4 = Process(target=update_personalColor_to_DB, args=(['man'], style_args1, Data_status), name="4"); t4.start(); processes.append(t4);
-    #[완료] t5 = Process(target=update_personalColor_to_DB, args=(['man'], style_args2, Data_status), name="5"); t5.start(); processes.append(t5);
-    #[완료] t6 = Process(target=update_personalColor_to_DB, args=(['man'], style_args3, Data_status), name="6"); t6.start(); processes.append(t6);
-    t7 = Process(target=update_personalColor_to_DB, args=(['man'], style_args4, Data_status), name="6"); t7.start(); processes.append(t7);
-    t8 = Process(target=update_personalColor_to_DB, args=(['woman'], style_args5, Data_status), name="6"); t8.start(); processes.append(t8);
+    t1 = Process(target=update_personalColor_to_DB, args=(['man'], style_args, Data_status, save_folderPath, musinsa_type), name="1"); t1.start(); processes.append(t1);
+    t2 = Process(target=update_personalColor_to_DB, args=(['woman'], style_args, Data_status, save_folderPath, musinsa_type), name="2"); t2.start(); processes.append(t2);
     
     for precess in processes:
         precess.join()
     
-if __name__ == '__main__':
-    dataChange()
+
 

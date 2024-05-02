@@ -6,27 +6,13 @@ from change_to_english import change_season_eng, change_style_eng
 sys.path.append(os.getcwd())
 from DB.DB_setting import connect_to_database
 
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
-from googleapiclient.http import MediaFileUpload
-
 # ✅ 남성 / 여성
 # ✅ 키, 몸무게 (이게 있으면 모델에 맞게 구매 가능하지)
 # ✅ 계절감, 스타일
 
 SCOPES = ["https://www.googleapis.com/auth/drive"]
 
-# ------------------------------------------ #
-
-# 저장할 폴더 위치를 지정해주세요! #
-
-save_folderPath = "newimages/20240502/"
-
-# ------------------------------------------ #
-
+save_folderPath = ""
 
 def download_images(url,index):
     gender = "etc"
@@ -124,11 +110,11 @@ def download_images(url,index):
         
         with open(img_path, "wb") as f:
             f.write(img_data)
-            # upload_basic(filename, img_path, gender, index, height, weight, season, style)
             break
 
 # 크롤링할 페이지 URL
-if __name__ == '__main__':
+def codi_main(save_folder):
+    save_folderPath = save_folder
     # 현재 완료되어 있는 이력 조회
     conn, cur = connect_to_database()
     sql = "select max(musinsa_number) from musinsa where musinsa_type = 'codishop'"
@@ -148,53 +134,3 @@ if __name__ == '__main__':
 ## [처리 완료] TODO 스타일이 정확하지 않은 경우
 
 ## [처리 완료] TODO 중간중간 삭제된 경우 -> AttributeError로 
-
-
-
-
-
-
-# ------------------------------------------------------------------ #
-
-def upload_basic(file_name, img_path, gender, index, height, weight, season, style):
-    """Insert new file.
-    Returns : Id's of the file uploaded
-
-    Load pre-authorized user credentials from the environment.
-    TODO(developer) - See https://developers.google.com/identity
-    for guides on implementing OAuth2 for the application.
-    """
-    
-    if os.path.exists("token.json"):
-        creds = Credentials.from_authorized_user_file("token.json", SCOPES)
-    # If there are no (valid) credentials available, let the user log in.
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
-            creds = flow.run_local_server(port=0)
-        # Save the credentials for the next run
-        with open("token.json", "w") as token:
-            token.write(creds.to_json())
-            
-    try:
-        # create drive api client
-        service = build("drive", "v3", credentials=creds)
-        
-        folder_id = "1MkfNx1KUIrffO5iJIopznx68QU1iIkqw"
-
-        file_metadata = {"name": file_name, "parents": [folder_id], "gender": gender, "index": index, "height": height, "weight": weight, "season": season, "style": style}
-        media = MediaFileUpload(img_path, mimetype="image/jpg")
-        file = (
-            service.files()
-            .create(body=file_metadata, media_body=media, fields="id")
-            .execute()
-        )
-        print(f'File ID: {file.get("id")}')
-
-    except HttpError as error:
-        print(f"An error occurred: {error}")
-        file = None
-
-    return file.get("id")

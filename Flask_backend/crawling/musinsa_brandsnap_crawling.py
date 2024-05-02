@@ -7,14 +7,6 @@ import os, sys
 from multiprocessing import Process, freeze_support
 from change_to_english import change_season_eng, change_style_eng
 
-import google.auth
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
-from googleapiclient.http import MediaFileUpload
-
 sys.path.append(os.getcwd())
 from DB.DB_setting import connect_to_database
 
@@ -29,13 +21,8 @@ from DB.DB_setting import connect_to_database
 
 SCOPES = ["https://www.googleapis.com/auth/drive"]
 
-# ------------------------------------------ #
+save_folderPath = ""
 
-# 저장할 폴더 위치를 지정해주세요! #
-
-save_folderPath = "newimages/0502_brand/"
-
-# ------------------------------------------ #
 
 def man_download_images(now_done_num, url = "https://www.musinsa.com/mz/brandsnap"):
     styles = ['dandy', 'street', 'americancasual', 'gorpcore', 'chic', 'formal', 'sports', 'golf', 'minimal']
@@ -163,8 +150,7 @@ def man_download_images(now_done_num, url = "https://www.musinsa.com/mz/brandsna
                 
             with open(img_path, "wb") as f:
                 f.write(img_data)
-                # upload_basic(filename, img_path, gender, index, height, weight, season, style)
-
+                
 ## TODO 여성용도 만들기
 def woman_download_images(now_done_num, url = "https://www.musinsa.com/mz/brandsnap"):
     styles = ['casual', 'girlish', 'chic', 'romantic', 'street', 'formal', 'sports', 'golf', 'gorpcore', 'americancasual',  'retro']
@@ -296,9 +282,10 @@ def woman_download_images(now_done_num, url = "https://www.musinsa.com/mz/brands
             
             with open(img_path, "wb") as f:
                 f.write(img_data)
-                # upload_basic(filename, img_path, gender, index, height, weight, season, style)
-
-if __name__ == '__main__':
+                
+def brand_main(save_folder):
+    save_folderPath = save_folder
+    
     # DB에서 현재 완료되어 있는 이력 조회
     conn, cur = connect_to_database()
     sql = "select max(musinsa_number) from musinsa where musinsa_type = 'brandsnap'"
@@ -320,53 +307,3 @@ if __name__ == '__main__':
     for precess in processes:
         precess.join()
 
-
-
-
-
-## 고려해야 할 수 있는 요소
-
-# -------------------------------------- #
-# Deprecated
-def upload_basic(file_name, img_path, gender, index, height, weight, season, style):
-    """Insert new file.
-    Returns : Id's of the file uploaded
-
-    Load pre-authorized user credentials from the environment.
-    TODO(developer) - See https://developers.google.com/identity
-    for guides on implementing OAuth2 for the application.
-    """
-    
-    if os.path.exists("token.json"):
-        creds = Credentials.from_authorized_user_file("token.json", SCOPES)
-    # If there are no (valid) credentials available, let the user log in.
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
-            creds = flow.run_local_server(port=0)
-        # Save the credentials for the next run
-        with open("token.json", "w") as token:
-            token.write(creds.to_json())
-            
-    try:
-        # create drive api client
-        service = build("drive", "v3", credentials=creds)
-        
-        folder_id = "1MkfNx1KUIrffO5iJIopznx68QU1iIkqw"
-
-        file_metadata = {"name": file_name, "parents": [folder_id], "gender": gender, "index": index, "height": height, "weight": weight, "season": season, "style": style}
-        media = MediaFileUpload(img_path, mimetype="image/jpg")
-        file = (
-            service.files()
-            .create(body=file_metadata, media_body=media, fields="id")
-            .execute()
-        )
-        print(f'File ID: {file.get("id")}')
-
-    except HttpError as error:
-        print(f"An error occurred: {error}")
-        file = None
-
-    return file.get("id")
