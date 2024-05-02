@@ -1,8 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
-import os
+import os, sys
 
-import google.auth
+sys.path.append(os.getcwd())
+from DB.DB_setting import connect_to_database
+
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -15,6 +17,46 @@ from googleapiclient.http import MediaFileUpload
 # ✅ 계절감, 스타일
 
 SCOPES = ["https://www.googleapis.com/auth/drive"]
+
+# ------------------------------------------ #
+
+# 저장할 폴더 위치를 지정해주세요! #
+
+save_folderPath = "newimages/20240502/"
+
+# ------------------------------------------ #
+#        계절감과 스타일을 영어로 변환         #
+
+def change_style_eng(style):
+    style_map = {
+        "캐주얼": "casual", 
+        "아메카지": "amekaji", 
+        "시크": "chic", 
+        "스포티": "sporty", 
+        "스트릿": "street", 
+        "비즈니스캐주얼": "businessCasual", 
+        "로맨틱": "romantic", 
+        "레트로": "retro", 
+        "골프": "golf", 
+        "고프코어": "gofcore", 
+        "걸리시": "girlish", 
+        "미니멀": "minimal", 
+        "댄디": "dandy"
+    }
+
+    return style_map.get(style)
+    
+def change_season_eng(season):
+    season_map = {
+        "봄": "spring", 
+        "여름": "summer", 
+        "가을": "autumn", 
+        "겨울": "winter"
+    }
+    
+    return season_map.get(season)
+
+# -------------------------------------------- #
 
 def download_images(url,index):
     gender = "etc"
@@ -91,12 +133,15 @@ def download_images(url,index):
         if(style == "null"): # 그래도 찾지 못하면 etc 폴더에 저장함
             gender = "etc"
     
+    # 영어로 변경
+    season = change_season_eng(season)
+    style = change_style_eng(style)
     
     print("계절 : " + season + " / 스타일 : " +  style)
 
     # 폴더가 없으면 생성 (image/성별/스타일)
-    if not os.path.exists("newimages/20240502/" + gender + "/" + style):
-        os.makedirs("newimages/20240502/" + gender + "/" + style)
+    if not os.path.exists(save_folderPath + gender + "/" + style):
+        os.makedirs(save_folderPath + gender + "/" + style)
     
     # 이미지 다운로드
     for idx, img_tag in enumerate(img_tags):
@@ -105,12 +150,41 @@ def download_images(url,index):
         
         filename = gender+"_"+index+"_"+height+"_"+weight+"_"+season+"_"+style+".jpg"
         print(filename)
-        img_path = os.path.join("newimages/20240502/" + gender + "/" + style, f"{filename}")
+        img_path = os.path.join(save_folderPath + gender + "/" + style, f"{filename}")
         
         with open(img_path, "wb") as f:
             f.write(img_data)
             # upload_basic(filename, img_path, gender, index, height, weight, season, style)
             break
+
+# 크롤링할 페이지 URL
+if __name__ == '__main__':
+    # 현재 완료되어 있는 이력 조회
+    conn, cur = connect_to_database()
+    sql = "select max(musinsa_number) from musinsa where musinsa_type = 'codishop'"
+    cur.execute(sql)
+    result = cur.fetchall()
+    
+    for i in range(41849, int(result[0][0]), -1):
+        index = "{:d}".format(i)
+        url = "https://www.musinsa.com/app/styles/views/"+index
+
+        # 크롤링 및 이미지 다운로드 실행
+        download_images(url, index)
+
+## 수정사항
+## [아래를 정의함으로 처리됨] TODO 파일명에 "/" 있는 경우 FileNotFoundError 오류 -> line. 77
+## [처리 완료] TODO 계절이 애매한 경우
+## [처리 완료] TODO 스타일이 정확하지 않은 경우
+
+## [처리 완료] TODO 중간중간 삭제된 경우 -> AttributeError로 
+
+
+
+
+
+
+# ------------------------------------------------------------------ #
 
 def upload_basic(file_name, img_path, gender, index, height, weight, season, style):
     """Insert new file.
@@ -154,21 +228,3 @@ def upload_basic(file_name, img_path, gender, index, height, weight, season, sty
         file = None
 
     return file.get("id")
-
-# 크롤링할 페이지 URL
-# 2024/02/26 20:36 기준 40031 최신
-# 2024/02/26 23:45 기준 34000 ~ 40031 완료
-for i in range(41849, 40032, -1):
-
-    index = "{:d}".format(i)
-    url = "https://www.musinsa.com/app/styles/views/"+index
-
-    # 크롤링 및 이미지 다운로드 실행
-    download_images(url,index)
-
-## 수정사항
-## [아래를 정의함으로 처리됨] TODO 파일명에 "/" 있는 경우 FileNotFoundError 오류 -> line. 77
-## [처리 완료] TODO 계절이 애매한 경우
-## [처리 완료] TODO 스타일이 정확하지 않은 경우
-
-## [처리 완료] TODO 중간중간 삭제된 경우 -> AttributeError로 
