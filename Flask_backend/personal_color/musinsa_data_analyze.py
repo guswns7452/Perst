@@ -7,32 +7,18 @@
 ## ✅   -> HSV로 저장하기
 
 import cv2
-import pymysql
-import json, numpy as np
+import numpy as np
 import os, sys
 import personal_color
 from multiprocessing import Process, freeze_support
 from test_data.call_data import call_data  
 
-sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+sys.path.append(os.getcwd())
+
 import cnn_model
+from DB.db_setting import connect_to_database
 
 PATH =  os.getcwd()
-
-##
-# DB 세팅 값 불러오기
-#
-def read_database_info():
-    # JSON 파일 경로
-    jsonFilePath = PATH+'/database.json'
-    
-    # JSON 파일 읽기
-    with open(jsonFilePath, 'r') as f:
-        # JSON 데이터 파싱
-        data = json.load(f)
-        
-    return data
-
 
 def imgLoad(folder_path, file_name):
     # 한글 파일 경로도 읽을 수 있도록
@@ -49,15 +35,6 @@ def imgLoad(folder_path, file_name):
         img_file = cv2.cvtColor(img_file, cv2.COLOR_BGR2RGB)
         return img_file
     
-
-# 데이터베이스에 연결하는 코드
-def connect_to_database():
-    # 메인 코드
-    data = read_database_info()
-    conn = pymysql.connect(host = data['host'] ,port = data['port'], user = data['user'], password = data['password'], db = data['db'], charset='utf8')	# 접속정보
-    cur = conn.cursor()	# 커서생성
-    
-    return conn, cur
 
 # 현재 지금 스타일이 분석 완료 되었는지 판단
 def is_completed(Data_status, nowStyle, gender):
