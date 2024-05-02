@@ -1,6 +1,8 @@
 package com.clothes.perst.controller;
 
+import com.clothes.perst.DTO.MusinsaSearchRequest;
 import com.clothes.perst.DTO.RestResponse;
+import com.clothes.perst.config.JwtTokenService;
 import com.clothes.perst.domain.MusinsaVO;
 import com.clothes.perst.service.MusinsaService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,9 +31,13 @@ public class ClothesSearchController {
 
     private static final Logger logger = LoggerFactory.getLogger(ClothesSearchController.class);
 
+    private final JwtTokenService jwtTokenService;
+
+
     @Autowired
-    public ClothesSearchController(MusinsaService musinsaService){
+    public ClothesSearchController(MusinsaService musinsaService, JwtTokenService jwtTokenService){
         this.musinsaService = musinsaService;
+        this.jwtTokenService = jwtTokenService;
     }
 
     // TODO 토큰 활용하여 정상적인 사용자를 식별하는 코드 추가
@@ -45,12 +51,13 @@ public class ClothesSearchController {
                             examples = @ExampleObject(name = "스타일 조회 성공")) }),
             @ApiResponse(responseCode = "404", description = "일치하는 스타일이 없음")
     })
-    @GetMapping("/man")
-    public ResponseEntity findMaleSearch(@RequestHeader("Authorization") String token, @RequestParam String style) throws Exception {
-        logger.info("[남성 스타일 둘러보기] Style : " + style);
+    @PostMapping("/man")
+    public ResponseEntity findMaleSearch(@RequestHeader("Authorization") String token, @RequestParam String style, @RequestBody MusinsaSearchRequest musinsaSearchVO) throws Exception {
+        logger.info("[남성 스타일 둘러보기] Style : " + style + " / Color : " + musinsaSearchVO.getColor());
         try{
+            int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
             MusinsaVO manInfo = new MusinsaVO(); manInfo.setMusinsaGender("man"); manInfo.setMusinsaStyle(style);
-            List<MusinsaVO> maleClothes = musinsaService.findByMusinsaGenderAndMusinsaStyle(manInfo); // 맨날 불러오는 것이 성능적으로 괜찮은가?
+            List<MusinsaVO> maleClothes = musinsaService.findByMusinsaGenderAndMusinsaStyle(manInfo, musinsaSearchVO); // 맨날 불러오는 것이 성능적으로 괜찮은가?
 
             restResponse = RestResponse.builder()
                     .code(HttpStatus.OK.value())
@@ -69,6 +76,15 @@ public class ClothesSearchController {
                     .build();
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
         }
+        // 퍼스널 컬러 진단을 하지 않고, 퍼스널 컬러 반영한 검색 요청 할 때
+        catch (NullPointerException e){
+            restResponse = RestResponse.builder()
+                    .code(HttpStatus.NOT_FOUND.value())
+                    .httpStatus(HttpStatus.NOT_FOUND)
+                    .message(e.getMessage())
+                    .build();
+            return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
+        }
     }
 
     @ResponseBody
@@ -80,18 +96,19 @@ public class ClothesSearchController {
                             examples = @ExampleObject(name = "스타일 조회 성공")) }),
             @ApiResponse(responseCode = "404", description = "일치하는 스타일이 없음")
     })
-    @GetMapping("/woman")
-    public ResponseEntity findFemaleSearch(@RequestHeader("Authorization") String token, @RequestParam String style) throws Exception {
-        logger.info("[여성 스타일 둘러보기] Style : " + style);
+    @PostMapping("/woman")
+    public ResponseEntity findFemaleSearch(@RequestHeader("Authorization") String token, @RequestParam String style, @RequestBody MusinsaSearchRequest searchVO) throws Exception {
+        logger.info("[여성 스타일 둘러보기] Style : " + style + " / Color : " + searchVO.getColor());
         try{
+            int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
             MusinsaVO womanInfo = new MusinsaVO(); womanInfo.setMusinsaGender("woman"); womanInfo.setMusinsaStyle(style);
-            List<MusinsaVO> maleClothes = musinsaService.findByMusinsaGenderAndMusinsaStyle(womanInfo); // 맨날 불러오는 것이 성능적으로 괜찮은가?
+            List<MusinsaVO> femaleClothes = musinsaService.findByMusinsaGenderAndMusinsaStyle(womanInfo, searchVO); // 맨날 불러오는 것이 성능적으로 괜찮은가?
 
             restResponse = RestResponse.builder()
                     .code(HttpStatus.OK.value())
                     .httpStatus(HttpStatus.OK)
-                    .message(style + " 스타일 조회 성공했습니다. " + maleClothes.size() + "장")
-                    .data(maleClothes)
+                    .message(style + " 스타일 조회 성공했습니다. " + femaleClothes.size() + "장")
+                    .data(femaleClothes)
                     .build();
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
         }
@@ -100,6 +117,15 @@ public class ClothesSearchController {
             restResponse = RestResponse.builder()
                     .code(HttpStatus.FORBIDDEN.value())
                     .httpStatus(HttpStatus.FORBIDDEN)
+                    .message(e.getMessage())
+                    .build();
+            return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
+        }
+        // 퍼스널 컬러 진단을 하지 않고, 퍼스널 컬러 반영한 검색 요청 할 때
+        catch (NullPointerException e){
+            restResponse = RestResponse.builder()
+                    .code(HttpStatus.NOT_FOUND.value())
+                    .httpStatus(HttpStatus.NOT_FOUND)
                     .message(e.getMessage())
                     .build();
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());

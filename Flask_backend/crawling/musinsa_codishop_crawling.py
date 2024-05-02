@@ -95,8 +95,8 @@ def download_images(url,index):
     print("계절 : " + season + " / 스타일 : " +  style)
 
     # 폴더가 없으면 생성 (image/성별/스타일)
-    if not os.path.exists("newimages/" + gender + "/" + style):
-        os.makedirs("newimages/" + gender + "/" + style)
+    if not os.path.exists("newimages/20240502/" + gender + "/" + style):
+        os.makedirs("newimages/20240502/" + gender + "/" + style)
     
     # 이미지 다운로드
     for idx, img_tag in enumerate(img_tags):
@@ -105,7 +105,7 @@ def download_images(url,index):
         
         filename = gender+"_"+index+"_"+height+"_"+weight+"_"+season+"_"+style+".jpg"
         print(filename)
-        img_path = os.path.join("newimages/" + gender + "/" + style, f"{filename}")
+        img_path = os.path.join("newimages/20240502/" + gender + "/" + style, f"{filename}")
         
         with open(img_path, "wb") as f:
             f.write(img_data)
@@ -158,7 +158,7 @@ def upload_basic(file_name, img_path, gender, index, height, weight, season, sty
 # 크롤링할 페이지 URL
 # 2024/02/26 20:36 기준 40031 최신
 # 2024/02/26 23:45 기준 34000 ~ 40031 완료
-for i in range(34000, 30000, -1):
+for i in range(41849, 40032, -1):
 
     index = "{:d}".format(i)
     url = "https://www.musinsa.com/app/styles/views/"+index
