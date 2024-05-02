@@ -5,7 +5,7 @@ import colorsys, os, sys
 from multiprocessing import Process, freeze_support
 
 sys.path.append(os.getcwd())
-from DB.db_setting import connect_to_database
+from DB.DB_setting import connect_to_database
 
 PATH = os.getcwd()
 
