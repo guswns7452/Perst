@@ -68,7 +68,6 @@ public class ShoppingCodiShopClothesUpload {
     private static ClothesFolder findFolderID(String style, String gender) {
         String filePath = "src/main/resources/musinsaFolderID.json";
         List<ClothesFolder> clothesList = loadClothesList(filePath);
-
         for (ClothesFolder folder : clothesList) {
             if (folder.folderName.equals(style) && folder.gender.equals(gender)) {
                 return folder;
@@ -103,10 +102,10 @@ public class ShoppingCodiShopClothesUpload {
         Map<String, String> styleMap = new HashMap<String, String>();
         styleMap.put("캐주얼","casual"); styleMap.put("아메카지","Amekaji"); styleMap.put("시크","chic"); styleMap.put("스포티","sporty"); styleMap.put("스트릿","street"); styleMap.put("비즈니스캐주얼","businessCasual"); styleMap.put("로맨틱","romantic"); styleMap.put("레트로","retro"); styleMap.put("골프","golf"); styleMap.put("고프코어","gofcore"); styleMap.put("걸리시","girlish"); styleMap.put("미니멀","minimal"); styleMap.put("댄디","dandy");
 
-        String folderPath = "D:\\perstDir\\Flask_backend\\images\\";
+        String folderPath = "D:\\coding\\perstDir\\Flask_backend\\newimages\\20240502";
 
-        ArrayList<String> genders = new ArrayList(); genders.add("woman");
-        ArrayList<String> styles = new ArrayList(); styles.add("걸리시"); /* styles.add("고프코어"); styles.add("골프"); styles.add("댄디"); styles.add("로맨틱"); styles.add("미니멀"); styles.add("비즈니스캐주얼"); styles.add("스트릿"); styles.add("스포티");*/ styles.add("시크"); styles.add("아메카지"); styles.add("캐주얼"); styles.add("레트로");
+        ArrayList<String> genders = new ArrayList(); genders.add("woman"); /*genders.add("man");*/
+        ArrayList<String> styles = new ArrayList(); /*styles.add("걸리시"); styles.add("고프코어"); styles.add("골프"); styles.add("댄디"); styles.add("로맨틱"); styles.add("미니멀"); styles.add("비즈니스캐주얼"); styles.add("스트릿"); styles.add("스포티"); styles.add("시크"); styles.add("아메카지");*/ styles.add("캐주얼"); styles.add("레트로");
 
         for (String gender : genders){
             for(String style : styles){
@@ -130,16 +129,17 @@ public class ShoppingCodiShopClothesUpload {
                         String newFileName = fileMetaData.toString().replace("[","").replace("]","").replace(", ","_")+".jpg";
                         
                         // 중간에 정지 하면 넘김 (숫자와 스타일)
-                        if(Integer.parseInt(fileMetaData.get(1)) <= 33388 && style.equals("걸리시")){
+                        if(Integer.parseInt(fileMetaData.get(1)) <= 41059 && style.equals("캐주얼")){
                             continue;
-                        }
+                        } 
                         
-                        fileMetaData.add(uploadBasic(gender, style, folderPath+"\\"+gender+"\\"+style+"\\"+fileName, newFileName));
+                        fileMetaData.add(uploadBasic(gender, englishStyle, folderPath+"\\"+gender+"\\"+style+"\\"+fileName, newFileName));
 
                         // System.out.println(fileName);
                         // System.out.println(fileMetaData); // [man, 34376, 188, 70, 여름, 고프코어, 3jdhFJUr_dsjcb3j5bkksbakDJSFK]
 
                         MusinsaVO musinsaVO = new MusinsaVO(fileMetaData);
+                        musinsaVO.setMusinsaType("codishop");
                         musinsaRepository.save(musinsaVO);
 
                         System.out.println(newFileName);
