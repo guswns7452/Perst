@@ -11,7 +11,7 @@ import numpy as np
 import os, sys
 from personal_color.personal_color import rgb_to_hsv, get_season_tone
 from multiprocessing import Process, freeze_support
-from test_data.call_data import call_data  
+from personal_color.test_data.call_data import call_data  
 
 sys.path.append(os.getcwd())
 
@@ -85,7 +85,7 @@ def update_personalColor_to_DB(genders, styles, Data_status, save_folderPath, mu
                     analyze_completed_number = data
                 
                 # 폴더 내의 파일명 가져오기
-                folderPath = PATH + "/" + save_folderPath + gender + "/" + bottomFolder
+                folderPath = save_folderPath + gender + "/" + bottomFolder
                 files = os.listdir(folderPath)
                 print(gender, " / " ,bottomFolder, " / " , folderPath, " / 현재 완료 갯수 : ", count)
                 

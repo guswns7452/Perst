@@ -14,7 +14,8 @@ def change_style_eng(style):
         "고프코어": "gofcore", 
         "걸리시": "girlish", 
         "미니멀": "minimal", 
-        "댄디": "dandy"
+        "댄디": "dandy",
+        "null": "null"
     }
 
     return style_map.get(style)
@@ -24,7 +25,8 @@ def change_season_eng(season):
         "봄": "spring", 
         "여름": "summer", 
         "가을": "autumn", 
-        "겨울": "winter"
+        "겨울": "winter",
+        "null": "null"
     }
     
     return season_map.get(season)

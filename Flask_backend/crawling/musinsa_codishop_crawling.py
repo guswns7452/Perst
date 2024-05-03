@@ -114,6 +114,7 @@ def download_images(url,index):
 
 # 크롤링할 페이지 URL
 def codi_main(save_folder):
+    global save_folderPath
     save_folderPath = save_folder
     # 현재 완료되어 있는 이력 조회
     conn, cur = connect_to_database()
@@ -128,6 +129,8 @@ def codi_main(save_folder):
         # 크롤링 및 이미지 다운로드 실행
         download_images(url, index)
 
+    conn.close()
+    
 ## 수정사항
 ## [아래를 정의함으로 처리됨] TODO 파일명에 "/" 있는 경우 FileNotFoundError 오류 -> line. 77
 ## [처리 완료] TODO 계절이 애매한 경우

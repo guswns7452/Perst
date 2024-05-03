@@ -128,5 +128,4 @@ def googleDrive():
     return items
 
 
-googleDrive()
 # upload_basic("woman_39331_165_47_겨울_걸리시.jpg",os.path.join("../images/woman/걸리시", "woman_39331_165_47_겨울_걸리시.jpg"),"woman","39331","165","47","겨울","걸리시")
