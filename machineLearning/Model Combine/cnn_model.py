@@ -54,31 +54,31 @@ def imgLoad(input_type):
 # 출력: 마스크 이미지. [0~5]로 구분됨.
 def clothDetection(input_img):
     # 배경제거 모델 불러오기
-    bg_model_path = model_dir_path + 'binary_poly_seg_model_0113_01'
-    bg_detection_model = keras.models.load_model(bg_model_path)
+    # bg_model_path = model_dir_path + 'binary_poly_seg_model_0113_01'
+    # bg_detection_model = keras.models.load_model(bg_model_path)
 
     # 의상 파츠분리 모델 불러오기
-    part_model_path = model_dir_path + 'poly_seg_model_0331_01'
+    part_model_path = model_dir_path + 'poly_seg_model_0428_02'
     part_detection_model = keras.models.load_model(part_model_path)
 
-    # 배경제거 예측을 위해 list 형태로 만들기
+    # 예측을 위해 원본 이미지를 list 형태로 만들기
     x_test = [input_img]
     x_test = np.array(x_test)
 
     # 모델 예측
-    bg_preds = bg_detection_model.predict(x_test)
-    bg_mask = np.ndarray.round(bg_preds[0])
-    bg_mask = bg_mask.astype('uint8')
+    # bg_preds = bg_detection_model.predict(x_test)
+    # bg_mask = np.ndarray.round(bg_preds[0])
+    # bg_mask = bg_mask.astype('uint8')
 
     # 생성된 마스크를 원본 이미지에 씌워서 배경 제거하기
-    bg_masked_img = cv2.bitwise_and(input_img, input_img, mask=bg_mask)
+    # bg_masked_img = cv2.bitwise_and(input_img, input_img, mask=bg_mask)
 
     # 의상 파츠분리 예측을 위해 list 형태로 만들기
-    x_test2 =[bg_masked_img]
-    x_test2 = np.array(x_test2)
+    # x_test2 =[bg_masked_img]
+    # x_test2 = np.array(x_test2)
 
     # 모델 예측
-    part_preds = part_detection_model.predict(x_test2)
+    part_preds = part_detection_model.predict(x_test)
     part_list = part_preds.argmax(axis=-1)
     part_pred_mask = part_list[0]
 
@@ -248,50 +248,23 @@ def personalColorExtract(ori_img, mask_img):
     median_color = np.median(pixel_list, axis=0)
     
     # 색공간을 RGB에서 HSV로 변경
-    rgb_view= np.full((1, 1, 3), median_color, dtype=np.uint8)
-    hsv_view = cv2.cvtColor(rgb_view, cv2.COLOR_RGB2HSV)
-    hsv_color = hsv_view[0, 0]
+    # rgb_view= np.full((1, 1, 3), median_color, dtype=np.uint8)
+    # hsv_view = cv2.cvtColor(rgb_view, cv2.COLOR_RGB2HSV)
+    # hsv_color = hsv_view[0, 0]
 
     # 색상, 채도, 명도로 퍼스널컬러 공간 특정
-    h = hsv_color[0]  # 색상
-    s = hsv_color[1]  # 채도
-    v = hsv_color[2]  # 명도
+    # h = hsv_color[0]  # 색상
+    # s = hsv_color[1]  # 채도
+    # v = hsv_color[2]  # 명도
 
     # 퍼스널 컬러 영역 계산
     # 3분할 s/v  0 < 85 < 170 < 255
-    if h >= 75 and h < 165:
-        # 쿨톤
-        if v > 170:
-            personal_label = 'Summer Light'
-        else:
-            if s > 170:
-                personal_label = 'Winter Bright'
-            elif s > 85:
-                personal_label = 'Summer Bright'
-            else:
-                if v < 85:
-                    personal_label = 'Winter Deep'
-                else:
-                    personal_label = 'Summer Mute'
-    else:
-        # 웜톤
-        if v < 85:
-            personal_label = 'Autumn Deep'
-        else:
-            if v > 170:
-                if s < 85:
-                    personal_label = 'Spring Light'
-                else:
-                    personal_label = 'Spring Bright'
-            else:
-                if s > 170:
-                    personal_label = 'Autumn Strong'
-                else:
-                    personal_label = 'Autumn Mute'
+    # 영역 정의 알고리즘을 다시 짜야 한다
 
 
     # 출력: [퍼스널컬러 분류, [R값, G값, B값], 퍼스널컬러 마스크 적용된 이미지]
-    output_list = [personal_label, median_color, part_img]
+    # output_list = [personal_label, median_color, part_img]
+    output_list = [median_color, part_img]
     return output_list
 
 
@@ -334,8 +307,8 @@ def cnn_model_main(ori_img, type):
     output_dict['no_background_img'] = masked_img
     output_dict['fashion_type'] = fashion_label
     output_dict['total_color_list'] = total_color_list
-    output_dict['personal_color_label'] = personal_color_list[0]
-    output_dict['personal_color_rgb'] = personal_color_list[1]
-    output_dict['personal_masked_img'] = personal_color_list[2]
+    # output_dict['personal_color_label'] = personal_color_list[0]
+    output_dict['personal_color_rgb'] = personal_color_list[0]
+    output_dict['personal_masked_img'] = personal_color_list[1]
 
     return output_dict

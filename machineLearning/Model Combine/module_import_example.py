@@ -44,7 +44,7 @@ plt.imshow(output['personal_masked_img'])
 plt.show()
 
 # 퍼스널컬러 라벨 출력
-print("Personal Color Type : " + output['personal_color_label'])
+# print("Personal Color Type : " + output['personal_color_label'])
 
 # 퍼스널컬러 대표값 RGB 출력
 ps_r = output['personal_color_rgb'][0]
