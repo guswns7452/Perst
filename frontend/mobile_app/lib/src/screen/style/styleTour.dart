@@ -233,6 +233,8 @@ class _CustomDrawerState extends State<CustomDrawer>
     ColorRadioModel(false, 131, 22, 192),
   ];
 
+  bool personalColorChecked = false;
+
   @override
   void initState() {
     super.initState();
@@ -305,45 +307,67 @@ class _CustomDrawerState extends State<CustomDrawer>
 
   Widget _buildGenderTab() {
     return Container(
-      margin: EdgeInsets.only(top: 30, bottom: 300),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          SizedBox(width: 40),
-          Radio<String>(
-            value: 'man',
-            groupValue: _seletedGender,
-            onChanged: (String? value) {
-              setState(() {
-                _seletedGender = value!;
-                _seletedGenderInt = 0;
-              });
-            },
+      margin: EdgeInsets.only(top: 30),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(width: 40),
+              Radio<String>(
+                value: 'man',
+                groupValue: _seletedGender,
+                onChanged: (String? value) {
+                  setState(() {
+                    _seletedGender = value!;
+                    _seletedGenderInt = 0;
+                  });
+                },
+              ),
+              Text(
+                'MAN',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: _seletedGender == 'man' ? Colors.black : Colors.grey,
+                ),
+              ),
+              SizedBox(width: 100),
+              Radio<String>(
+                value: 'woman',
+                groupValue: _seletedGender,
+                onChanged: (String? value) {
+                  setState(() {
+                    _seletedGender = value!;
+                    _seletedGenderInt = 1;
+                  });
+                },
+              ),
+              Text(
+                'WOMEN',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: _seletedGender == 'woman' ? Colors.black : Colors.grey,
+                ),
+              ),
+            ],
           ),
-          Text(
-            'MAN',
-            style: TextStyle(
-              fontSize: 18,
-              color: _seletedGender == 'man' ? Colors.black : Colors.grey,
-            ),
-          ),
-          SizedBox(width: 100),
-          Radio<String>(
-            value: 'woman',
-            groupValue: _seletedGender,
-            onChanged: (String? value) {
-              setState(() {
-                _seletedGender = value!;
-                _seletedGenderInt = 1;
-              });
-            },
-          ),
-          Text(
-            'WOMEN',
-            style: TextStyle(
-              fontSize: 18,
-              color: _seletedGender == 'woman' ? Colors.black : Colors.grey,
-            ),
+          SizedBox(height: 250),
+          Row(
+            children: [
+              SizedBox(width: 20),
+              Checkbox(
+                value: personalColorChecked,
+                onChanged: (value) {
+                  setState(() {
+                    personalColorChecked = value!;
+                  });
+                },
+              ),
+              Text(
+                "내 퍼스널 컬러 반영하여 의류 검색하기",
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              )
+            ],
           ),
         ],
       ),

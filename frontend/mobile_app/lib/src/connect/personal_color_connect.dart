@@ -35,7 +35,8 @@ class PersonalColorConnect extends GetConnect {
       int personalSelectTimesThree) async {
     DateTime nowDate = DateTime.now();
     String personalColorDate =
-        DateFormat('yyyy-mm-ddTHH:mm:ss').format(nowDate);
+        DateFormat('yyyy-MM-ddTHH:mm:ss').format(nowDate);
+    print(personalColorDate);
     Response response = await post('/personal/color', {
       'personalColorType': personalColorType,
       'personalColorAllTimes': personalColorAllTimes,
