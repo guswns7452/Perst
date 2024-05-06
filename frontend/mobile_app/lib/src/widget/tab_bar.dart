@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:perst/src/screen/camera/cameraIntro.dart';
+import 'package:perst/src/screen/mypage/modifyInformation.dart';
+import 'package:perst/src/screen/mypage/personalColorHistory.dart';
+import 'package:perst/src/screen/mypage/styleHistory.dart';
 import 'package:perst/src/screen/personalColor/personalColor.dart';
 import 'package:perst/src/screen/style/myStyle.dart';
 import 'package:perst/src/screen/style/styleTour.dart';
+
+final GetStorage _storage = GetStorage();
 
 class Tabbar extends StatefulWidget {
   const Tabbar({Key? key}) : super(key: key);
@@ -13,6 +19,8 @@ class Tabbar extends StatefulWidget {
 
 class _TabbarState extends State<Tabbar> {
   int _selectedIndex = 0;
+  String name = _storage.read("name");
+  String gender = _storage.read("gender");
 
   final List<Widget> _widgetOptions = <Widget>[
     StyleTour(),
@@ -66,42 +74,44 @@ class _TabbarState extends State<Tabbar> {
           children: [
             UserAccountsDrawerHeader(
               accountName: Text(
-                '이다현',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                name,
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
               ),
               accountEmail: Text(
-                '여름라이트',
+                gender == "woman" ? "Woman" : "Man",
                 style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
-              ), // 퍼스널컬러 정의한거 띄우기 없으면 "퍼스널 컬러 정의 없음" 띄울까..
+              ),
               decoration: BoxDecoration(
                 color: Color.fromARGB(255, 124, 124, 124),
               ),
             ),
             ListTile(
-              leading: Icon(
-                Icons.favorite,
-                color: const Color.fromARGB(255, 0, 0, 0),
-              ),
-              title: Text("스타일 조회 이력"),
-              onTap: () => {print("style")}, // 스타일 이력 조회 페이지로 이동하기
-            ),
+                leading: Icon(
+                  Icons.favorite,
+                  color: const Color.fromARGB(255, 0, 0, 0),
+                ),
+                title: Text("스타일 조회 이력"),
+                onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => StyleHistory(),
+                    ))),
             ListTile(
-              leading: Icon(
-                Icons.colorize,
-                color: const Color.fromARGB(255, 0, 0, 0),
-              ),
-              title: Text("퍼스널 컬러 진단결과"),
-              onTap: () =>
-                  {print("personal")}, // 퍼스널 컬러 진단결과 페이지 또는 퍼스널 컬러 진단 페이지로 이동
-            ),
+                leading: Icon(
+                  Icons.colorize,
+                  color: const Color.fromARGB(255, 0, 0, 0),
+                ),
+                title: Text("퍼스널 컬러 진단결과"),
+                onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => PersonalColorHistory(),
+                    ))),
             ListTile(
-              leading: Icon(
-                Icons.manage_accounts,
-                color: const Color.fromARGB(255, 0, 0, 0),
-              ),
-              title: Text("내 정보 수정"),
-              onTap: () => {print("information")}, // 내 정보 수정 페이지로 이동하기
-            ),
+                leading: Icon(
+                  Icons.manage_accounts,
+                  color: const Color.fromARGB(255, 0, 0, 0),
+                ),
+                title: Text("내 정보 수정"),
+                onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => ModifyInformation(),
+                    ))),
           ],
         ),
       ),

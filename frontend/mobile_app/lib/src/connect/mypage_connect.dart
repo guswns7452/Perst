@@ -31,6 +31,7 @@ class MypageConnect extends GetConnect {
       if (body['code'] != 200) {
         throw Exception(body['message']);
       }
+      print(body['data']);
       return body['data'];
     } catch (e) {
       print('Error : $e');
@@ -43,6 +44,7 @@ class MypageConnect extends GetConnect {
       Response response = await get('/clothes/analyze?number=$styleNumber',
           headers: {'Authorization': await getToken});
       Map<String, dynamic> body = response.body;
+      print(body['data']);
 
       if (body['code'] != 200) {
         throw Exception(body['message']);
@@ -51,5 +53,65 @@ class MypageConnect extends GetConnect {
     } catch (e) {
       print('Error : $e');
     }
+  }
+
+  // 퍼스널 컬러 이력 조회
+  Future personalColorHistory() async {
+    Response response = await get('/personal/color',
+        headers: {'Authorization': await getToken});
+
+    Map<String, dynamic> body = response.body;
+    print(body['data']);
+
+    if (body['code'] != 200) {
+      throw Exception(body['message']);
+    }
+    return body['data'];
+  }
+
+  // 내 정보 변경 - 내 정보 불러오기
+  Future showInformation() async {
+    Response response =
+        await get('/member/mypage', headers: {'Authorization': await getToken});
+
+    Map<String, dynamic> body = response.body;
+    print(body['data']);
+
+    if (body['code'] != 200) {
+      throw Exception(body['message']);
+    }
+    return body['data'];
+  }
+
+  // 내 정보 변경 - 내 정보 변경하기
+  Future patchInformation(
+      String memberName,
+      String memberPhone,
+      String memberPassword,
+      String memberBirth,
+      String memberGender,
+      int memberHeight,
+      int memberWeight) async {
+    Response response = await patch('/member/mypage', {
+      {
+        "memberName": memberName,
+        "memberPhone": memberPhone,
+        "memberPassword": memberPassword,
+        "memberBirth": memberBirth,
+        "memberGender": memberGender,
+        "memberHeight": memberHeight,
+        "memberWeight": memberWeight
+      }
+    }, headers: {
+      'Authorization': await getToken
+    });
+
+    Map<String, dynamic> body = response.body;
+    print(body['data']);
+
+    if (body['code'] != 200) {
+      throw Exception(body['message']);
+    }
+    return body['data'];
   }
 }

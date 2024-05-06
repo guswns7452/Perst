@@ -1,10 +1,11 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:perst/src/controller/personal_color_controller.dart';
 import 'package:perst/src/model/color_model.dart';
 import 'package:perst/src/model/color_radio_model.dart';
+
+final GetStorage _storage = GetStorage();
 
 class PersonalColorResult extends StatefulWidget {
   final PersonalColorModel PCM;
@@ -20,6 +21,7 @@ class PersonalColorResult extends StatefulWidget {
 class _PersonalColorResultState extends State<PersonalColorResult> {
   final personalColorController = Get.put(PersonalColorController());
   late Future<PersonalColor> personalColor;
+  String name = _storage.read("name");
 
   @override
   Future<void> fetchData() async {
@@ -72,7 +74,7 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
             children: [
               SizedBox(width: 20),
               Text(
-                "이다현",
+                name,
                 style: TextStyle(
                     fontSize: 25,
                     color: Color.fromRGBO(255, 191, 25, 1),

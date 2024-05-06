@@ -35,6 +35,7 @@ class _KeywordFashionState extends State<KeywordFashion> {
       print("남자");
       fashions = fashionSearchController.searchMan(widget.styleKeyword);
     }
+    // 여기도 API에 따라서 변경해야함.
   }
 
   @override
