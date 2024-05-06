@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:get/get_connect/connect.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
@@ -24,37 +26,16 @@ class PersonalColorConnect extends GetConnect {
   }
 
   // 퍼스널 컬러 진단 결과
-  Future personalAnalyze(
-      String personalColorType,
-      int personalColorAllTimes,
-      String personalSelectTypeOne,
-      String personalSelectTypeTwo,
-      String personalSelectTypeThree,
-      int personalSelectTimesOne,
-      int personalSelectTimesTwo,
-      int personalSelectTimesThree) async {
+  Future personalAnalyze(String personalColorType, int personalColorAllTimes,
+      List<Map<String, dynamic>> personalColorSelects) async {
     DateTime nowDate = DateTime.now();
     String personalColorDate =
         DateFormat('yyyy-MM-ddTHH:mm:ss').format(nowDate);
-    print(personalColorDate);
     Response response = await post('/personal/color', {
       'personalColorType': personalColorType,
       'personalColorAllTimes': personalColorAllTimes,
       'personalColorDate': personalColorDate,
-      'personalSelects': [
-        {
-          'personalSelectType': personalSelectTypeOne,
-          'personalSelectTimes': personalSelectTimesOne
-        },
-        {
-          'personalSelectType': personalSelectTypeTwo,
-          'personalSelectTimes': personalSelectTimesTwo
-        },
-        {
-          'personalSelectType': personalSelectTypeThree,
-          'personalSelectTimes': personalSelectTimesThree
-        },
-      ],
+      'personalSelects': personalColorSelects,
     }, headers: {
       'Authorization': await getToken
     });

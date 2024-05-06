@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:perst/src/controller/personal_color_controller.dart';
+import 'package:perst/src/connect/personal_color_connect.dart';
 import 'package:perst/src/model/color_model.dart';
 import 'package:perst/src/model/color_radio_model.dart';
 
@@ -19,39 +19,20 @@ class PersonalColorResult extends StatefulWidget {
 }
 
 class _PersonalColorResultState extends State<PersonalColorResult> {
-  final personalColorController = Get.put(PersonalColorController());
-  late Future<PersonalColor> personalColor;
+  final personalColorConnection = Get.put(PersonalColorConnect());
+  late Map<String, dynamic> result;
+  late int personalSelectTimesFirst;
+  late int personalSelectTimesSecond;
+  late String firstRatio;
+  late String secondRatio;
+  late double firstWidth;
+  late double secondWidth;
+  late String hue;
+  late String saturation;
+  late String value;
+  late List<ResultColorList> colorList;
+  bool isLoading = true;
   String name = _storage.read("name");
-
-  @override
-  Future<void> fetchData() async {
-    List<personalResultModel> values = [
-      personalResultModel(widget.PCM.SpringRight, widget.PCM.SSpringRight),
-      personalResultModel(widget.PCM.SpringBright, widget.PCM.SSpringBright),
-      personalResultModel(widget.PCM.SummerBright, widget.PCM.SSummerBright),
-      personalResultModel(widget.PCM.SummerMute, widget.PCM.SSummerMute),
-      personalResultModel(widget.PCM.SummerRight, widget.PCM.SSummerRight),
-      personalResultModel(widget.PCM.FallMute, widget.PCM.SFallMute),
-      personalResultModel(widget.PCM.FallDeep, widget.PCM.SFallDeep),
-      personalResultModel(widget.PCM.FallStrong, widget.PCM.SFallStrong),
-      personalResultModel(widget.PCM.WinterDeep, widget.PCM.SWinterDeep),
-      personalResultModel(widget.PCM.WinterBright, widget.PCM.SWinterBright),
-    ];
-
-    values.sort((a, b) => b.count.compareTo(a.count));
-
-    personalColor = await personalColorController.sendPersonalColor(
-      widget.season,
-      9,
-      values[0].personalColor,
-      values[1].personalColor,
-      values[2].personalColor,
-      values[0].count,
-      values[1].count,
-      values[2].count,
-    );
-    print(personalColor);
-  }
 
   @override
   void initState() {
@@ -59,7 +40,122 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
     fetchData();
   }
 
+  Future<void> fetchData() async {
+    List<Map<String, dynamic>> personalSelects = [
+      {
+        "personalSelectType": widget.PCM.SSpringBright,
+        "personalSelectTimes": widget.PCM.SpringBright
+      },
+      {
+        "personalSelectType": widget.PCM.SSpringRight,
+        "personalSelectTimes": widget.PCM.SpringRight
+      },
+      {
+        "personalSelectType": widget.PCM.SSummerBright,
+        "personalSelectTimes": widget.PCM.SummerBright
+      },
+      {
+        "personalSelectType": widget.PCM.SSummerMute,
+        "personalSelectTimes": widget.PCM.SummerMute
+      },
+      {
+        "personalSelectType": widget.PCM.SSummerRight,
+        "personalSelectTimes": widget.PCM.SummerRight
+      },
+      {
+        "personalSelectType": widget.PCM.SFallDeep,
+        "personalSelectTimes": widget.PCM.FallDeep
+      },
+      {
+        "personalSelectType": widget.PCM.SFallMute,
+        "personalSelectTimes": widget.PCM.FallMute
+      },
+      {
+        "personalSelectType": widget.PCM.SFallStrong,
+        "personalSelectTimes": widget.PCM.FallStrong
+      },
+      {
+        "personalSelectType": widget.PCM.SWinterBright,
+        "personalSelectTimes": widget.PCM.WinterBright
+      },
+      {
+        "personalSelectType": widget.PCM.SWinterDeep,
+        "personalSelectTimes": widget.PCM.WinterDeep
+      },
+    ];
+
+    setState(() {
+      isLoading = true;
+    });
+
+    result = await personalColorConnection.personalAnalyze(
+        widget.season, 9, personalSelects);
+
+    setState(() {
+      colorList = [
+        ResultColorList(
+            result["personalColorRepresentative"][0]["red"],
+            result["personalColorRepresentative"][0]["green"],
+            result["personalColorRepresentative"][0]["blue"]),
+        ResultColorList(
+            result["personalColorRepresentative"][1]["red"],
+            result["personalColorRepresentative"][1]["green"],
+            result["personalColorRepresentative"][1]["blue"]),
+        ResultColorList(
+            result["personalColorRepresentative"][2]["red"],
+            result["personalColorRepresentative"][2]["green"],
+            result["personalColorRepresentative"][2]["blue"]),
+        ResultColorList(
+            result["personalColorRepresentative"][3]["red"],
+            result["personalColorRepresentative"][3]["green"],
+            result["personalColorRepresentative"][3]["blue"])
+      ];
+
+      firstRatio =
+          (result["personalSelects"][0]["personalSelectTimes"] / 9 * 100)
+              .toStringAsFixed(2);
+      secondRatio =
+          (result["personalSelects"][1]["personalSelectTimes"] / 9 * 100)
+              .toStringAsFixed(2);
+      String firstWidthSt =
+          (result["personalSelects"][0]["personalSelectTimes"] / 9 * 150)
+              .toStringAsFixed(2);
+      firstWidth = double.parse(firstWidthSt);
+      String secondWidthSt =
+          (result["personalSelects"][1]["personalSelectTimes"] / 9 * 150)
+              .toStringAsFixed(2);
+      secondWidth = double.parse(secondWidthSt);
+    });
+
+    hue = result["personalColorInfo"]["hue"];
+    saturation = result["personalColorInfo"]["saturation"];
+    value = result["personalColorInfo"]["value"];
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                '분석중입니다...',
+                style: TextStyle(fontSize: 18),
+              ),
+              SizedBox(height: 20),
+              CircularProgressIndicator(),
+            ],
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -127,13 +223,15 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
                     ),
                     Container(
                         width: 150,
-                        child: Text("여름 라이트",
+                        child: Text(
+                            "${result["personalSelects"][0]["personalSelectType"]}",
                             style: TextStyle(
                                 fontSize: 12, fontWeight: FontWeight.w600))),
                     SizedBox(height: 10),
                     Container(
                         width: 150,
-                        child: Text('41.6%', style: TextStyle(fontSize: 10))),
+                        child:
+                            Text(firstRatio, style: TextStyle(fontSize: 10))),
                     Stack(
                       children: [
                         Container(
@@ -145,8 +243,7 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
                               borderRadius: BorderRadius.circular(10)),
                         ),
                         Container(
-                          // TODO: 퍼센트에 따라서 퍼센트/100*150 계산해서 width에 넣기
-                          width: 75,
+                          width: firstWidth,
                           height: 10,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.only(
@@ -198,13 +295,15 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
                     ),
                     Container(
                         width: 150,
-                        child: Text("봄 라이트",
+                        child: Text(
+                            "${result["personalSelects"][1]["personalSelectType"]}",
                             style: TextStyle(
                                 fontSize: 12, fontWeight: FontWeight.w600))),
                     SizedBox(height: 10),
                     Container(
                         width: 150,
-                        child: Text('41.6%', style: TextStyle(fontSize: 10))),
+                        child:
+                            Text(secondRatio, style: TextStyle(fontSize: 10))),
                     Stack(
                       children: [
                         Container(
@@ -216,8 +315,7 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
                               borderRadius: BorderRadius.circular(10)),
                         ),
                         Container(
-                          // TODO: 퍼센트에 따라서 퍼센트/100*150 계산해서 width에 넣기
-                          width: 75,
+                          width: secondWidth,
                           height: 10,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.only(
@@ -249,7 +347,8 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
                   height: 100,
                   width: 170,
                   decoration: BoxDecoration(
-                      color: Color.fromRGBO(167, 223, 195, 1),
+                      color: Color.fromRGBO(colorList[0].red,
+                          colorList[0].green, colorList[0].blue, 1),
                       borderRadius: BorderRadius.circular(8)),
                 ),
                 SizedBox(width: 20),
@@ -257,7 +356,8 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
                   height: 100,
                   width: 170,
                   decoration: BoxDecoration(
-                      color: Color.fromRGBO(177, 167, 223, 1),
+                      color: Color.fromRGBO(colorList[1].red,
+                          colorList[1].green, colorList[1].blue, 1),
                       borderRadius: BorderRadius.circular(8)),
                 ),
               ]),
@@ -267,7 +367,8 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
                   height: 100,
                   width: 170,
                   decoration: BoxDecoration(
-                      color: Color.fromRGBO(167, 214, 223, 1),
+                      color: Color.fromRGBO(colorList[2].red,
+                          colorList[2].green, colorList[2].blue, 1),
                       borderRadius: BorderRadius.circular(8)),
                 ),
                 SizedBox(width: 20),
@@ -275,7 +376,8 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
                   height: 100,
                   width: 170,
                   decoration: BoxDecoration(
-                      color: Color.fromRGBO(167, 186, 223, 1),
+                      color: Color.fromRGBO(colorList[3].red,
+                          colorList[3].green, colorList[3].blue, 1),
                       borderRadius: BorderRadius.circular(8)),
                 ),
               ]),
@@ -293,7 +395,7 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
             height: 1,
             width: double.infinity,
             decoration: BoxDecoration(
-                color: Color.fromRGBO(189, 189, 189, 0.298 as int),
+                color: Color.fromRGBO(189, 189, 189, 1),
                 borderRadius: BorderRadius.circular(50)),
             margin: EdgeInsets.fromLTRB(15, 8, 15, 8),
           ),
@@ -311,31 +413,60 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
                 width: 350,
                 height: 15,
                 decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              Container(
-                width: 233,
-                height: 15,
-                decoration: BoxDecoration(
-                    color: Color.fromRGBO(255, 123, 123, 1),
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        bottomLeft: Radius.circular(10))),
-              ),
-              Container(
-                width: 116,
-                height: 15,
-                decoration: BoxDecoration(
                     color: Color.fromRGBO(255, 255, 255, 1),
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        bottomLeft: Radius.circular(10)),
+                    borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: Colors.black, width: 0.5)),
+              ),
+              Container(
+                  margin: EdgeInsets.only(top: 0.5),
+                  width: 117,
+                  height: 14,
+                  decoration: BoxDecoration(
+                      color: value == "low"
+                          ? Color.fromRGBO(217, 217, 217, 1)
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          bottomLeft: Radius.circular(10)))),
+              Container(
+                  margin: EdgeInsets.only(left: 116, top: 0.5),
+                  width: 117,
+                  height: 14,
+                  decoration: BoxDecoration(
+                    color: value == "middle"
+                        ? Color.fromRGBO(217, 217, 217, 1)
+                        : Colors.transparent,
+                  )),
+              Container(
+                margin: EdgeInsets.only(left: 232, top: 0.5),
+                width: 117,
+                height: 14,
+                decoration: BoxDecoration(
+                    color: value == "top"
+                        ? Color.fromRGBO(217, 217, 217, 1)
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(10),
+                        bottomRight: Radius.circular(10))),
               ),
             ],
           ),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Container(
+              margin: EdgeInsets.only(left: 32, top: 3),
+              child: Text(
+                '낮음',
+                style: TextStyle(fontSize: 8),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(right: 32, top: 3),
+              child: Text(
+                '높음',
+                style: TextStyle(fontSize: 8),
+              ),
+            ),
+          ]),
           SizedBox(height: 8),
           Container(
             width: double.infinity,
@@ -351,36 +482,65 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
                 width: 350,
                 height: 15,
                 decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              Container(
-                width: 233,
-                height: 15,
-                decoration: BoxDecoration(
-                    color: Color.fromRGBO(255, 123, 123, 1),
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        bottomLeft: Radius.circular(10))),
-              ),
-              Container(
-                width: 116,
-                height: 15,
-                decoration: BoxDecoration(
                     color: Color.fromRGBO(255, 255, 255, 1),
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        bottomLeft: Radius.circular(10)),
+                    borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: Colors.black, width: 0.5)),
+              ),
+              Container(
+                  margin: EdgeInsets.only(top: 0.5),
+                  width: 117,
+                  height: 14,
+                  decoration: BoxDecoration(
+                      color: saturation.toString() == "low"
+                          ? Color.fromRGBO(217, 217, 217, 1)
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          bottomLeft: Radius.circular(10)))),
+              Container(
+                  margin: EdgeInsets.only(left: 116, top: 0.5),
+                  width: 117,
+                  height: 14,
+                  decoration: BoxDecoration(
+                    color: saturation.toString() == "middle"
+                        ? Color.fromRGBO(217, 217, 217, 1)
+                        : Colors.transparent,
+                  )),
+              Container(
+                margin: EdgeInsets.only(left: 232, top: 0.5),
+                width: 117,
+                height: 14,
+                decoration: BoxDecoration(
+                    color: saturation == "top"
+                        ? Color.fromRGBO(217, 217, 217, 1)
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(10),
+                        bottomRight: Radius.circular(10))),
               ),
             ],
           ),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Container(
+              margin: EdgeInsets.only(left: 32, top: 3),
+              child: Text(
+                '낮음',
+                style: TextStyle(fontSize: 8),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(right: 32, top: 3),
+              child: Text(
+                '높음',
+                style: TextStyle(fontSize: 8),
+              ),
+            ),
+          ]),
           SizedBox(height: 8),
           Container(
             width: double.infinity,
             child: Text(
-              '       명도',
+              '       색감',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             margin: EdgeInsets.only(bottom: 10),
@@ -391,29 +551,58 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
                 width: 350,
                 height: 15,
                 decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              Container(
-                width: 175,
-                height: 15,
-                decoration: BoxDecoration(
                     color: Color.fromRGBO(255, 255, 255, 1),
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        bottomLeft: Radius.circular(10)),
+                    borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: Colors.black, width: 0.5)),
               ),
+              Container(
+                margin: EdgeInsets.only(top: 0.5, left: 1),
+                width: 175,
+                height: 14,
+                decoration: BoxDecoration(
+                    color: hue == "warm"
+                        ? Color.fromRGBO(217, 217, 217, 1)
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        bottomLeft: Radius.circular(10))),
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 175, top: 0.5),
+                width: 175,
+                height: 14,
+                decoration: BoxDecoration(
+                    color: hue == "cool"
+                        ? Color.fromRGBO(217, 217, 217, 1)
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(10),
+                        bottomRight: Radius.circular(10))),
+              )
             ],
           ),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Container(
+              margin: EdgeInsets.only(left: 32, top: 3),
+              child: Text(
+                '웜',
+                style: TextStyle(fontSize: 8),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(right: 32, top: 3),
+              child: Text(
+                '쿨',
+                style: TextStyle(fontSize: 8),
+              ),
+            ),
+          ]),
           Container(
-            margin: EdgeInsets.only(left: 20, right: 20, top: 25),
+            margin: EdgeInsets.only(left: 20, right: 20, top: 12),
             child: OutlinedButton(
                 onPressed: () {},
                 style: OutlinedButton.styleFrom(backgroundColor: Colors.black),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset('assets/arrow-right.png',
                         height: 20, width: 20),
