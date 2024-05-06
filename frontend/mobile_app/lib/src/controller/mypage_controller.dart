@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:get/get.dart';
-import 'package:perst/src/connect/mypage_connect.dart';
 
-class MypageController extends GetxController {
-  final mypageConnection = Get.put(MypageConnect());
+import '../connect/personal_color_connect.dart';
+import '../model/color_model.dart';
 
-  // 마이페이지 스타일 조회 이력
+class FashionSearchController extends GetxController {
+  final personalColorConnect = Get.put(PersonalColorConnect());
+
+  // 퍼스널컬러 진단 결과 불러오기
 }
