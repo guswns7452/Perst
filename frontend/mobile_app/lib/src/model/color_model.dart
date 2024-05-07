@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class StyleColor {
   final int styleColorNumber;
   final int styleNumber;
@@ -33,4 +35,14 @@ class ResultColorList {
   final int blue;
 
   ResultColorList(this.red, this.green, this.blue);
+}
+
+class PieModel {
+  final int count;
+  final Color color;
+
+  PieModel({
+    required this.count,
+    required this.color,
+  });
 }
