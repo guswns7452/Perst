@@ -21,7 +21,7 @@ codi_save_folderPath = PATH + "\\Image\\newimages\\20240502\\"
 # ------------------------------------------ #
 
 if __name__ == '__main__':
-    brand_main(brand_save_folderPath)
+    # brand_main(brand_save_folderPath)
     # codi_main(codi_save_folderPath)
 
 
@@ -29,4 +29,4 @@ if __name__ == '__main__':
     ## 구글 드라이브 업로드
     ## DB 업로드 
     # dataChange(brand_save_folderPath, "brandsnap")
-    # dataChange(codi_save_folderPath, "codishop")
+    dataChange(codi_save_folderPath, "codishop")

@@ -14,10 +14,15 @@ from DB.DB_setting import connect_to_database
 # }
 # """
 #
-def call_data():
+def call_data(musinsa_type):
     conn, cur = connect_to_database()
+    sql = ""
     
-    sql="select max(musinsa_number), musinsa_style, musinsa_gender from musinsa where musinsa_personal != 'null' group by musinsa_style, musinsa_gender;"
+    if musinsa_type == "codishop":
+        sql="select max(musinsa_number), musinsa_style, musinsa_gender from musinsa where musinsa_personal != 'null' and musinsa_type = 'codishop' group by musinsa_style, musinsa_gender;"
+    
+    elif musinsa_type == "brandsnap":
+        sql="select max(musinsa_number), musinsa_style, musinsa_gender from musinsa where musinsa_personal != 'null' and musinsa_type = 'brandsnap' group by musinsa_style, musinsa_gender;"
     
     cur.execute(sql)	# 커서로 sql문 실행
     

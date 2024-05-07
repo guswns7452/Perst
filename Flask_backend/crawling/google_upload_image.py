@@ -17,7 +17,7 @@ SCOPES = ["https://www.googleapis.com/auth/drive"]
 ## Folder ID 찾기
 def find_folderID(gender, style):
     # JSON 파일 경로
-    file_path = "musinsa_folder_id.json"
+    file_path = PATH + "/crawling/musinsa_folder_id.json"
 
     # JSON 파일 읽기
     with open(file_path, "r") as file:
