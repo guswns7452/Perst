@@ -128,7 +128,7 @@ class _PersonalColorHistoryState extends State<PersonalColorHistory> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              '분석중입니다...',
+              '로딩중입니다...',
               style: TextStyle(fontSize: 18),
             ),
             SizedBox(height: 20),
@@ -140,7 +140,6 @@ class _PersonalColorHistoryState extends State<PersonalColorHistory> {
   }
 
   Widget _buildResultScreen() {
-    // 데이터가 로딩되고 있지 않고, 데이터가 있을 때 결과를 표시하는 화면입니다.
     return Scaffold(
       appBar: AppBar(
         title: Text(
