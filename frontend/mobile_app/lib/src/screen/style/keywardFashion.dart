@@ -21,7 +21,7 @@ class KeywordFashion extends StatefulWidget {
 class _KeywordFashionState extends State<KeywordFashion> {
   final fashionSearchController = Get.put(FashionSearchController());
   late Future<List<FashionSearchModel>>? fashions;
-
+  
   @override
   void initState() {
     super.initState();

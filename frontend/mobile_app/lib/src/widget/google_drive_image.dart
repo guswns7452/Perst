@@ -8,8 +8,8 @@ class google_drive_image extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 150,
-      height: 200,
+      width: 130,
+      height: 171,
       decoration: BoxDecoration(
           image: DecorationImage(
             fit: BoxFit.fill,
