@@ -12,7 +12,8 @@ from cnn_model import imgLoad
 import matplotlib.pyplot as plt
 
 # 단위 테스트용 input 코드입니다.
-def machineLearning(fileID,gender):
+# @Return : 결과값 Dictionary (패션 타입, RGB, Personal Color)
+def machineLearning(fileID, gender):
     ori_img = imgLoad(fileID, gender)
     if ori_img is None:
         print("이미지 파일을 불러오는데 실패하였습니다.")
@@ -24,6 +25,7 @@ def machineLearning(fileID,gender):
     plt.show()
 
     # 패션 분류 타입 출력
+    print("="*100)
     print("Fashion Type : " + output['fashion_type'])
 
     # 컬러 리스트 출력
@@ -40,8 +42,8 @@ def machineLearning(fileID,gender):
         print(new_string)
 
     # 퍼스널컬러 판별범위 표시용 이미지 출력
-    plt.imshow(output['personal_masked_img'])
-    plt.show()
+    # plt.imshow(output['personal_masked_img'])
+    # plt.show()
 
     # 퍼스널컬러 라벨 출력
     print("Personal Color Type : " + output['personal_color_label'])
@@ -51,3 +53,6 @@ def machineLearning(fileID,gender):
     ps_g = output['personal_color_rgb'][1]
     ps_b = output['personal_color_rgb'][2]
     print("Personal Color RGB : " + 'R' + str(ps_r) + ' G' + str(ps_g) + ' B' + str(ps_b))
+    print("="*100)
+    
+    return output

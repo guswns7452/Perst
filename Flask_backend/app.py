@@ -87,30 +87,20 @@ def analyzeAPI():
         DownloadByGoogleDrive(fileID)
         output = machineLearning(fileID, gender)
         
-        # 패션 분류 타입 출력
-        print("Fashion Type : " + output[1])
-        
         colors = []
         
         # 컬러 리스트 출력
-        for color in output[2]:
+        for color in output['total_color_list']:
             r = color[0][0]
             g = color[0][1]
             b = color[0][2]
             ratio = color[1]
             
             colors.append([r,g,b,ratio])
-            
-            rgb_string = 'R' + str(r) + ' G' + str(g) + ' B' + str(b) + ' / '
-            ratio_string = ('%.2f' % ratio) + '%'
-            new_string = rgb_string + ratio_string
-
-            print(new_string)
         
-        print(colors)
         # 현재 사진 데이터 하나라고 가정.
-        message = "정상적임"
-        data = {"code": HTTPStatus.OK.value, "httpStatus": "OK", "message":message, "data":{"fashionType" : output[1], "color1": str(colors[0]), "color2": str(colors[1]), "color3": str(colors[2]), "color4": str(colors[3])}} # 이름의 필요성 없음. , "name": items[0]['name']
+        message = "고객님의 사진을 분석하였습니다!"
+        data = {"code": HTTPStatus.OK.value, "httpStatus": "OK", "message":message, "data":{"fashionType" : output['fashion_type'], "color1": str(colors[0]), "color2": str(colors[1]), "color3": str(colors[2]), "color4": str(colors[3])}} # 이름의 필요성 없음. , "name": items[0]['name']
     
     except FileNotFoundError:
         data = {"code": HTTPStatus.NOT_FOUND.value, "httpStatus": "Not Found", "message": "구글 드라이브에 일치하는 파일이 없습니다."}
