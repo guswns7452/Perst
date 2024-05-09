@@ -48,7 +48,7 @@ class _LoginState extends State<Login> {
         key: _formkey,
         child: Column(
           children: [
-            SizedBox(height: 90,),
+            SizedBox(height: 70,),
             Container(
               width: double.infinity,
               child: Text('Perst',
@@ -60,7 +60,7 @@ class _LoginState extends State<Login> {
                         color: Color.fromRGBO(255, 191, 25, 1),
                       ))),
             ),
-            SizedBox(height: 90,),
+            SizedBox(height: 70,),
             Container(
               width: double.infinity,
               margin: EdgeInsets.only(left: 30),
