@@ -1,10 +1,45 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:perst/src/screen/auth/login.dart';
 import 'package:perst/src/screen/auth/register.dart';
 import 'package:perst/src/widget/tab_bar.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class Intro extends StatelessWidget {
+class Intro extends StatefulWidget {
   const Intro({super.key});
+
+  @override
+  State<Intro> createState() => _IntroState();
+}
+
+class _IntroState extends State<Intro> {
+  int currentPage = 0;
+  PageController _PageController = PageController(
+    initialPage: 0,
+  );
+
+  List itemList = ["1","2","3","4","5","6","7"];
+
+  @override
+  void initState() {
+    super.initState();
+    itemList.shuffle();
+
+    Timer.periodic(Duration(seconds: 4), (Timer timer) {
+      if (currentPage < itemList.length-1) {
+        currentPage++;
+      } else {
+        currentPage = 0;
+      }
+
+      _PageController.animateToPage(
+        currentPage,
+        duration: Duration(milliseconds: 350),
+        curve: Curves.easeIn,
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +63,7 @@ class Intro extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      ':당신만을 위한 의류 스타일 추천',
+                      '당신만을 위한 의류 스타일 추천',
                       textAlign: TextAlign.start,
                       style: TextStyle(
                         fontSize: 18,
@@ -40,17 +75,47 @@ class Intro extends StatelessWidget {
                 ),
               ),
               const SizedBox(
-                height: 70,
+                height: 30,
               ),
               // 어플에서 사용할 이미지로 대체 예정
-              SizedBox(
-                child: Center(
-                  child: Image.asset(
-                    'assets/mypageOutlined.png',
-                    width: double.infinity,
-                    height: 400,
-                  ),
+              Container(
+                width: 400,
+                height: 350,
+                child: PageView.builder(
+                  pageSnapping: true,
+                  controller: _PageController,
+                  itemCount: itemList.length,
+                  onPageChanged: (value) {},
+                  itemBuilder: (context, index) {
+                    return Container(
+                      child: Image.asset('assets/style_' + itemList[index] + '.png',
+                          width: 300,
+                          height: 300,
+                          fit: BoxFit.cover),
+                    );
+                  },
                 ),
+              ),
+              SizedBox(height: 10,),
+              Container(
+                width: double.infinity,
+                alignment: Alignment.center,
+                child: SmoothPageIndicator(
+                    controller: _PageController,
+                    count: 7,
+                    effect: const ScrollingDotsEffect(
+                      activeDotColor: Colors.indigoAccent,
+                      activeStrokeWidth: 10,
+                      activeDotScale: 2,
+                      maxVisibleDots: 7,
+                      radius: 8,
+                      spacing: 10,
+                      dotHeight: 5,
+                      dotWidth: 5,
+                    )),
+              ),
+              const SizedBox(
+                height: 20,
               ),
               Container(
                 width: double.infinity,

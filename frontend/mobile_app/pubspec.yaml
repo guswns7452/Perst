@@ -44,6 +44,7 @@ dependencies:
   intl: ^0.19.0
   fl_chart: ^0.67.0
   google_fonts: ^6.2.0
+  smooth_page_indicator: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -91,6 +92,13 @@ flutter:
     - assets/gallery.png
     - assets/presentation.png
     - assets/next.png
+    - assets/style_1.png
+    - assets/style_2.png
+    - assets/style_3.png
+    - assets/style_4.png
+    - assets/style_5.png
+    - assets/style_6.png
+    - assets/style_7.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
