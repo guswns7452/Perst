@@ -56,6 +56,7 @@ public class ClothesSearchController {
         logger.info("[남성 스타일 둘러보기] Style : " + style + " / Color : " + musinsaSearchVO.getColor());
         try{
             int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
+            musinsaSearchVO.setMemberNumber(memberNumber);
             MusinsaVO manInfo = new MusinsaVO(); manInfo.setMusinsaGender("man"); manInfo.setMusinsaStyle(style);
             List<MusinsaVO> maleClothes = musinsaService.findByMusinsaGenderAndMusinsaStyle(manInfo, musinsaSearchVO); // 맨날 불러오는 것이 성능적으로 괜찮은가?
 
@@ -101,6 +102,7 @@ public class ClothesSearchController {
         logger.info("[여성 스타일 둘러보기] Style : " + style + " / Color : " + searchVO.getColor());
         try{
             int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
+            searchVO.setMemberNumber(memberNumber);
             MusinsaVO womanInfo = new MusinsaVO(); womanInfo.setMusinsaGender("woman"); womanInfo.setMusinsaStyle(style);
             List<MusinsaVO> femaleClothes = musinsaService.findByMusinsaGenderAndMusinsaStyle(womanInfo, searchVO); // 맨날 불러오는 것이 성능적으로 괜찮은가?
 
