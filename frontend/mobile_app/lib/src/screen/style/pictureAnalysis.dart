@@ -28,27 +28,27 @@ class PictureAnalysis extends StatelessWidget {
                   'Perst',
                   style: TextStyle(
                       color: Color.fromRGBO(255, 191, 25, 1),
-                      fontSize: 50,
+                      fontSize: 35,
                       fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
-                  height: 20,
+                  height: 8,
                 ),
                 Text(
                   '분석결과',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
+                  style: TextStyle(fontSize: 23, fontWeight: FontWeight.w600),
                 ),
                 Text(
                   ': 색 조합 분석 결과',
-                  style: TextStyle(fontSize: 27),
+                  style: TextStyle(fontSize: 20),
                 ),
                 StyleColorView(result: result),
                 Text(
                   ': 스타일 키워드',
-                  style: TextStyle(fontSize: 27),
+                  style: TextStyle(fontSize: 20),
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: 10),
+                  margin: EdgeInsets.only(top: 5),
                   padding: EdgeInsets.fromLTRB(10, 3, 10, 3),
                   child: Text(
                     styleName,
@@ -63,14 +63,14 @@ class PictureAnalysis extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  height: 20,
+                  height: 8,
                 ),
                 Container(
-                  height: 320,
+                  height: 170,
                   width: double.infinity,
                   child: ThreeKeywordFashion(styleKeyword: styleName),
                 ),
-                SizedBox(height: 50),
+                SizedBox(height: 20),
                 Center(
                   child: TextButton(
                     onPressed: () {
@@ -87,13 +87,13 @@ class PictureAnalysis extends StatelessWidget {
                       children: [
                         Image.asset(
                           'assets/next.png',
-                          height: 30,
+                          height: 20,
                         ),
                         Text(
                           ' 내 스타일에 따른 추천 의류 보러가기',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                              fontSize: 30,
+                              fontSize: 15,
                               fontWeight: FontWeight.w600,
                               color: Colors.white),
                         ),
