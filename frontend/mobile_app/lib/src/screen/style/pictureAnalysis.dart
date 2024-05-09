@@ -19,7 +19,7 @@ class PictureAnalysis extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
-            margin: EdgeInsets.fromLTRB(40, 50, 20, 0),
+            margin: EdgeInsets.fromLTRB(20, 30, 20, 0),
             width: double.infinity,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

@@ -54,7 +54,7 @@ class _ThreeKeywordFashionState extends State<ThreeKeywordFashion> {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
-                      width: 210,
+                      width: 70,
                       child: google_drive_image(id: fashion.musinsaFileid!)),
                 );
               },
