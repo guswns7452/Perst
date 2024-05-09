@@ -47,7 +47,7 @@ class _FashionDetailState extends State<FashionDetail> {
                 padding: EdgeInsets.fromLTRB(7, 3, 7, 3),
                 child: Text(
                   '#${widget.fashion.musinsaSeason}',
-                  style: TextStyle(fontSize: 30, color: Colors.white),
+                  style: TextStyle(fontSize: 20, color: Colors.white),
                 ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(7),
@@ -59,7 +59,7 @@ class _FashionDetailState extends State<FashionDetail> {
                 padding: EdgeInsets.fromLTRB(7, 3, 7, 3),
                 child: Text(
                   '#${widget.fashion.musinsaStyle}',
-                  style: TextStyle(fontSize: 30, color: Colors.white),
+                  style: TextStyle(fontSize: 20, color: Colors.white),
                 ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(7),
@@ -71,7 +71,7 @@ class _FashionDetailState extends State<FashionDetail> {
                 padding: EdgeInsets.fromLTRB(7, 3, 7, 3),
                 child: Text(
                   '#${widget.fashion.musinsaGender}',
-                  style: TextStyle(fontSize: 30, color: Colors.white),
+                  style: TextStyle(fontSize: 20, color: Colors.white),
                 ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(7),
@@ -82,25 +82,27 @@ class _FashionDetailState extends State<FashionDetail> {
               ),
             ],
           ),
-          Container(
-            margin: EdgeInsets.fromLTRB(20, 50, 0, 0),
-            padding: EdgeInsets.only(bottom: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '#모델 정보',
-                  style: TextStyle(fontSize: 20),
-                ),
-                Text(
-                  '   키: ${widget.fashion.musinsaHeight}',
-                  style: TextStyle(fontSize: 20),
-                ),
-                Text(
-                  '   체중: ${widget.fashion.musinsaWeight}',
-                  style: TextStyle(fontSize: 20),
-                ),
-              ],
+          Center(
+            child: Container(
+              margin: EdgeInsets.fromLTRB(20, 50, 0, 0),
+              padding: EdgeInsets.only(bottom: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '#모델 정보',
+                    style: TextStyle(fontSize: 15),
+                  ),
+                  Text(
+                    '  키: ${widget.fashion.musinsaHeight}',
+                    style: TextStyle(fontSize: 15),
+                  ),
+                  Text(
+                    '  체중: ${widget.fashion.musinsaWeight}',
+                    style: TextStyle(fontSize: 15),
+                  ),
+                ],
+              ),
             ),
           ),
           TextButton(

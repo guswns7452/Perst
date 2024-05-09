@@ -3,9 +3,10 @@ package com.clothes.perst.service;
 import com.clothes.perst.DTO.ColorToRGB;
 import com.clothes.perst.DTO.MusinsaSearchRequest;
 import com.clothes.perst.domain.MusinsaVO;
-import com.clothes.perst.persistance.MemberRepository;
 import com.clothes.perst.persistance.MusinsaRepository;
 import com.clothes.perst.persistance.PersonalColorRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,8 @@ import java.util.Map;
 public class MusinsaService {
     private final MusinsaRepository musinsaJPA;
     private final PersonalColorRepository personalColorJPA;
+    private static final Logger logger = LoggerFactory.getLogger(MusinsaService.class);
+
 
     @Autowired
     public MusinsaService(MusinsaRepository musinsaJPA, PersonalColorRepository personalColorJPA) {
@@ -31,6 +34,8 @@ public class MusinsaService {
         try{
             // 회원의 퍼스널 컬러를 반영할 것인가?
             if(musinsaSearchRequest.getIsPersonal()){
+                logger.info(Integer.toString(musinsaSearchRequest.getMemberNumber()));
+                logger.info(personalColorJPA.findByMemberNumber(musinsaSearchRequest.getMemberNumber()).toString());
                 memberPersonal = personalColorJPA.findByMemberNumber(musinsaSearchRequest.getMemberNumber()).getPersonalColorType();
             }
         } catch (NullPointerException e){

@@ -17,9 +17,9 @@ class StyleTour extends StatefulWidget {
   State<StyleTour> createState() => _StyleTourState();
 }
 
-late String _currentStyle = '로맨틱';
-late String _searchCurrentStyle = 'romantic';
-late String _seletedGender = "man";
+late String _currentStyle = '캐주얼';
+late String _searchCurrentStyle = 'casual';
+late String _seletedGender = "";
 bool _personalColorChecked = false;
 late Color _currentColor = Color.fromRGBO(236, 20, 20, 1);
 late Future<List<FashionSearchModel>> fashions;
@@ -30,6 +30,7 @@ int _currentColorInt = 0;
 
 class _StyleTourState extends State<StyleTour> {
   final fashionSearchController = Get.put(FashionSearchController());
+  String gender = _storage.read("gender");
 
   bool isLoading = true;
 
@@ -42,6 +43,13 @@ class _StyleTourState extends State<StyleTour> {
   Future<void> _fetchData() async {
     setState(() {
       isLoading = true;
+      if (gender == "man") {
+        _seletedGender = "남성";
+        _seletedGenderInt = 0;
+      } else {
+        _seletedGender = "여성";
+        _seletedGenderInt = 1;
+      }
     });
 
     if (_seletedGenderInt == 1) {
