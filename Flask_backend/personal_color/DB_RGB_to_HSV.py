@@ -1,36 +1,13 @@
 # RGB로 저장된 DB 값을
 # HSV로 변환하는 코드
 
-# 아니 처음부터 HSV로 했으면 됐잖아..
-
-import colorsys, json, os
-import pymysql
+import colorsys, os, sys
 from multiprocessing import Process, freeze_support
 
+sys.path.append(os.getcwd())
+from DB.DB_setting import connect_to_database
+
 PATH = os.getcwd()
-
-##
-# DB 세팅 값 불러오기
-#
-def read_database_info():
-    # JSON 파일 경로
-    jsonFilePath = PATH+'/database.json'
-    
-    # JSON 파일 읽기
-    with open(jsonFilePath, 'r') as f:
-        # JSON 데이터 파싱
-        data = json.load(f)
-        
-    return data
-
-# 데이터베이스에 연결하는 코드
-def connect_to_database():
-    # 메인 코드
-    data = read_database_info()
-    conn = pymysql.connect(host = data['host'] ,port = data['port'], user = data['user'], password = data['password'], db = data['db'], charset='utf8')	# 접속정보
-    cur = conn.cursor()	# 커서생성
-    
-    return conn, cur
 
 def change_RGB_to_HSV(gender, styles):
     # 전역변수 선언부
@@ -88,4 +65,4 @@ def dataChange():
         precess.join()
 
 if __name__ == '__main__':
-    dataChange()
+    print(rgb_to_hsv(116,204,71))

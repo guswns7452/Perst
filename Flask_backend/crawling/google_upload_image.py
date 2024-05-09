@@ -1,6 +1,5 @@
-import requests
-from bs4 import BeautifulSoup
 import os
+import json
 
 import google.auth
 from google.auth.transport.requests import Request
@@ -15,14 +14,29 @@ PATH =  os.getcwd()
 
 SCOPES = ["https://www.googleapis.com/auth/drive"]
 
-def upload_basic(file_name, img_path, gender, index, height, weight, season, style):
-    """Insert new file.
-    Returns : Id's of the file uploaded
+## Folder ID 찾기
+def find_folderID(gender, style):
+    # JSON 파일 경로
+    file_path = PATH + "/crawling/musinsa_folder_id.json"
 
-    Load pre-authorized user credentials from the environment.
-    TODO(developer) - See https://developers.google.com/identity
-    for guides on implementing OAuth2 for the application.
-    """
+    # JSON 파일 읽기
+    with open(file_path, "r") as file:
+        json_data = file.read()
+
+    # JSON 데이터 파싱
+    data = json.loads(json_data)
+
+    # gender가 "man"이고 folderName이 "gofcore"인 folderID 찾기
+    target_folderID = None
+    for item in data:
+        if item["gender"] == gender and item["folderName"] == style:
+            target_folderID = item["folderID"]
+            break
+
+    # 결과 출력
+    return target_folderID
+
+def upload_basic(file_name, img_path, gender, style):
     
     if os.path.exists(PATH+"/token.json"):
         creds = Credentials.from_authorized_user_file(PATH+"/token.json", SCOPES)
@@ -41,9 +55,9 @@ def upload_basic(file_name, img_path, gender, index, height, weight, season, sty
         # create drive api client
         service = build("drive", "v3", credentials=creds)
         
-        folder_id = "1Ga3D6y5MtjDslvBEm0WgZBFCNtT-3om7"
+        folder_id = find_folderID(gender, style)
 
-        file_metadata = {"name": file_name, "parents": [folder_id], "gender": gender, "index": index, "height": height, "weight": weight, "season": season, "style": style}
+        file_metadata = {"name": file_name, "parents": [folder_id]}
         media = MediaFileUpload(img_path, mimetype="image/jpg")
         file = (
             service.files()
@@ -114,5 +128,4 @@ def googleDrive():
     return items
 
 
-googleDrive()
 # upload_basic("woman_39331_165_47_겨울_걸리시.jpg",os.path.join("../images/woman/걸리시", "woman_39331_165_47_겨울_걸리시.jpg"),"woman","39331","165","47","겨울","걸리시")

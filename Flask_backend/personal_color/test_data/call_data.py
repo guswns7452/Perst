@@ -1,19 +1,8 @@
-import pymysql, os, json
+import os, sys
 
-##
-# DB 세팅 값 불러오기
-#
-def read_database_info():
-    # JSON 파일 경로
-    jsonFilePath = os.getcwd() + '/database.json'
-    
-    # JSON 파일 읽기
-    with open(jsonFilePath, 'r') as f:
-        # JSON 데이터 파싱
-        data = json.load(f)
-        
-    return data
+sys.path.append(os.getcwd())
 
+from DB.DB_setting import connect_to_database
 
 ##
 # 현재 DB에 반영된 퍼스널 컬러 반영된 마지막 번호 출력하기
@@ -25,12 +14,15 @@ def read_database_info():
 # }
 # """
 #
-def call_data():
-    data = read_database_info()
-    conn = pymysql.connect(host = data['host'] ,port = data['port'], user = data['user'], password = data['password'], db = data['db'], charset='utf8')	# 접속정보
-    cur = conn.cursor()	# 커서생성
+def call_data(musinsa_type):
+    conn, cur = connect_to_database()
+    sql = ""
     
-    sql="select max(musinsa_number), musinsa_style, musinsa_gender from musinsa where musinsa_personal != 'null' group by musinsa_style, musinsa_gender;"
+    if musinsa_type == "codishop":
+        sql="select max(musinsa_number), musinsa_style, musinsa_gender from musinsa where musinsa_personal != 'null' and musinsa_type = 'codishop' group by musinsa_style, musinsa_gender;"
+    
+    elif musinsa_type == "brandsnap":
+        sql="select max(musinsa_number), musinsa_style, musinsa_gender from musinsa where musinsa_personal != 'null' and musinsa_type = 'brandsnap' group by musinsa_style, musinsa_gender;"
     
     cur.execute(sql)	# 커서로 sql문 실행
     
