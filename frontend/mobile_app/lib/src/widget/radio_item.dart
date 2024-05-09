@@ -87,6 +87,8 @@ class ColorRadioModel {
   final int Red;
   final int Green;
   final int Blue;
+  final String ColorName;
 
-  ColorRadioModel(this.isSelected, this.Red, this.Green, this.Blue);
+  ColorRadioModel(
+      this.isSelected, this.Red, this.Green, this.Blue, this.ColorName);
 }

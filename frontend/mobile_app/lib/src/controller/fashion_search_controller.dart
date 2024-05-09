@@ -10,10 +10,11 @@ class FashionSearchController extends GetxController {
 
   // 여자 키워드별 패션 스타일 불러오기
   Future<List<FashionSearchModel>> searchWoman(
-      String womanFashionKeyword) async {
+      String womanFashionKeyword, bool isPersonal) async {
     try {
-      List<dynamic> results =
-          await fashionSearchConnection.searchWoman(womanFashionKeyword);
+      Map<String, dynamic> response = await fashionSearchConnection.searchWoman(
+          womanFashionKeyword, isPersonal);
+      List<dynamic> results = response['data'];
       List<FashionSearchModel> fashions = [];
       for (var result in results) {
         fashions.add(FashionSearchModel.fromJson(result));
@@ -26,13 +27,14 @@ class FashionSearchController extends GetxController {
   }
 
   // 남자 키워드별 패션 스타일 불러오기
-  Future<List<FashionSearchModel>> searchMan(String manFashionKeyword) async {
+  Future<List<FashionSearchModel>> searchMan(
+      String manFashionKeyword, bool isPersonal) async {
     try {
-      List<dynamic> results =
-          await fashionSearchConnection.searchMan(manFashionKeyword);
+      List<dynamic> results = await fashionSearchConnection.searchMan(
+          manFashionKeyword, isPersonal);
       List<FashionSearchModel> fashions = [];
       for (var result in results) {
-        fashions.add(FashionSearchModel.fromJson(result));
+        fashions.add(FashionSearchModel.fromJson(result['data']));
       }
       return fashions;
     } catch (e) {

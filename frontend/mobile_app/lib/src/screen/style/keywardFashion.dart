@@ -21,7 +21,7 @@ class KeywordFashion extends StatefulWidget {
 class _KeywordFashionState extends State<KeywordFashion> {
   final fashionSearchController = Get.put(FashionSearchController());
   late Future<List<FashionSearchModel>>? fashions;
-  
+
   @override
   void initState() {
     super.initState();
@@ -29,11 +29,11 @@ class _KeywordFashionState extends State<KeywordFashion> {
     print(gender);
     if (gender == "woman") {
       print("여자");
-      fashions = fashionSearchController.searchWoman(widget.styleKeyword);
+      fashions = fashionSearchController.searchWoman(widget.styleKeyword, true);
       print(widget.styleKeyword);
     } else if (gender == "man") {
       print("남자");
-      fashions = fashionSearchController.searchMan(widget.styleKeyword);
+      fashions = fashionSearchController.searchMan(widget.styleKeyword, true);
     }
     // 여기도 API에 따라서 변경해야함.
   }

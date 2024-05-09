@@ -3,10 +3,10 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:perst/src/controller/fashion_search_controller.dart';
 import 'package:perst/src/model/fashion_search_model.dart';
-import 'package:perst/src/screen/style/fashionDetail.dart';
-import 'package:perst/src/widget/google_drive_image.dart';
 import 'package:perst/src/widget/radio_item.dart';
 import 'package:perst/src/widget/style_filter.dart';
+
+import '../../widget/style_tour_widget.dart';
 
 final GetStorage _storage = GetStorage();
 
@@ -20,7 +20,9 @@ class StyleTour extends StatefulWidget {
 late String _currentStyle = '로맨틱';
 late String _searchCurrentStyle = 'romantic';
 late String _seletedGender = "man";
+bool _personalColorChecked = false;
 late Color _currentColor = Color.fromRGBO(236, 20, 20, 1);
+late Future<List<FashionSearchModel>> fashions;
 
 int _seletedGenderInt = 0;
 int _currentStyleInt = 0;
@@ -28,152 +30,146 @@ int _currentColorInt = 0;
 
 class _StyleTourState extends State<StyleTour> {
   final fashionSearchController = Get.put(FashionSearchController());
-  late Future<List<FashionSearchModel>>? fashions;
+
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    if (_seletedGender == "women") {
-      fashions = fashionSearchController.searchWoman(_searchCurrentStyle);
-    } else if (_seletedGender == "man") {
-      fashions = fashionSearchController.searchMan(_searchCurrentStyle);
+    _fetchData();
+  }
+
+  Future<void> _fetchData() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    if (_seletedGenderInt == 1) {
+      fashions = fashionSearchController.searchWoman(
+          _searchCurrentStyle, _personalColorChecked);
+    } else if (_seletedGenderInt == 0) {
+      fashions = fashionSearchController.searchMan(
+          _searchCurrentStyle, _personalColorChecked);
     }
+
+    setState(() {
+      if (fashions != null) {
+        isLoading = false;
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          margin: EdgeInsets.fromLTRB(15, 10, 15, 0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return fashions == null
+        ? Scaffold(
+            backgroundColor: Colors.white,
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '로딩중입니다...',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  SizedBox(height: 20),
+                  CircularProgressIndicator(),
+                ],
+              ),
+            ),
+          )
+        : Scaffold(
+            body: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                'Perst',
-                style: TextStyle(
-                  fontSize: 45,
-                  fontWeight: FontWeight.bold,
-                  color: Color.fromRGBO(255, 191, 25, 1),
+              Container(
+                margin: EdgeInsets.fromLTRB(15, 10, 15, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Perst',
+                      style: TextStyle(
+                        fontSize: 45,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromRGBO(255, 191, 25, 1),
+                      ),
+                    ),
+                    Text(
+                      '스타일 둘러보기',
+                      style:
+                          TextStyle(fontSize: 25, fontWeight: FontWeight.w800),
+                    ),
+                    Text(
+                      '원하는 스타일을 선택하고 의류를 둘러보세요!',
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    SizedBox(height: 15),
+                    Container(
+                      width: double.infinity,
+                      height: 1,
+                      decoration: BoxDecoration(
+                          color: Color.fromRGBO(240, 240, 240, 1),
+                          borderRadius: BorderRadius.circular(50)),
+                    ),
+                    SizedBox(height: 15),
+                    Row(
+                      children: [
+                        OutlinedButton(
+                          onPressed: () {
+                            showModalBottomSheet(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return CustomDrawer(
+                                  onSelectionComplete: (selectedStyle,
+                                      selectedGender, selectedColor) {
+                                    setState(() {
+                                      _currentStyle = selectedStyle;
+                                      _seletedGender = selectedGender;
+                                      _currentColor = selectedColor;
+                                    });
+                                  },
+                                );
+                              },
+                            );
+                          },
+                          style: OutlinedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                          ),
+                          child: Image.asset('assets/filter.png',
+                              width: 20, height: 20),
+                        ),
+                        SizedBox(width: 5),
+                        StyleFilter(
+                            currentColor: _currentColor,
+                            currentStyle: _currentStyle,
+                            seletedGender: _seletedGender)
+                      ],
+                    ),
+                  ],
                 ),
               ),
-              Text(
-                '스타일 둘러보기',
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.w800),
-              ),
-              Text(
-                '원하는 스타일을 선택하고 의류를 둘러보세요!',
-                style: TextStyle(fontSize: 15),
+              SizedBox(height: 10),
+              Container(
+                decoration: BoxDecoration(
+                    color: Color.fromRGBO(255, 191, 25, 0.3),
+                    borderRadius: BorderRadius.circular(50)),
+                height: 3,
+                width: double.infinity,
+                margin: EdgeInsets.only(left: 15, right: 15),
               ),
               SizedBox(height: 15),
               Container(
-                width: double.infinity,
-                height: 1,
-                decoration: BoxDecoration(
-                    color: Color.fromRGBO(240, 240, 240, 1),
-                    borderRadius: BorderRadius.circular(50)),
-              ),
-              SizedBox(height: 15),
-              Row(
-                children: [
-                  OutlinedButton(
-                    onPressed: () {
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return CustomDrawer(
-                            onSelectionComplete:
-                                (selectedStyle, selectedGender, selectedColor) {
-                              setState(() {
-                                _currentStyle = selectedStyle;
-                                _seletedGender = selectedGender;
-                                _currentColor = selectedColor;
-                              });
-                            },
-                          );
-                        },
-                      );
-                    },
-                    style: OutlinedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                    ),
-                    child:
-                        Image.asset('assets/filter.png', width: 20, height: 20),
-                  ),
-                  SizedBox(width: 5),
-                  StyleFilter(
-                      currentColor: _currentColor,
-                      currentStyle: _currentStyle,
-                      seletedGender: _seletedGender)
-                ],
-              ),
+                height: 450,
+                child: StyleTourWidget(
+                  fashions: fashions,
+                ),
+              )
             ],
-          ),
-        ),
-        SizedBox(height: 10),
-        Container(
-          decoration: BoxDecoration(
-              color: Color.fromRGBO(255, 191, 25, 0.3),
-              borderRadius: BorderRadius.circular(50)),
-          height: 3,
-          width: double.infinity,
-          margin: EdgeInsets.only(left: 15, right: 15),
-        ),
-        SizedBox(height: 15),
-        Expanded(
-          child: FutureBuilder<List<FashionSearchModel>>(
-            future: fashions,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              } else {
-                return GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10),
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, index) {
-                      var fashion = snapshot.data![index];
-                      return Stack(children: [
-                        Row(
-                          children: [
-                            SizedBox(width: 25),
-                            google_drive_image(
-                              id: fashion.musinsaFileid!,
-                            ),
-                          ],
-                        ),
-                        Positioned.fill(
-                            child: Material(
-                                color: Colors.transparent,
-                                child: InkWell(onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => FashionDetail(
-                                        fashion: fashion,
-                                      ),
-                                    ),
-                                  );
-                                })))
-                      ]);
-                    });
-              }
-            },
-          ),
-        ),
-      ],
-    ));
+          ));
   }
 }
 
@@ -219,21 +215,21 @@ class _CustomDrawerState extends State<CustomDrawer>
   ];
 
   final List<ColorRadioModel> _colorList = [
-    ColorRadioModel(true, 236, 20, 20),
-    ColorRadioModel(false, 244, 170, 36),
-    ColorRadioModel(false, 241, 242, 35),
-    ColorRadioModel(false, 160, 255, 181),
-    ColorRadioModel(false, 55, 180, 0),
-    ColorRadioModel(false, 152, 208, 233),
-    ColorRadioModel(false, 29, 44, 133),
-    ColorRadioModel(false, 255, 255, 255),
-    ColorRadioModel(false, 198, 198, 198),
-    ColorRadioModel(false, 0, 0, 0),
-    ColorRadioModel(false, 113, 132, 47),
-    ColorRadioModel(false, 131, 22, 192),
+    ColorRadioModel(true, 236, 20, 20, "red"),
+    ColorRadioModel(false, 244, 170, 36, "orange"),
+    ColorRadioModel(false, 241, 242, 35, "yellow"),
+    ColorRadioModel(false, 160, 255, 181, "lime"),
+    ColorRadioModel(false, 55, 180, 0, "green"),
+    ColorRadioModel(false, 152, 208, 233, "sky"),
+    ColorRadioModel(false, 188, 0, 204, "pink"),
+    ColorRadioModel(false, 131, 22, 192, "purple"),
+    ColorRadioModel(false, 86, 142, 255, "blue"),
+    ColorRadioModel(false, 29, 44, 133, "navy"),
+    ColorRadioModel(false, 255, 255, 255, "white"),
+    ColorRadioModel(false, 198, 198, 198, "grey"),
+    ColorRadioModel(false, 0, 0, 0, "black"),
+    ColorRadioModel(false, 136, 23, 23, "brown"),
   ];
-
-  bool personalColorChecked = false;
 
   @override
   void initState() {
@@ -356,10 +352,10 @@ class _CustomDrawerState extends State<CustomDrawer>
             children: [
               SizedBox(width: 20),
               Checkbox(
-                value: personalColorChecked,
+                value: _personalColorChecked,
                 onChanged: (value) {
                   setState(() {
-                    personalColorChecked = value!;
+                    _personalColorChecked = value!;
                   });
                 },
               ),
@@ -479,14 +475,15 @@ class _CustomDrawerState extends State<CustomDrawer>
 
   Widget _buildColorTab() {
     final fashionSearchController = Get.put(FashionSearchController());
-    late Future<List<FashionSearchModel>>? fashions;
 
     void _handleSelectionComplete() {
       setState(() {
         if (_seletedGenderInt == 1) {
-          fashions = fashionSearchController.searchWoman(_searchCurrentStyle);
+          fashions = fashionSearchController.searchWoman(
+              _searchCurrentStyle, _personalColorChecked);
         } else if (_seletedGenderInt == 0) {
-          fashions = fashionSearchController.searchMan(_searchCurrentStyle);
+          fashions = fashionSearchController.searchMan(
+              _searchCurrentStyle, _personalColorChecked);
         }
       });
     }
@@ -504,7 +501,7 @@ class _CustomDrawerState extends State<CustomDrawer>
                   Row(
                     children: [
                       SizedBox(width: 20),
-                      for (var i = 0; i < 6; i++)
+                      for (var i = 0; i < 7; i++)
                         InkWell(
                           onTap: () {
                             setState(() {
@@ -525,7 +522,7 @@ class _CustomDrawerState extends State<CustomDrawer>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(width: 20),
-                  for (var i = 6; i < 12; i++)
+                  for (var i = 7; i < _colorList.length; i++)
                     InkWell(
                       onTap: () {
                         setState(() {

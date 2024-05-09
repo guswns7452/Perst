@@ -19,8 +19,27 @@ class Tabbar extends StatefulWidget {
 
 class _TabbarState extends State<Tabbar> {
   int _selectedIndex = 0;
-  String name = _storage.read("name");
-  String gender = _storage.read("gender");
+  bool isLoading = true;
+
+  late String name = '';
+  late String gender = '';
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (name == null) {
+      setState(() {
+        isLoading = true;
+      });
+      name = _storage.read("name");
+      gender = _storage.read("gender");
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   final List<Widget> _widgetOptions = <Widget>[
     StyleTour(),
@@ -53,88 +72,107 @@ class _TabbarState extends State<Tabbar> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        leading: Container(
-          decoration:
-              BoxDecoration(border: Border(bottom: BorderSide(width: 1.0))),
-          child: IconButton(
-            icon: Icon(Icons.person),
-            onPressed: () {
-              _scaffoldKey.currentState
-                  ?.openDrawer(); // Scaffold key를 사용하여 Drawer 열기
-            },
-          ),
-        ),
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            UserAccountsDrawerHeader(
-              accountName: Text(
-                name,
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-              ),
-              accountEmail: Text(
-                gender == "woman" ? "Woman" : "Man",
-                style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
-              ),
-              decoration: BoxDecoration(
-                color: Color.fromARGB(255, 124, 124, 124),
+    return isLoading
+        ? Scaffold(
+            backgroundColor: Colors.white,
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '로딩중입니다...',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  SizedBox(height: 20),
+                  CircularProgressIndicator(),
+                ],
               ),
             ),
-            ListTile(
-                leading: Icon(
-                  Icons.favorite,
-                  color: const Color.fromARGB(255, 0, 0, 0),
+          )
+        : Scaffold(
+            key: _scaffoldKey,
+            appBar: AppBar(
+              leading: Container(
+                decoration: BoxDecoration(
+                    border: Border(bottom: BorderSide(width: 1.0))),
+                child: IconButton(
+                  icon: Icon(Icons.person),
+                  onPressed: () {
+                    _scaffoldKey.currentState
+                        ?.openDrawer(); // Scaffold key를 사용하여 Drawer 열기
+                  },
                 ),
-                title: Text("스타일 조회 이력"),
-                onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => StyleHistory(),
-                    ))),
-            ListTile(
-                leading: Icon(
-                  Icons.colorize,
-                  color: const Color.fromARGB(255, 0, 0, 0),
-                ),
-                title: Text("퍼스널 컬러 진단결과"),
-                onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => PersonalColorHistory(),
-                    ))),
-            ListTile(
-                leading: Icon(
-                  Icons.manage_accounts,
-                  color: const Color.fromARGB(255, 0, 0, 0),
-                ),
-                title: Text("내 정보 수정"),
-                onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => ModifyInformation(),
-                    ))),
-          ],
-        ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        type: BottomNavigationBarType.fixed,
-        onTap: _onItemTapped,
-        items: <BottomNavigationBarItem>[
-          for (var i = 0; i < _widgetOptions.length; i++)
-            BottomNavigationBarItem(
-              icon: Image.asset(
-                _selectedIndex == i ? _tabIcons[i][1] : _tabIcons[i][0],
-                width: 35,
-                height: 35,
               ),
-              label: _tabLabels[i],
             ),
-        ],
-        selectedItemColor: Colors.black,
-      ),
-      body: SafeArea(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
-    );
+            drawer: Drawer(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  UserAccountsDrawerHeader(
+                    accountName: Text(
+                      name,
+                      style:
+                          TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                    ),
+                    accountEmail: Text(
+                      gender == "woman" ? "Woman" : "Man",
+                      style:
+                          TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                    ),
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 124, 124, 124),
+                    ),
+                  ),
+                  ListTile(
+                      leading: Icon(
+                        Icons.favorite,
+                        color: const Color.fromARGB(255, 0, 0, 0),
+                      ),
+                      title: Text("스타일 조회 이력"),
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => StyleHistory(),
+                          ))),
+                  ListTile(
+                      leading: Icon(
+                        Icons.colorize,
+                        color: const Color.fromARGB(255, 0, 0, 0),
+                      ),
+                      title: Text("퍼스널 컬러 진단결과"),
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => PersonalColorHistory(),
+                          ))),
+                  ListTile(
+                      leading: Icon(
+                        Icons.manage_accounts,
+                        color: const Color.fromARGB(255, 0, 0, 0),
+                      ),
+                      title: Text("내 정보 수정"),
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ModifyInformation(),
+                          ))),
+                ],
+              ),
+            ),
+            bottomNavigationBar: BottomNavigationBar(
+              currentIndex: _selectedIndex,
+              type: BottomNavigationBarType.fixed,
+              onTap: _onItemTapped,
+              items: <BottomNavigationBarItem>[
+                for (var i = 0; i < _widgetOptions.length; i++)
+                  BottomNavigationBarItem(
+                    icon: Image.asset(
+                      _selectedIndex == i ? _tabIcons[i][1] : _tabIcons[i][0],
+                      width: 35,
+                      height: 35,
+                    ),
+                    label: _tabLabels[i],
+                  ),
+              ],
+              selectedItemColor: Colors.black,
+            ),
+            body: SafeArea(
+              child: _widgetOptions.elementAt(_selectedIndex),
+            ),
+          );
   }
 }

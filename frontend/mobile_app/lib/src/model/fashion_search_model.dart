@@ -1,11 +1,19 @@
 /*
-      "musinsaNumber": 34376,
-      "musinsaGender": "man",
-      "musinsaHeight": 188,
-      "musinsaWeight": 70,
-      "musinsaSeason": "여름",
-      "musinsaStyle": "고프코어",
-      "musinsaFileid": "id"
+      "musinsaNumber": 30077,
+            "musinsaGender": "man",
+            "musinsaHeight": 184,
+            "musinsaWeight": 58,
+            "musinsaSeason": "winter",
+            "musinsaStyle": "casual",
+            "musinsaFileid": "1sFTcuUvAjvFfmr0vYHNM4FjjNIT9MdEX",
+            "musinsaType": "codishop",
+            "musinsaPersonal": "겨울 딥 ",
+            "musinsaRed": 22.0,
+            "musinsaGreen": 35.0,
+            "musinsaBlue": 29.0,
+            "musinsaHue": 152,
+            "musinsaSaturation": 37,
+            "musinsaValue": 14
  */
 
 class FashionSearchModel {
@@ -18,6 +26,14 @@ class FashionSearchModel {
   String? musinsaSeason;
   String? musinsaStyle;
   String? musinsaFileid;
+  String? musinsaType;
+  String? musinsaPersonal;
+  double? musinsaRed;
+  double? musinsaGreen;
+  double? musinsaBlue;
+  int? musinsaHue;
+  int? musinsaSaturation;
+  int? musinsaValue;
 
   FashionSearchModel.fromJson(Map m) {
     musinsaNumber = m['musinsaNumber'];
@@ -27,5 +43,13 @@ class FashionSearchModel {
     musinsaSeason = m['musinsaSeason'];
     musinsaStyle = m['musinsaStyle'];
     musinsaFileid = m['musinsaFileid'];
+    musinsaType = m['musinsaType'];
+    musinsaPersonal = m['musinsaPersonal'];
+    musinsaRed = m['musinsaRed'];
+    musinsaGreen = m['musinsaGreen'];
+    musinsaBlue = m['musinsaBlue'];
+    musinsaHue = m['musinsaHue'];
+    musinsaSaturation = m['musinsaSaturation'];
+    musinsaValue = m['musinsaValue'];
   }
 }

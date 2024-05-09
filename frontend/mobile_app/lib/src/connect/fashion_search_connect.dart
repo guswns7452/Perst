@@ -24,38 +24,44 @@ class FashionSearchConnect extends GetConnect {
   }
 
   // 여자 패션 이미지 받아오기
-  Future searchWoman(String womanFashionKeyword) async {
+  Future searchWoman(String womanFashionKeyword, bool isPersonal) async {
     try {
       if (womanFashionKeyword == 'Subculture') {
         womanFashionKeyword = 'street';
       }
-      Response response =
-          await post('/clothes/search/woman?style=$womanFashionKeyword', {
-        "color": ["red"]
-      }, headers: {
-        'Authorization': await getToken
-      });
+      Response response = await post(
+          '/clothes/search/woman?style=$womanFashionKeyword',
+          {"color": [], "isPersonal": isPersonal},
+          headers: {'Authorization': await getToken});
       Map<String, dynamic> body = response.body;
+
+      print(body);
 
       if (body['code'] != 200) {
         throw Exception(body['message']);
       }
-      return body['data'];
+      return body;
     } catch (e) {
       print('Error: $e');
     }
   }
 
   // 남자 패션 이미지 받아오기
-  Future searchMan(String manFashionKeyword) async {
+  Future searchMan(String manFashionKeyword, isPersonal) async {
     try {
       if (manFashionKeyword == 'Hip-hop') {
         manFashionKeyword = 'street';
       }
-      Response response = await get(
-          '/clothes/search/man?style=$manFashionKeyword',
-          headers: {'Authorization': await getToken});
+      Response response =
+          await post('/clothes/search/man?style=$manFashionKeyword', {
+        "color": ["red"],
+        "isPersonal": isPersonal
+      }, headers: {
+        'Authorization': await getToken
+      });
       Map<String, dynamic> body = response.body;
+
+      print(body);
 
       if (body['code'] != 200) {
         throw Exception(body['message']);
