@@ -26,19 +26,21 @@ img_height = 200
 
 # 원본 이미지 입력 함수
 # 지금은 샘플 이미지를 불러오는 함수인데 나중에 api에서 이미지를 불러오는 방식에 따라 바뀔 수 있습니다.
-def imgLoad(input_type):
-    if input_type == "male":
+def imgLoad(fileID, input_type):
+    if input_type == "man":
         # 남성 샘플 이미지 불러오기
-        img_path = model_dir_path + "man_229050_173_72_summer_chic.jpg"
-    elif input_type == "female":
+        img_path = model_dir_path + fileID + ".jpg"
+        print(img_path)
+    elif input_type == "woman":
         # 여성 샘플 이미지 불러오기
-        img_path = model_dir_path + "img_sample_female.jpg"
+        img_path = model_dir_path + fileID + ".jpg"
     else:
-        img_path = input_type
+        print(
+            "img_type 변수의 입력 형태가 올바르지 않습니다. male과 female중 하나를 입력해주세요"
+        )
+        return
 
-    # 한글 파일 경로도 읽을 수 있도록
-    img_array = np.fromfile(img_path, dtype=np.uint8)
-    img_file = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+    img_file = cv2.imread(img_path)
     if img_file is None:
         print(
             "이미지 파일을 불러오는데 실패했습니다. 해당 파일이 존재하는지 확인해주세요"

@@ -12,42 +12,42 @@ from cnn_model import imgLoad
 import matplotlib.pyplot as plt
 
 # 단위 테스트용 input 코드입니다.
-user_input = input('male / female 입력 >> ')
-ori_img = imgLoad(user_input)
-if ori_img is None:
-    print("이미지 파일을 불러오는데 실패하였습니다.")
+def machineLearning(fileID,gender):
+    ori_img = imgLoad(fileID, gender)
+    if ori_img is None:
+        print("이미지 파일을 불러오는데 실패하였습니다.")
 
-output = cnn_model_main(ori_img, user_input)
+    output = cnn_model_main(ori_img, gender)
 
-# 배경이 제거된 이미지 출력
-plt.imshow(output['no_background_img'])
-plt.show()
+    # 배경이 제거된 이미지 출력
+    plt.imshow(output['no_background_img'])
+    plt.show()
 
-# 패션 분류 타입 출력
-print("Fashion Type : " + output['fashion_type'])
+    # 패션 분류 타입 출력
+    print("Fashion Type : " + output['fashion_type'])
 
-# 컬러 리스트 출력
-for color in output['total_color_list']:
-    r = color[0][0]
-    g = color[0][1]
-    b = color[0][2]
-    ratio = color[1]
+    # 컬러 리스트 출력
+    for color in output['total_color_list']:
+        r = color[0][0]
+        g = color[0][1]
+        b = color[0][2]
+        ratio = color[1]
 
-    rgb_string = 'R' + str(r) + ' G' + str(g) + ' B' + str(b) + ' / '
-    ratio_string = ('%.2f' % ratio) + '%'
-    new_string = rgb_string + ratio_string
+        rgb_string = 'R' + str(r) + ' G' + str(g) + ' B' + str(b) + ' / '
+        ratio_string = ('%.2f' % ratio) + '%'
+        new_string = rgb_string + ratio_string
 
-    print(new_string)
+        print(new_string)
 
-# 퍼스널컬러 판별범위 표시용 이미지 출력
-plt.imshow(output['personal_masked_img'])
-plt.show()
+    # 퍼스널컬러 판별범위 표시용 이미지 출력
+    plt.imshow(output['personal_masked_img'])
+    plt.show()
 
-# 퍼스널컬러 라벨 출력
-print("Personal Color Type : " + output['personal_color_label'])
+    # 퍼스널컬러 라벨 출력
+    print("Personal Color Type : " + output['personal_color_label'])
 
-# 퍼스널컬러 대표값 RGB 출력
-ps_r = output['personal_color_rgb'][0]
-ps_g = output['personal_color_rgb'][1]
-ps_b = output['personal_color_rgb'][2]
-print("Personal Color RGB : " + 'R' + str(ps_r) + ' G' + str(ps_g) + ' B' + str(ps_b))
+    # 퍼스널컬러 대표값 RGB 출력
+    ps_r = output['personal_color_rgb'][0]
+    ps_g = output['personal_color_rgb'][1]
+    ps_b = output['personal_color_rgb'][2]
+    print("Personal Color RGB : " + 'R' + str(ps_r) + ' G' + str(ps_g) + ' B' + str(ps_b))
