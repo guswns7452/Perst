@@ -125,4 +125,88 @@ public class HomeController {
         return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
     }
 
+    /**
+     * 마이페이지 내 정보 조회
+     * @param token
+     * @return
+     */
+    @ResponseBody
+    @Operation(summary = "마이페이지", description = "마이페이지에 접속")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = RestResponse.class),
+                            examples = @ExampleObject(name = "")) }),
+            @ApiResponse(responseCode = "403", description = "")
+    })
+    @GetMapping("/mypage")
+    public ResponseEntity readMyPage(@RequestHeader("Authorization") String token){
+        int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
+        try{
+            MemberVO full_member = memberService.findByMemberNumber(memberNumber);
+            full_member.setMemberPassword("secret");
+
+            restResponse = RestResponse.builder()
+                    .code(HttpStatus.OK.value())
+                    .httpStatus(HttpStatus.OK)
+                    .message("회원 조회 완료")
+                    .data(full_member)
+                    .build();
+            return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
+        }
+        // 회원이 존재하지 않을 떄, IllegalArgumentException 발생
+        catch (Exception e){
+            restResponse = RestResponse.builder()
+                    .code(HttpStatus.FORBIDDEN.value())
+                    .httpStatus(HttpStatus.FORBIDDEN)
+                    .message("회원 정보가 존재하지 않습니다.")
+                    .build();
+            return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
+        }
+    }
+
+    /**
+     * 마이페이지 내 정보 수정
+     * @param token
+     * @return
+     */
+    @ResponseBody
+    @Operation(summary = "마이페이지", description = "마이페이지 수정")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = RestResponse.class),
+                            examples = @ExampleObject(name = "")) }),
+            @ApiResponse(responseCode = "403", description = "")
+    })
+    @PatchMapping("/mypage")
+    public ResponseEntity editMyInfo(@RequestHeader("Authorization") String token, @RequestBody MemberVO member){
+        logger.info("[마이페이지 변경]");
+        try{
+            int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
+            member.setMemberNumber(memberNumber);
+
+            MemberVO full_member = memberService.editMyInfo(member);
+            full_member.setMemberPassword("secret");
+
+            restResponse = RestResponse.builder()
+                    .code(HttpStatus.OK.value())
+                    .httpStatus(HttpStatus.OK)
+                    .message("회원 조회 완료")
+                    .data(full_member)
+                    .build();
+            return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
+        }
+        // 전화번호 중복일 때
+        catch (IllegalAccessException e){
+            restResponse = RestResponse.builder()
+                    .code(HttpStatus.UNAUTHORIZED.value())
+                    .httpStatus(HttpStatus.UNAUTHORIZED)
+                    .message(e.getMessage())
+                    .build();
+            return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

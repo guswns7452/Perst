@@ -18,7 +18,7 @@ class StyleColorView extends StatelessWidget {
     }
 
     return Container(
-      height: 300,
+      height: 100,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,

@@ -32,6 +32,7 @@ int _currentColorInt = 0;
 
 class _StyleTourState extends State<StyleTour> {
   final fashionSearchController = Get.put(FashionSearchController());
+  String gender = _storage.read("gender");
 
   bool isLoading = true;
 
@@ -44,6 +45,13 @@ class _StyleTourState extends State<StyleTour> {
   Future<void> _fetchData() async {
     setState(() {
       isLoading = true;
+      if (gender == "man") {
+        _seletedGender = "남성";
+        _seletedGenderInt = 0;
+      } else {
+        _seletedGender = "여성";
+        _seletedGenderInt = 1;
+      }
     });
     String gender = _storage.read("gender");
     _seletedGender = gender;

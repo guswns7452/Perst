@@ -100,10 +100,10 @@ public class ShoppingBrandSnapClothesUpdate {
         Map<String, String> seasonMap = new HashMap<String, String>();
         seasonMap.put("봄","spring"); seasonMap.put("여름","summer"); seasonMap.put("가을","autumn"); seasonMap.put("겨울","winter");
 
-        String folderPath = "D:\\perstDir\\Flask_backend\\images\\";
+        String folderPath = "D:\\coding\\perstDir\\Flask_backend\\newimages\\0502_brand";
 
-        ArrayList<String> genders = new ArrayList(); genders.add("woman");
-        ArrayList<String> styles = new ArrayList(); styles.add("걸리시"); /* styles.add("고프코어"); styles.add("골프"); styles.add("댄디"); styles.add("로맨틱"); styles.add("미니멀"); styles.add("비즈니스캐주얼"); styles.add("스트릿"); styles.add("스포티");*/ styles.add("시크"); styles.add("아메카지"); styles.add("캐주얼"); styles.add("레트로");
+        ArrayList<String> genders = new ArrayList(); genders.add("woman"); genders.add("man");
+        ArrayList<String> styles = new ArrayList(); styles.add("걸리시"); styles.add("고프코어"); styles.add("골프"); styles.add("댄디"); styles.add("로맨틱"); styles.add("미니멀"); styles.add("비즈니스캐주얼"); styles.add("스트릿"); styles.add("스포티"); styles.add("시크"); styles.add("아메카지"); styles.add("캐주얼"); styles.add("레트로");
 
         for (String gender : genders){
             for(String style : styles){
