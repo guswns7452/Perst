@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:perst/src/model/mypage_model.dart';
+import 'package:perst/src/screen/mypage/styleHistoryDetail.dart';
 import 'package:perst/src/widget/fl_chart.dart';
 
 import '../../controller/mypage_controller.dart';
@@ -286,9 +287,24 @@ Widget _buildStyleTab(List<MystyleModel> fashion,
                       var fashion =
                           snapshot.data![snapshot.data!.length - 1 - index];
                       return Column(children: [
-                        google_drive_image(
-                          id: fashion.styleFileID!,
-                        ),
+                        Stack(children: [
+                          google_drive_image(
+                            id: fashion.styleFileID!,
+                          ),
+                          Positioned.fill(
+                              child: Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            StyleHistoryDetail(
+                                                number: fashion.styleNumber!),
+                                      ),
+                                    );
+                                  }))),
+                        ]),
                         SizedBox(height: 3),
                         Container(
                           width: 130,

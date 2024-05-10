@@ -18,7 +18,7 @@ class StyleColorView extends StatelessWidget {
     }
 
     return Container(
-      height: 100,
+      height: 160,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
@@ -47,7 +47,7 @@ class StyleColorView extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       backgroundColor: color,
-                      radius: 100, // 원의 반지름을 조정하여 크기 조절
+                      radius: 70, // 원의 반지름을 조정하여 크기 조절
                     ),
                     Positioned.fill(
                       child: Align(
@@ -56,7 +56,7 @@ class StyleColorView extends StatelessWidget {
                           '${colorCode}',
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 20, // 텍스트 크기 조정
+                            fontSize: 15, // 텍스트 크기 조정
                           ),
                         ),
                       ),
