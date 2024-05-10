@@ -46,10 +46,10 @@ class _KeywordFashionState extends State<KeywordFashion> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(height: 30),
+          SizedBox(height: 50),
           Text(
             '* 해당 제품을 클릭하면 자세한 정보를 확인할 수 있습니다.*',
-            style: TextStyle(fontSize: 30, fontWeight: FontWeight.w500),
+            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
           ),
           SizedBox(height: 30),
           Expanded(

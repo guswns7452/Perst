@@ -51,6 +51,8 @@ class PersonalColorModel {
       this.SWinterBright,
       this.WinterDeep,
       this.SWinterDeep);
+
+  toMap() {}
 }
 
 final List<ColorRadioModel> warmCool = [

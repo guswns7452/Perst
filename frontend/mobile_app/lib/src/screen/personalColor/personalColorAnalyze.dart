@@ -49,6 +49,7 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
   int winterCnt = 0;
   int personalCnt = 0;
   String season = '';
+  bool isLoading = false;
 
   PersonalColorModel updatePCM = PersonalColorModel(
       0,
@@ -227,7 +228,7 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
                                                 summer[0].Green,
                                                 summer[0].Blue,
                                                 summer[0].O);
-                                            season = "여름 라이트";
+                                            isLoading = true;
                                           });
                                         },
                                       ),
@@ -248,7 +249,7 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
                                                 summer[1].Green,
                                                 summer[1].Blue,
                                                 summer[1].O);
-                                            season = "여름 브라이트";
+                                            isLoading = true;
                                           });
                                         },
                                       ),
@@ -269,7 +270,7 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
                                                 summer[2].Green,
                                                 summer[2].Blue,
                                                 summer[2].O);
-                                            season = "여름 뮤트";
+                                            isLoading = true;
                                           });
                                         },
                                       ),
@@ -294,7 +295,7 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
                                                 winter[0].Green,
                                                 winter[0].Blue,
                                                 winter[0].O);
-                                            season = "겨울 브라이트";
+                                            isLoading = true;
                                           });
                                         },
                                       ),
@@ -315,7 +316,7 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
                                                 winter[1].Green,
                                                 winter[1].Blue,
                                                 winter[1].O);
-                                            season = "겨울 딥";
+                                            isLoading = true;
                                           });
                                         },
                                       ),
@@ -341,7 +342,7 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
                                                 fall[0].Green,
                                                 fall[0].Blue,
                                                 fall[0].O);
-                                            season = "가을 뮤트";
+                                            isLoading = true;
                                           });
                                         },
                                       ),
@@ -362,7 +363,7 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
                                                 fall[1].Green,
                                                 fall[1].Blue,
                                                 fall[1].O);
-                                            season = "가을 스트롱";
+                                            isLoading = true;
                                           });
                                         },
                                       ),
@@ -383,7 +384,7 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
                                                 fall[2].Green,
                                                 fall[2].Blue,
                                                 fall[2].O);
-                                            season = "가을 딥";
+                                            isLoading = true;
                                           });
                                         },
                                       ),
@@ -410,7 +411,7 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
                                                         spring[0].Green,
                                                         spring[0].Blue,
                                                         spring[0].O);
-                                                season = "봄 라이트";
+                                                isLoading = true;
                                               });
                                             },
                                           ),
@@ -433,7 +434,7 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
                                                         spring[1].Green,
                                                         spring[1].Blue,
                                                         spring[1].O);
-                                                season = "봄 브라이트";
+                                                isLoading = true;
                                               });
                                             },
                                           ),
@@ -514,22 +515,81 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
                                         updatePCM);
                                   }
                                 }
-                                if (season == "봄 라이트" ||
-                                    season == "봄 브라이트" ||
-                                    season == "여름 브라이트" ||
-                                    season == "여름 라이트" ||
-                                    season == "여름 뮤트" ||
-                                    season == "가을 뮤트" ||
-                                    season == "가을 딥" ||
-                                    season == "가을 스트롱" ||
-                                    season == "겨울 브라이트" ||
-                                    season == "겨울 딥") {
+
+                                if (isLoading == true) {
                                   personalCnt = personalCnt + 1;
                                 }
+
                                 if (personalCnt == 10) {
+                                  List<Map<String, dynamic>> personalSelects = [
+                                    {
+                                      "personalSelectType":
+                                          updatePCM.SSpringBright,
+                                      "personalSelectTimes":
+                                          updatePCM.SpringBright
+                                    },
+                                    {
+                                      "personalSelectType":
+                                          updatePCM.SSpringRight,
+                                      "personalSelectTimes":
+                                          updatePCM.SpringRight
+                                    },
+                                    {
+                                      "personalSelectType":
+                                          updatePCM.SSummerBright,
+                                      "personalSelectTimes":
+                                          updatePCM.SummerBright
+                                    },
+                                    {
+                                      "personalSelectType":
+                                          updatePCM.SSummerMute,
+                                      "personalSelectTimes":
+                                          updatePCM.SummerMute
+                                    },
+                                    {
+                                      "personalSelectType":
+                                          updatePCM.SSummerRight,
+                                      "personalSelectTimes":
+                                          updatePCM.SummerRight
+                                    },
+                                    {
+                                      "personalSelectType": updatePCM.SFallDeep,
+                                      "personalSelectTimes": updatePCM.FallDeep
+                                    },
+                                    {
+                                      "personalSelectType": updatePCM.SFallMute,
+                                      "personalSelectTimes": updatePCM.FallMute
+                                    },
+                                    {
+                                      "personalSelectType":
+                                          updatePCM.SFallStrong,
+                                      "personalSelectTimes":
+                                          updatePCM.FallStrong
+                                    },
+                                    {
+                                      "personalSelectType":
+                                          updatePCM.SWinterBright,
+                                      "personalSelectTimes":
+                                          updatePCM.WinterBright
+                                    },
+                                    {
+                                      "personalSelectType":
+                                          updatePCM.SWinterDeep,
+                                      "personalSelectTimes":
+                                          updatePCM.WinterDeep
+                                    },
+                                  ];
+
+                                  personalSelects.sort((a, b) =>
+                                      b["personalSelectTimes"]
+                                          .compareTo(a["personalSelectTimes"]));
+
+                                  print(personalSelects);
+
                                   Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => PersonalColorResult(
-                                        PCM: updatePCM, season: season),
+                                        personalSelects: personalSelects,
+                                        season: personalSelects[0].keys.first),
                                   ));
                                 }
                               });
