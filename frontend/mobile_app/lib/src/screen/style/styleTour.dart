@@ -17,8 +17,8 @@ class StyleTour extends StatefulWidget {
   State<StyleTour> createState() => _StyleTourState();
 }
 
-late String _currentStyle = '로맨틱';
-late String _searchCurrentStyle = 'romantic';
+late String _currentStyle = '스포티';
+late String _searchCurrentStyle = 'sporty';
 late String _seletedGender = "man";
 bool _personalColorChecked = false;
 List<String> colorNameList = [];
@@ -45,6 +45,9 @@ class _StyleTourState extends State<StyleTour> {
     setState(() {
       isLoading = true;
     });
+    String gender = _storage.read("gender");
+    _seletedGender = gender;
+    gender == "man" ? _seletedGenderInt = 0 : _seletedGenderInt = 1;
 
     if (_seletedGenderInt == 1) {
       fashions = fashionSearchController.searchWoman(
@@ -192,8 +195,8 @@ class _CustomDrawerState extends State<CustomDrawer>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final List<StyleRadioModel> _manstyleKeyward = [
-    StyleRadioModel(true, '로맨틱', 'romantic'),
     StyleRadioModel(false, '스포티', 'sporty'),
+    StyleRadioModel(true, '로맨틱', 'romantic'),
     StyleRadioModel(false, '미니멀', 'minimal'),
     StyleRadioModel(false, '캐주얼', 'casual'),
     StyleRadioModel(false, '스트릿', 'street'),
@@ -206,8 +209,8 @@ class _CustomDrawerState extends State<CustomDrawer>
   ];
 
   final List<StyleRadioModel> _womanstyleKeyward = [
-    StyleRadioModel(true, '로맨틱', 'romantic'),
     StyleRadioModel(false, '스포티', 'sporty'),
+    StyleRadioModel(true, '로맨틱', 'romantic'),
     StyleRadioModel(false, '레트로', 'retro'),
     StyleRadioModel(false, '캐주얼', 'casual'),
     StyleRadioModel(false, '스트릿', 'street'),

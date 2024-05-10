@@ -18,14 +18,13 @@ class _LoginState extends State<Login> {
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  String token = _storage.read("access_token");
 
 // 로그인 완료 버튼을 누를 때 동작할 함수
   _submitForm() async {
     if (_formkey.currentState!.validate()) {
       final String memberPhoneNumber = _phoneNumberController.text;
       final String memberPassword = _passwordController.text;
-
+      String token = _storage.read("access_token");
       Future.delayed(Duration(milliseconds: 1000), () async {
         // 로그인 통신 로직
         bool result =
@@ -33,7 +32,7 @@ class _LoginState extends State<Login> {
 
         return result;
       }).then((value) {
-        if (token != '') {
+        if (value) {
           // 로그인 성공 시 Tabbar 페이지로 이동
           Navigator.push(
             context,
