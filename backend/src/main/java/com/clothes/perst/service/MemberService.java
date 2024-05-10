@@ -65,4 +65,36 @@ public class MemberService {
     public String findMemberGenderByMemberNumber(int memberNumber) throws Exception{
         return memberRepository.findByMemberNumber(memberNumber).getMemberGender();
     }
+
+    /**
+     * 회원 번호로 객체 찾기
+     * @param memberNumber
+     * @return
+     * @throws Exception
+     */
+    public MemberVO findByMemberNumber(int memberNumber) throws Exception{
+        MemberVO member = memberRepository.findByMemberNumber(memberNumber);
+        if (member == null) {
+            throw new IllegalArgumentException("일치하는 회원이 없습니다.");
+        }
+        return member;
+    }
+
+    /**
+     * 회원 정보를 수정하는 코드
+     * @param member
+     * @return
+     * @throws Exception
+     */
+    public MemberVO editMyInfo(MemberVO member) throws Exception{
+        String phone = member.getMemberPhone();
+        if (memberRepository.findAllByMemberPhone(phone).size() > 1){
+            throw new IllegalAccessException("이미 중복된 전화번호가 존재합니다.");
+        } else{
+            // save가 등록도 되지만, 수정도 됨 (하지만, 일부 값이 Null이라면 문제가 될 수 있음)
+            member.setMemberPassword(passwordEncoder.encode(member.getMemberPassword()));
+            return memberRepository.save(member);  
+            
+        }
+    }
 }

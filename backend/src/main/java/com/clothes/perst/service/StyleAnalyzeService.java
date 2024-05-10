@@ -1,6 +1,7 @@
 package com.clothes.perst.service;
 
 import com.clothes.perst.DTO.RestResponse;
+import com.clothes.perst.DTO.TransferStyleAnalyzeDTO;
 import com.clothes.perst.config.GoogleDriveAPI;
 import com.clothes.perst.domain.StyleAnalyzeVO;
 import com.clothes.perst.domain.StyleColorVO;
@@ -35,7 +36,7 @@ import java.util.List;
 @Service
 public class StyleAnalyzeService {
     private final StyleAnalyzeRepository styleAnalyzeJPA;
-    private final StyleAnalyzeColorRepository styleAnalyzeColorRepository;
+    private final StyleAnalyzeColorRepository styleAnalyzeColorJPA;
     private final GoogleDriveAPI googleDriveAPI;
 
     @Value("${folderId.ClothesAnalyze}")
@@ -85,7 +86,7 @@ public class StyleAnalyzeService {
     @Autowired
     public StyleAnalyzeService(StyleAnalyzeRepository styleAnalyzeJPA, StyleAnalyzeColorRepository styleAnalyzeColorRepository, GoogleDriveAPI googleDriveAPI) {
         this.styleAnalyzeJPA = styleAnalyzeJPA;
-        this.styleAnalyzeColorRepository = styleAnalyzeColorRepository;
+        this.styleAnalyzeColorJPA = styleAnalyzeColorRepository;
         this.googleDriveAPI = googleDriveAPI;
     }
 
@@ -98,7 +99,7 @@ public class StyleAnalyzeService {
 
     public void saveStyleColor(List<StyleColorVO> colors) {
         for (StyleColorVO color : colors) {
-            styleAnalyzeColorRepository.save(color);
+            styleAnalyzeColorJPA.save(color);
         }
     }
 
@@ -153,5 +154,20 @@ public class StyleAnalyzeService {
         RestResponse responseBody = response.getBody();
 
         return responseBody;
+    }
+
+    public StyleAnalyzeVO findMyStyle(int styleNumber){
+        StyleAnalyzeVO vo = styleAnalyzeJPA.findByStyleNumber(styleNumber);
+        vo.setStyleColor(styleAnalyzeColorJPA.findAllByStyleNumber(styleNumber));
+
+        return vo;
+    }
+
+    public TransferStyleAnalyzeDTO findMyStyleList(int memberNumber){
+        List<StyleAnalyzeVO> vo = styleAnalyzeJPA.findAllByMemberNumber(memberNumber);
+
+        // 전송용 DTO로 변경하기
+        TransferStyleAnalyzeDTO transfer = new TransferStyleAnalyzeDTO(vo);
+        return transfer;
     }
 }

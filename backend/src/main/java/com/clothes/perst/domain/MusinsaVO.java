@@ -41,6 +41,16 @@ public class MusinsaVO {
 
     private String musinsaType;
 
+    private String musinsaPersonal;
+
+    private float musinsaRed;
+    private float musinsaGreen;
+    private float musinsaBlue;
+
+    private int musinsaHue;
+    private int musinsaSaturation;
+    private int musinsaValue;
+
     public MusinsaVO() {
 
     }
