@@ -128,9 +128,10 @@ class _StyleTourState extends State<StyleTour> {
                                     setState(() {
                                       _currentStyle = selectedStyle;
                                       _seletedGender = selectedGender;
-                                      _currentColor = selectedColor;
+                                      selectedGender = "";
                                     });
                                   },
+                                  fashions: fashions,
                                 );
                               },
                             );
@@ -146,7 +147,7 @@ class _StyleTourState extends State<StyleTour> {
                         ),
                         SizedBox(width: 5),
                         StyleFilter(
-                            currentColor: _currentColor,
+                            colorList: colorList,
                             currentStyle: _currentStyle,
                             seletedGender: _seletedGender)
                       ],
@@ -176,9 +177,11 @@ class _StyleTourState extends State<StyleTour> {
 }
 
 class CustomDrawer extends StatefulWidget {
-  final Function(String, String, Color) onSelectionComplete;
+  final Function(String, String, List<Color>) onSelectionComplete;
+  final Future<List<FashionSearchModel>> fashions;
 
-  const CustomDrawer({Key? key, required this.onSelectionComplete})
+  const CustomDrawer(
+      {Key? key, required this.onSelectionComplete, required this.fashions})
       : super(key: key);
 
   @override
@@ -279,9 +282,7 @@ class _CustomDrawerState extends State<CustomDrawer>
                 indicatorColor: Colors.black,
                 labelColor: Colors.black,
                 tabs: [
-                  Tab(
-                    text: '성별',
-                  ),
+                  Tab(text: '성별'),
                   Tab(text: '스타일'),
                   Tab(text: '색감'),
                 ],
@@ -513,11 +514,13 @@ class _CustomDrawerState extends State<CustomDrawer>
                           setState(() {
                             color.isSelected = !color.isSelected;
                             if (color.isSelected) {
-                              colorNameList.add(color.ColorName.toString());
+                              colorNameList.add(color.ColorName);
                               colorList.add(Color.fromRGBO(
                                   color.Red, color.Green, color.Blue, 1));
                             } else {
-                              colorNameList.remove(color.ColorName.toString());
+                              colorNameList.remove(color.ColorName);
+                              colorList.remove(Color.fromRGBO(
+                                  color.Red, color.Green, color.Blue, 1));
                             }
                           });
                         },
@@ -550,12 +553,12 @@ class _CustomDrawerState extends State<CustomDrawer>
                   }
 
                   colorNameList = [];
-                  colorList = [];
+
                   widget.onSelectionComplete(
-                      _currentStyle, _seletedGender, _currentColor);
+                      _currentStyle, _seletedGender, colorList);
+                  _handleSelectionComplete();
                   Navigator.pop(context);
                 });
-                _handleSelectionComplete();
               },
               child: Text(
                 '선택 완료',
