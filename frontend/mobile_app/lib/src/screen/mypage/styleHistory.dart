@@ -283,7 +283,8 @@ Widget _buildStyleTab(List<MystyleModel> fashion,
                         mainAxisSpacing: 30),
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
-                      var fashion = snapshot.data![index];
+                      var fashion =
+                          snapshot.data![snapshot.data!.length - 1 - index];
                       return Column(children: [
                         google_drive_image(
                           id: fashion.styleFileID!,

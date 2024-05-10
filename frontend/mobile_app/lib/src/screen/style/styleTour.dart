@@ -53,7 +53,6 @@ class _StyleTourState extends State<StyleTour> {
         _seletedGenderInt = 1;
       }
     });
-    String gender = _storage.read("gender");
     _seletedGender = gender;
     gender == "man" ? _seletedGenderInt = 0 : _seletedGenderInt = 1;
 
