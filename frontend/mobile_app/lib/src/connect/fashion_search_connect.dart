@@ -24,14 +24,38 @@ class FashionSearchConnect extends GetConnect {
   }
 
   // 여자 패션 이미지 받아오기
-  Future searchWoman(String womanFashionKeyword, bool isPersonal) async {
+  Future searchWoman(String womanFashionKeyword, bool isPersonal,
+      List<String> colorList) async {
     try {
       if (womanFashionKeyword == 'Subculture') {
         womanFashionKeyword = 'street';
       }
       Response response = await post(
           '/clothes/search/woman?style=$womanFashionKeyword',
-          {"color": [], "isPersonal": isPersonal},
+          {"color": colorList, "isPersonal": isPersonal},
+          headers: {'Authorization': await getToken});
+      Map<String, dynamic> body = response.body;
+
+      if (body['code'] != 200) {
+        throw Exception(body['message']);
+      }
+      print(body);
+      return body;
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  // 남자 패션 이미지 받아오기
+  Future searchMan(
+      String manFashionKeyword, bool isPersonal, List<String> colorList) async {
+    try {
+      if (manFashionKeyword == 'Hip-hop') {
+        manFashionKeyword = 'street';
+      }
+      Response response = await post(
+          '/clothes/search/man?style=$manFashionKeyword',
+          {"color": colorList, "isPersonal": isPersonal},
           headers: {'Authorization': await getToken});
       Map<String, dynamic> body = response.body;
 
@@ -41,32 +65,6 @@ class FashionSearchConnect extends GetConnect {
         throw Exception(body['message']);
       }
       return body;
-    } catch (e) {
-      print('Error: $e');
-    }
-  }
-
-  // 남자 패션 이미지 받아오기
-  Future searchMan(String manFashionKeyword, isPersonal) async {
-    try {
-      if (manFashionKeyword == 'Hip-hop') {
-        manFashionKeyword = 'street';
-      }
-      Response response =
-          await post('/clothes/search/man?style=$manFashionKeyword', {
-        "color": ["red"],
-        "isPersonal": isPersonal
-      }, headers: {
-        'Authorization': await getToken
-      });
-      Map<String, dynamic> body = response.body;
-
-      print(body);
-
-      if (body['code'] != 200) {
-        throw Exception(body['message']);
-      }
-      return body['data'];
     } catch (e) {
       print('Error: $e');
     }

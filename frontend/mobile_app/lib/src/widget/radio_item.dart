@@ -43,7 +43,7 @@ class ColorRadioItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(right: 10),
+      margin: EdgeInsets.only(right: 5),
       child: Row(
         children: <Widget>[
           Stack(

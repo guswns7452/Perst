@@ -17,10 +17,12 @@ class StyleTour extends StatefulWidget {
   State<StyleTour> createState() => _StyleTourState();
 }
 
-late String _currentStyle = '캐주얼';
-late String _searchCurrentStyle = 'casual';
-late String _seletedGender = "";
+late String _currentStyle = '스포티';
+late String _searchCurrentStyle = 'sporty';
+late String _seletedGender = "man";
 bool _personalColorChecked = false;
+List<String> colorNameList = [];
+List<Color> colorList = [];
 late Color _currentColor = Color.fromRGBO(236, 20, 20, 1);
 late Future<List<FashionSearchModel>> fashions;
 
@@ -51,13 +53,16 @@ class _StyleTourState extends State<StyleTour> {
         _seletedGenderInt = 1;
       }
     });
+    String gender = _storage.read("gender");
+    _seletedGender = gender;
+    gender == "man" ? _seletedGenderInt = 0 : _seletedGenderInt = 1;
 
     if (_seletedGenderInt == 1) {
       fashions = fashionSearchController.searchWoman(
-          _searchCurrentStyle, _personalColorChecked);
+          _searchCurrentStyle, _personalColorChecked, colorNameList);
     } else if (_seletedGenderInt == 0) {
       fashions = fashionSearchController.searchMan(
-          _searchCurrentStyle, _personalColorChecked);
+          _searchCurrentStyle, _personalColorChecked, colorNameList);
     }
 
     setState(() {
@@ -134,9 +139,10 @@ class _StyleTourState extends State<StyleTour> {
                                     setState(() {
                                       _currentStyle = selectedStyle;
                                       _seletedGender = selectedGender;
-                                      _currentColor = selectedColor;
+                                      selectedGender = "";
                                     });
                                   },
+                                  fashions: fashions,
                                 );
                               },
                             );
@@ -152,7 +158,7 @@ class _StyleTourState extends State<StyleTour> {
                         ),
                         SizedBox(width: 5),
                         StyleFilter(
-                            currentColor: _currentColor,
+                            colorList: colorList,
                             currentStyle: _currentStyle,
                             seletedGender: _seletedGender)
                       ],
@@ -182,9 +188,11 @@ class _StyleTourState extends State<StyleTour> {
 }
 
 class CustomDrawer extends StatefulWidget {
-  final Function(String, String, Color) onSelectionComplete;
+  final Function(String, String, List<Color>) onSelectionComplete;
+  final Future<List<FashionSearchModel>> fashions;
 
-  const CustomDrawer({Key? key, required this.onSelectionComplete})
+  const CustomDrawer(
+      {Key? key, required this.onSelectionComplete, required this.fashions})
       : super(key: key);
 
   @override
@@ -195,8 +203,8 @@ class _CustomDrawerState extends State<CustomDrawer>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final List<StyleRadioModel> _manstyleKeyward = [
-    StyleRadioModel(true, '로맨틱', 'romantic'),
     StyleRadioModel(false, '스포티', 'sporty'),
+    StyleRadioModel(true, '로맨틱', 'romantic'),
     StyleRadioModel(false, '미니멀', 'minimal'),
     StyleRadioModel(false, '캐주얼', 'casual'),
     StyleRadioModel(false, '스트릿', 'street'),
@@ -209,8 +217,8 @@ class _CustomDrawerState extends State<CustomDrawer>
   ];
 
   final List<StyleRadioModel> _womanstyleKeyward = [
-    StyleRadioModel(true, '로맨틱', 'romantic'),
     StyleRadioModel(false, '스포티', 'sporty'),
+    StyleRadioModel(true, '로맨틱', 'romantic'),
     StyleRadioModel(false, '레트로', 'retro'),
     StyleRadioModel(false, '캐주얼', 'casual'),
     StyleRadioModel(false, '스트릿', 'street'),
@@ -223,7 +231,7 @@ class _CustomDrawerState extends State<CustomDrawer>
   ];
 
   final List<ColorRadioModel> _colorList = [
-    ColorRadioModel(true, 236, 20, 20, "red"),
+    ColorRadioModel(false, 236, 20, 20, "red"),
     ColorRadioModel(false, 244, 170, 36, "orange"),
     ColorRadioModel(false, 241, 242, 35, "yellow"),
     ColorRadioModel(false, 160, 255, 181, "lime"),
@@ -285,9 +293,7 @@ class _CustomDrawerState extends State<CustomDrawer>
                 indicatorColor: Colors.black,
                 labelColor: Colors.black,
                 tabs: [
-                  Tab(
-                    text: '성별',
-                  ),
+                  Tab(text: '성별'),
                   Tab(text: '스타일'),
                   Tab(text: '색감'),
                 ],
@@ -488,12 +494,18 @@ class _CustomDrawerState extends State<CustomDrawer>
       setState(() {
         if (_seletedGenderInt == 1) {
           fashions = fashionSearchController.searchWoman(
-              _searchCurrentStyle, _personalColorChecked);
+              _searchCurrentStyle, _personalColorChecked, colorNameList);
         } else if (_seletedGenderInt == 0) {
           fashions = fashionSearchController.searchMan(
-              _searchCurrentStyle, _personalColorChecked);
+              _searchCurrentStyle, _personalColorChecked, colorNameList);
         }
       });
+    }
+
+    List<List<ColorRadioModel>> colorGroups = [];
+    for (int i = 0; i < _colorList.length; i += 7) {
+      colorGroups.add(_colorList.sublist(
+          i, i + 7 > _colorList.length ? _colorList.length : i + 7));
     }
 
     return Container(
@@ -503,47 +515,33 @@ class _CustomDrawerState extends State<CustomDrawer>
         children: [
           Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
-                    children: [
-                      SizedBox(width: 20),
-                      for (var i = 0; i < 7; i++)
-                        InkWell(
-                          onTap: () {
-                            setState(() {
-                              _colorList.forEach(
-                                  (element) => element.isSelected = false);
-                              _colorList[i].isSelected = true;
-                              _currentColorInt = i;
-                            });
-                          },
-                          child: ColorRadioItem(_colorList[i]),
+              for (var group in colorGroups)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    for (var color in group)
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            color.isSelected = !color.isSelected;
+                            if (color.isSelected) {
+                              colorNameList.add(color.ColorName);
+                              colorList.add(Color.fromRGBO(
+                                  color.Red, color.Green, color.Blue, 1));
+                            } else {
+                              colorNameList.remove(color.ColorName);
+                              colorList.remove(Color.fromRGBO(
+                                  color.Red, color.Green, color.Blue, 1));
+                            }
+                          });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: ColorRadioItem(color),
                         ),
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(width: 20),
-                  for (var i = 7; i < _colorList.length; i++)
-                    InkWell(
-                      onTap: () {
-                        setState(() {
-                          _colorList
-                              .forEach((element) => element.isSelected = false);
-                          _colorList[i].isSelected = true;
-                          _currentColorInt = i;
-                        });
-                      },
-                      child: ColorRadioItem(_colorList[i]),
-                    ),
-                ],
-              ),
+                      ),
+                  ],
+                ),
             ],
           ),
           Container(
@@ -564,17 +562,14 @@ class _CustomDrawerState extends State<CustomDrawer>
                         _womanstyleKeyward[_currentStyleInt].buttonText;
                     _seletedGender = 'woman';
                   }
-                  _currentColor = Color.fromRGBO(
-                    _colorList[_currentColorInt].Red,
-                    _colorList[_currentColorInt].Green,
-                    _colorList[_currentColorInt].Blue,
-                    1,
-                  );
+
+                  colorNameList = [];
+
                   widget.onSelectionComplete(
-                      _currentStyle, _seletedGender, _currentColor);
-                  Navigator.pop(context); // drawer 닫기
+                      _currentStyle, _seletedGender, colorList);
+                  _handleSelectionComplete();
+                  Navigator.pop(context);
                 });
-                _handleSelectionComplete();
               },
               child: Text(
                 '선택 완료',
