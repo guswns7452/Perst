@@ -253,12 +253,27 @@ class _CustomDrawerState extends State<CustomDrawer>
 
   @override
   Widget build(BuildContext context) {
+    final fashionSearchController = Get.put(FashionSearchController());
+
+    void _handleSelectionComplete() {
+      setState(() {
+        if (_seletedGenderInt == 1) {
+          fashions = fashionSearchController.searchWoman(
+              _searchCurrentStyle, _personalColorChecked);
+        } else if (_seletedGenderInt == 0) {
+          fashions = fashionSearchController.searchMan(
+              _searchCurrentStyle, _personalColorChecked);
+        }
+      });
+    }
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(20.0),
+          topLeft: Radius.circular(20.0),
           bottomRight: Radius.circular(20.0),
         ),
       ),
@@ -268,6 +283,7 @@ class _CustomDrawerState extends State<CustomDrawer>
             color: Colors.white,
             borderRadius: BorderRadius.only(
               topRight: Radius.circular(20.0),
+              topLeft: Radius.circular(20.0),
               bottomRight: Radius.circular(20.0),
             ),
           ),
@@ -302,6 +318,53 @@ class _CustomDrawerState extends State<CustomDrawer>
                   ],
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        if (_seletedGenderInt == 0) {
+                          _searchCurrentStyle =
+                              _manstyleKeyward[_currentStyleInt].keyward;
+                          _currentStyle =
+                              _manstyleKeyward[_currentStyleInt].buttonText;
+                          _seletedGender = 'man';
+                        } else if (_seletedGenderInt == 1) {
+                          _searchCurrentStyle =
+                              _womanstyleKeyward[_currentStyleInt].keyward;
+                          _currentStyle =
+                              _womanstyleKeyward[_currentStyleInt].buttonText;
+                          _seletedGender = 'woman';
+                        }
+                        _currentColor = Color.fromRGBO(
+                          _colorList[_currentColorInt].Red,
+                          _colorList[_currentColorInt].Green,
+                          _colorList[_currentColorInt].Blue,
+                          1,
+                        );
+                        widget.onSelectionComplete(
+                            _currentStyle, _seletedGender, _currentColor);
+                        Navigator.pop(context); // drawer 닫기
+                      });
+                      _handleSelectionComplete();
+                    },
+                    child: Text(
+                      '선택 완료',
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.redAccent,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10))),
+                  ),
+                ),
+              ),
+              SizedBox(height: 5,)
             ],
           ),
         ),
@@ -355,7 +418,7 @@ class _CustomDrawerState extends State<CustomDrawer>
               ),
             ],
           ),
-          SizedBox(height: 250),
+          SizedBox(height: 10),
           Row(
             children: [
               SizedBox(width: 20),
@@ -482,20 +545,6 @@ class _CustomDrawerState extends State<CustomDrawer>
   }
 
   Widget _buildColorTab() {
-    final fashionSearchController = Get.put(FashionSearchController());
-
-    void _handleSelectionComplete() {
-      setState(() {
-        if (_seletedGenderInt == 1) {
-          fashions = fashionSearchController.searchWoman(
-              _searchCurrentStyle, _personalColorChecked);
-        } else if (_seletedGenderInt == 0) {
-          fashions = fashionSearchController.searchMan(
-              _searchCurrentStyle, _personalColorChecked);
-        }
-      });
-    }
-
     return Container(
       margin: EdgeInsets.fromLTRB(10, 30, 10, 30),
       child: Column(
@@ -546,49 +595,7 @@ class _CustomDrawerState extends State<CustomDrawer>
               ),
             ],
           ),
-          Container(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  if (_seletedGenderInt == 0) {
-                    _searchCurrentStyle =
-                        _manstyleKeyward[_currentStyleInt].keyward;
-                    _currentStyle =
-                        _manstyleKeyward[_currentStyleInt].buttonText;
-                    _seletedGender = 'man';
-                  } else if (_seletedGenderInt == 1) {
-                    _searchCurrentStyle =
-                        _womanstyleKeyward[_currentStyleInt].keyward;
-                    _currentStyle =
-                        _womanstyleKeyward[_currentStyleInt].buttonText;
-                    _seletedGender = 'woman';
-                  }
-                  _currentColor = Color.fromRGBO(
-                    _colorList[_currentColorInt].Red,
-                    _colorList[_currentColorInt].Green,
-                    _colorList[_currentColorInt].Blue,
-                    1,
-                  );
-                  widget.onSelectionComplete(
-                      _currentStyle, _seletedGender, _currentColor);
-                  Navigator.pop(context); // drawer 닫기
-                });
-                _handleSelectionComplete();
-              },
-              child: Text(
-                '선택 완료',
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10))),
-            ),
-          )
+
         ],
       ),
     );
