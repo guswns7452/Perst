@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:perst/src/screen/auth/login.dart';
 import 'package:perst/src/screen/auth/register.dart';
-import 'package:perst/src/widget/tab_bar.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class Intro extends StatefulWidget {
@@ -19,7 +19,7 @@ class _IntroState extends State<Intro> {
     initialPage: 0,
   );
 
-  List itemList = ["1","2","3","4","5","6","7"];
+  List itemList = ["1", "2", "3", "4", "5", "6", "7"];
 
   @override
   void initState() {
@@ -27,7 +27,7 @@ class _IntroState extends State<Intro> {
     itemList.shuffle();
 
     Timer.periodic(Duration(seconds: 4), (Timer timer) {
-      if (currentPage < itemList.length-1) {
+      if (currentPage < itemList.length - 1) {
         currentPage++;
       } else {
         currentPage = 0;
@@ -75,7 +75,7 @@ class _IntroState extends State<Intro> {
                 ),
               ),
               const SizedBox(
-                height: 30,
+                height: 20,
               ),
               // 어플에서 사용할 이미지로 대체 예정
               Container(
@@ -88,7 +88,8 @@ class _IntroState extends State<Intro> {
                   onPageChanged: (value) {},
                   itemBuilder: (context, index) {
                     return Container(
-                      child: Image.asset('assets/style_' + itemList[index] + '.png',
+                      child: Image.asset(
+                          'assets/style_' + itemList[index] + '.png',
                           width: 300,
                           height: 300,
                           fit: BoxFit.cover),
@@ -96,7 +97,9 @@ class _IntroState extends State<Intro> {
                   },
                 ),
               ),
-              SizedBox(height: 10,),
+              SizedBox(
+                height: 10,
+              ),
               Container(
                 width: double.infinity,
                 alignment: Alignment.center,
@@ -117,6 +120,15 @@ class _IntroState extends State<Intro> {
               const SizedBox(
                 height: 20,
               ),
+              Container(
+                  width: double.infinity,
+                  child: Text("지금 시작하고, 당신의 스타일을 찾아보세요!",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.notoSansKr(
+                        textStyle: TextStyle(
+                            fontWeight: FontWeight.w900, fontSize: 17),
+                      ))),
+              SizedBox(height: 10,),
               Container(
                 width: double.infinity,
                 height: 70,
@@ -143,7 +155,7 @@ class _IntroState extends State<Intro> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 14),
               Container(
                 width: double.infinity,
                 height: 70,
