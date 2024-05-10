@@ -14,6 +14,13 @@ class StyleTourWidget extends StatefulWidget {
 
 class _StyleTourWidgetState extends State<StyleTourWidget> {
   @override
+  void initState() {
+    super.initState();
+    print('아아아아앙ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ');
+    print(widget.fashions);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Expanded(
       child: FutureBuilder<List<FashionSearchModel>>(
@@ -31,7 +38,7 @@ class _StyleTourWidgetState extends State<StyleTourWidget> {
             List<FashionSearchModel> fashions = snapshot.data!;
             return ListView.builder(
               itemCount: (fashions.length / 2).ceil(),
-              scrollDirection: Axis.vertical, // 세로 방향으로 스크롤
+              scrollDirection: Axis.vertical,
               itemBuilder: (context, index) {
                 int leftIndex = index * 2;
                 int rightIndex = leftIndex + 1;

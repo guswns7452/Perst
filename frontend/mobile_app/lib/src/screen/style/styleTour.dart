@@ -21,6 +21,8 @@ late String _currentStyle = '로맨틱';
 late String _searchCurrentStyle = 'romantic';
 late String _seletedGender = "man";
 bool _personalColorChecked = false;
+List<String> colorNameList = [];
+List<Color> colorList = [];
 late Color _currentColor = Color.fromRGBO(236, 20, 20, 1);
 late Future<List<FashionSearchModel>> fashions;
 
@@ -46,10 +48,10 @@ class _StyleTourState extends State<StyleTour> {
 
     if (_seletedGenderInt == 1) {
       fashions = fashionSearchController.searchWoman(
-          _searchCurrentStyle, _personalColorChecked);
+          _searchCurrentStyle, _personalColorChecked, colorNameList);
     } else if (_seletedGenderInt == 0) {
       fashions = fashionSearchController.searchMan(
-          _searchCurrentStyle, _personalColorChecked);
+          _searchCurrentStyle, _personalColorChecked, colorNameList);
     }
 
     setState(() {
@@ -215,7 +217,7 @@ class _CustomDrawerState extends State<CustomDrawer>
   ];
 
   final List<ColorRadioModel> _colorList = [
-    ColorRadioModel(true, 236, 20, 20, "red"),
+    ColorRadioModel(false, 236, 20, 20, "red"),
     ColorRadioModel(false, 244, 170, 36, "orange"),
     ColorRadioModel(false, 241, 242, 35, "yellow"),
     ColorRadioModel(false, 160, 255, 181, "lime"),
@@ -480,12 +482,18 @@ class _CustomDrawerState extends State<CustomDrawer>
       setState(() {
         if (_seletedGenderInt == 1) {
           fashions = fashionSearchController.searchWoman(
-              _searchCurrentStyle, _personalColorChecked);
+              _searchCurrentStyle, _personalColorChecked, colorNameList);
         } else if (_seletedGenderInt == 0) {
           fashions = fashionSearchController.searchMan(
-              _searchCurrentStyle, _personalColorChecked);
+              _searchCurrentStyle, _personalColorChecked, colorNameList);
         }
       });
+    }
+
+    List<List<ColorRadioModel>> colorGroups = [];
+    for (int i = 0; i < _colorList.length; i += 7) {
+      colorGroups.add(_colorList.sublist(
+          i, i + 7 > _colorList.length ? _colorList.length : i + 7));
     }
 
     return Container(
@@ -495,47 +503,31 @@ class _CustomDrawerState extends State<CustomDrawer>
         children: [
           Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
-                    children: [
-                      SizedBox(width: 20),
-                      for (var i = 0; i < 7; i++)
-                        InkWell(
-                          onTap: () {
-                            setState(() {
-                              _colorList.forEach(
-                                  (element) => element.isSelected = false);
-                              _colorList[i].isSelected = true;
-                              _currentColorInt = i;
-                            });
-                          },
-                          child: ColorRadioItem(_colorList[i]),
+              for (var group in colorGroups)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    for (var color in group)
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            color.isSelected = !color.isSelected;
+                            if (color.isSelected) {
+                              colorNameList.add(color.ColorName.toString());
+                              colorList.add(Color.fromRGBO(
+                                  color.Red, color.Green, color.Blue, 1));
+                            } else {
+                              colorNameList.remove(color.ColorName.toString());
+                            }
+                          });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: ColorRadioItem(color),
                         ),
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(width: 20),
-                  for (var i = 7; i < _colorList.length; i++)
-                    InkWell(
-                      onTap: () {
-                        setState(() {
-                          _colorList
-                              .forEach((element) => element.isSelected = false);
-                          _colorList[i].isSelected = true;
-                          _currentColorInt = i;
-                        });
-                      },
-                      child: ColorRadioItem(_colorList[i]),
-                    ),
-                ],
-              ),
+                      ),
+                  ],
+                ),
             ],
           ),
           Container(
@@ -556,15 +548,12 @@ class _CustomDrawerState extends State<CustomDrawer>
                         _womanstyleKeyward[_currentStyleInt].buttonText;
                     _seletedGender = 'woman';
                   }
-                  _currentColor = Color.fromRGBO(
-                    _colorList[_currentColorInt].Red,
-                    _colorList[_currentColorInt].Green,
-                    _colorList[_currentColorInt].Blue,
-                    1,
-                  );
+
+                  colorNameList = [];
+                  colorList = [];
                   widget.onSelectionComplete(
                       _currentStyle, _seletedGender, _currentColor);
-                  Navigator.pop(context); // drawer 닫기
+                  Navigator.pop(context);
                 });
                 _handleSelectionComplete();
               },

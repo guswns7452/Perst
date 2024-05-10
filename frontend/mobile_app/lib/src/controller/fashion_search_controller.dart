@@ -9,11 +9,11 @@ class FashionSearchController extends GetxController {
   final fashionSearchConnection = Get.put(FashionSearchConnect());
 
   // 여자 키워드별 패션 스타일 불러오기
-  Future<List<FashionSearchModel>> searchWoman(
-      String womanFashionKeyword, bool isPersonal) async {
+  Future<List<FashionSearchModel>> searchWoman(String womanFashionKeyword,
+      bool isPersonal, List<String> colorList) async {
     try {
       Map<String, dynamic> response = await fashionSearchConnection.searchWoman(
-          womanFashionKeyword, isPersonal);
+          womanFashionKeyword, isPersonal, colorList);
       List<dynamic> results = response['data'];
       List<FashionSearchModel> fashions = [];
       for (var result in results) {
@@ -28,14 +28,16 @@ class FashionSearchController extends GetxController {
 
   // 남자 키워드별 패션 스타일 불러오기
   Future<List<FashionSearchModel>> searchMan(
-      String manFashionKeyword, bool isPersonal) async {
+      String manFashionKeyword, bool isPersonal, List<String> colorList) async {
     try {
-      List<dynamic> results = await fashionSearchConnection.searchMan(
-          manFashionKeyword, isPersonal);
+      Map<String, dynamic> response = await fashionSearchConnection.searchMan(
+          manFashionKeyword, isPersonal, colorList);
+      List<dynamic> results = response['data'];
       List<FashionSearchModel> fashions = [];
       for (var result in results) {
-        fashions.add(FashionSearchModel.fromJson(result['data']));
+        fashions.add(FashionSearchModel.fromJson(result));
       }
+      print(fashions);
       return fashions;
     } catch (e) {
       print('Error: $e');
