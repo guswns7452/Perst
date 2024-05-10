@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
 
-import '../model/color_model.dart';
-import 'dart:math';
-
-class FlChart extends StatefulWidget {
+class FlChart extends StatelessWidget {
   final int myStyleLength;
   final Map<String, dynamic> styleResult;
 
@@ -12,13 +10,8 @@ class FlChart extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<FlChart> createState() => _FlChartState();
-}
-
-class _FlChartState extends State<FlChart> {
-  @override
   Widget build(BuildContext context) {
-    List<PieModel> model = [];
+    List<PieChartSectionData> sections = [];
     List<String> dataDescriptions = [];
     int i = 0;
     final List<Color> _colors = [
@@ -28,22 +21,33 @@ class _FlChartState extends State<FlChart> {
       const Color.fromRGBO(255, 227, 144, 1),
       const Color.fromRGBO(145, 244, 148, 1),
       const Color.fromRGBO(140, 242, 255, 1),
-      const Color.fromRGBO(233, 141, 249, 1),
+      Color.fromARGB(255, 253, 167, 246),
       Color.fromARGB(255, 227, 249, 141),
       Color.fromARGB(255, 141, 153, 249),
+      Color.fromARGB(255, 219, 111, 255),
     ];
 
+    List<String> stylePercent = [];
+
     // styleResult가 null이 아니고 비어있지 않은 경우에만 데이터를 추출합니다.
-    if (widget.styleResult != null && widget.styleResult.isNotEmpty) {
+    if (styleResult != null && styleResult.isNotEmpty) {
       Map<String, dynamic> styleResults = Map<String, dynamic>.fromEntries(
-          widget.styleResult.entries.toList()
+          styleResult.entries.toList()
             ..sort((a, b) => b.value.compareTo(a.value)));
       // styleResult를 value를 기준으로 내림차순 정렬
 
-      if (widget.styleResult.isNotEmpty) {
+      if (styleResult.isNotEmpty) {
+        for (int style in styleResult.values) {
+          stylePercent
+              .add((style / myStyleLength * 100).toDouble().toStringAsFixed(1));
+        }
         styleResults.forEach((key, value) {
           dataDescriptions.add("$key");
-          model.add(PieModel(count: value, color: _colors[i]));
+          sections.add(PieChartSectionData(
+            color: _colors[i],
+            value: value.toDouble(),
+            title: i < 2 ? stylePercent[i] + '%' : '',
+          ));
           i++;
         });
         // widget으로 출력해주기
@@ -56,78 +60,45 @@ class _FlChartState extends State<FlChart> {
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.7,
             height: MediaQuery.of(context).size.width * 0.7,
-            child: CustomPaint(
-              size: Size(
-                MediaQuery.of(context).size.width * 0.7,
-                MediaQuery.of(context).size.width * 0.7,
+            child: PieChart(
+              PieChartData(
+                sections: sections,
+                borderData: FlBorderData(show: false),
+                centerSpaceRadius: 50,
+                sectionsSpace: 0,
               ),
-              painter: _PieChart(model),
             ),
           ),
-          // 원형 그래프
-          SizedBox(height: 20),
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: model.length,
-            itemBuilder: (context, index) {
-              final entry = model.asMap().entries.elementAt(index);
-              return Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 10,
-                      height: 10,
-                      color: entry.value.color,
-                    ),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        dataDescriptions[entry.key],
-                        style: TextStyle(fontSize: 13),
+          Expanded(
+            child: ListView.builder(
+              itemCount: dataDescriptions.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 15,
+                        height: 15,
+                        decoration: BoxDecoration(
+                            color: _colors[index],
+                            borderRadius: BorderRadius.circular(50)),
                       ),
-                    ),
-                  ],
-                ),
-              );
-            },
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          dataDescriptions[index],
+                          style: TextStyle(fontSize: 13),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),
     );
   }
-}
-
-class _PieChart extends CustomPainter {
-  final List<PieModel> data;
-
-  _PieChart(this.data);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    double total = 0;
-    data.forEach((item) => total += item.count);
-
-    Paint circlePaint = Paint();
-    double _startPoint = -pi / 2;
-    for (int i = 0; i < data.length; i++) {
-      double _sweepAngle = 2 * pi * (data[i].count / total);
-      circlePaint.color = data[i].color;
-
-      canvas.drawArc(
-        Rect.fromCircle(
-          center: Offset(size.width / 2, size.width / 2),
-          radius: (size.width / 2) * 0.8,
-        ),
-        _startPoint,
-        _sweepAngle,
-        true,
-        circlePaint,
-      );
-      _startPoint += _sweepAngle;
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
