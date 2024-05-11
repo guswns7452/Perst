@@ -567,7 +567,9 @@ class _CustomDrawerState extends State<CustomDrawer>
                   widget.onSelectionComplete(
                       _currentStyle, _seletedGender, colorList);
                   _handleSelectionComplete();
-                  Navigator.pop(context);
+                  Future.delayed(Duration(milliseconds: 1000), () async {
+                    return Navigator.pop(context);
+                  }).then((value) => colorList = []);
                 });
               },
               child: Text(
