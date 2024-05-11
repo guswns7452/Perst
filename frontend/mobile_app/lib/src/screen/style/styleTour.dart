@@ -53,7 +53,6 @@ class _StyleTourState extends State<StyleTour> {
         _seletedGenderInt = 1;
       }
     });
-    String gender = _storage.read("gender");
     _seletedGender = gender;
     gender == "man" ? _seletedGenderInt = 0 : _seletedGenderInt = 1;
 
@@ -231,20 +230,20 @@ class _CustomDrawerState extends State<CustomDrawer>
   ];
 
   final List<ColorRadioModel> _colorList = [
-    ColorRadioModel(false, 236, 20, 20, "red"),
-    ColorRadioModel(false, 244, 170, 36, "orange"),
-    ColorRadioModel(false, 241, 242, 35, "yellow"),
-    ColorRadioModel(false, 160, 255, 181, "lime"),
-    ColorRadioModel(false, 55, 180, 0, "green"),
-    ColorRadioModel(false, 152, 208, 233, "sky"),
-    ColorRadioModel(false, 188, 0, 204, "pink"),
-    ColorRadioModel(false, 131, 22, 192, "purple"),
-    ColorRadioModel(false, 86, 142, 255, "blue"),
-    ColorRadioModel(false, 29, 44, 133, "navy"),
+    ColorRadioModel(false, 204, 41, 54, "red"),
+    ColorRadioModel(false, 230, 109, 23, "orange"),
+    ColorRadioModel(false, 230, 230, 23, "yellow"),
+    ColorRadioModel(false, 186, 217, 33, "lime"),
+    ColorRadioModel(false, 77, 191, 77, "green"),
+    ColorRadioModel(false, 54, 217, 217, "sky"),
+    ColorRadioModel(false, 230, 69, 203, "pink"),
+    ColorRadioModel(false, 125, 71, 179, "purple"),
+    ColorRadioModel(false, 61, 85, 204, "blue"),
+    ColorRadioModel(false, 25, 42, 128, "navy"),
     ColorRadioModel(false, 255, 255, 255, "white"),
-    ColorRadioModel(false, 198, 198, 198, "grey"),
+    ColorRadioModel(false, 147, 145, 153, "grey"),
     ColorRadioModel(false, 0, 0, 0, "black"),
-    ColorRadioModel(false, 136, 23, 23, "brown"),
+    ColorRadioModel(false, 115, 75, 34, "brown"),
   ];
 
   @override
@@ -568,7 +567,9 @@ class _CustomDrawerState extends State<CustomDrawer>
                   widget.onSelectionComplete(
                       _currentStyle, _seletedGender, colorList);
                   _handleSelectionComplete();
-                  Navigator.pop(context);
+                  Future.delayed(Duration(milliseconds: 1000), () async {
+                    return Navigator.pop(context);
+                  }).then((value) => colorList = []);
                 });
               },
               child: Text(

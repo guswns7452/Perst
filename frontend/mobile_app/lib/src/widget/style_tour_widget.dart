@@ -16,8 +16,6 @@ class _StyleTourWidgetState extends State<StyleTourWidget> {
   @override
   void initState() {
     super.initState();
-    print('아아아아앙ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ');
-    print(widget.fashions);
   }
 
   @override
@@ -91,8 +89,11 @@ Widget _buildFashionItem(BuildContext context, FashionSearchModel fashion) {
         },
         child: Stack(
           children: [
-            google_drive_image(
-              id: fashion.musinsaFileid!,
+            Container(
+              height: 200,
+              child: google_drive_image(
+                id: fashion.musinsaFileid!,
+              ),
             ),
           ],
         ),

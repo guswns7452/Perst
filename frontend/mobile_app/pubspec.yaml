@@ -90,6 +90,13 @@ flutter:
     - assets/gallery.png
     - assets/presentation.png
     - assets/next.png
+    - assets/banner.png
+    - assets/cameraIntro_1.png
+    - assets/cameraIntro_2.png
+    - assets/cameraIntro_3.png
+    - assets/cameraIntro_4.png
+    - assets/cameraIntro_5.png
+    - assets/dot.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
