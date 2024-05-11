@@ -288,8 +288,11 @@ Widget _buildStyleTab(List<MystyleModel> fashion,
                           snapshot.data![snapshot.data!.length - 1 - index];
                       return Column(children: [
                         Stack(children: [
-                          google_drive_image(
-                            id: fashion.styleFileID!,
+                          Container(
+                            height: 171,
+                            child: google_drive_image(
+                              id: fashion.styleFileID!,
+                            ),
                           ),
                           Positioned.fill(
                               child: Material(

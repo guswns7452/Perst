@@ -12,7 +12,7 @@ class google_drive_image extends StatelessWidget {
       height: 171,
       decoration: BoxDecoration(
           image: DecorationImage(
-            fit: BoxFit.fill,
+            fit: BoxFit.cover,
             image: NetworkImage(
                 "https://drive.google.com/thumbnail?id=$id&sz=w300"),
           ),

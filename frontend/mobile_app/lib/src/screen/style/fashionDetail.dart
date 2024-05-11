@@ -16,101 +16,82 @@ class _FashionDetailState extends State<FashionDetail> {
 
   @override
   Widget build(BuildContext context) {
-    String season = widget.fashion.musinsaSeason;
-
-    if (season == "spring") {
-      backgroundColor = Color.fromRGBO(249, 171, 245, 1);
-    } else if (season == "summer") {
-      backgroundColor = Color.fromRGBO(96, 206, 100, 1);
-    } else if (season == "fall") {
-      backgroundColor = Color.fromRGBO(170, 7, 7, 1);
-    } else if (season == "winter") {
-      backgroundColor = Color.fromRGBO(6, 66, 184, 1);
-    } else {
-      // 기본값 설정
-      backgroundColor = Colors.black;
-    }
-
     return Scaffold(
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            child: google_drive_image(id: widget.fashion.musinsaFileid),
+          Center(
+            child: Container(
+              height: 550,
+              width: 350,
+              child: google_drive_image(id: widget.fashion.musinsaFileid),
+            ),
           ),
-          SizedBox(height: 50),
+          SizedBox(height: 20),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              SizedBox(width: 30),
               Container(
-                padding: EdgeInsets.fromLTRB(7, 3, 7, 3),
-                child: Text(
-                  '#${widget.fashion.musinsaSeason}',
-                  style: TextStyle(fontSize: 20, color: Colors.white),
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(7),
-                  color: backgroundColor,
-                ),
-              ),
+                  padding: EdgeInsets.fromLTRB(7, 7, 7, 7),
+                  child: Text(
+                    '#${widget.fashion.musinsaSeason}',
+                    style: TextStyle(
+                        fontSize: 15,
+                        color: Color.fromARGB(255, 127, 127, 127)),
+                  ),
+                  color: Color.fromRGBO(224, 224, 224, 1)),
               SizedBox(width: 10),
               Container(
-                padding: EdgeInsets.fromLTRB(7, 3, 7, 3),
+                padding: EdgeInsets.fromLTRB(7, 7, 7, 7),
                 child: Text(
                   '#${widget.fashion.musinsaStyle}',
-                  style: TextStyle(fontSize: 20, color: Colors.white),
+                  style: TextStyle(
+                      fontSize: 15, color: Color.fromARGB(255, 127, 127, 127)),
                 ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(7),
-                  color: Color.fromRGBO(54, 54, 54, 1),
-                ),
+                color: Color.fromRGBO(224, 224, 224, 1),
               ),
               SizedBox(width: 10),
               Container(
-                padding: EdgeInsets.fromLTRB(7, 3, 7, 3),
-                child: Text(
-                  '#${widget.fashion.musinsaGender}',
-                  style: TextStyle(fontSize: 20, color: Colors.white),
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(7),
-                  color: widget.fashion.musinsaGender == 'man'
-                      ? Color.fromRGBO(59, 130, 246, 1) // 남자
-                      : Color.fromRGBO(236, 72, 153, 1), // 여자
-                ),
+                  padding: EdgeInsets.fromLTRB(7, 7, 7, 7),
+                  child: Text(
+                    '#${widget.fashion.musinsaGender}',
+                    style: TextStyle(
+                        fontSize: 15,
+                        color: Color.fromARGB(255, 127, 127, 127)),
+                  ),
+                  color: Color.fromRGBO(224, 224, 224, 1)),
+            ],
+          ),
+          SizedBox(height: 10),
+          Row(
+            children: [
+              SizedBox(width: 30),
+              Text(
+                widget.fashion.musinsaGender == "woman" ? "여성" : "남성",
+                style: TextStyle(fontSize: 15),
+              ),
+              Image.asset('assets/dot.png', height: 15),
+              Text(
+                '${widget.fashion.musinsaHeight}cm',
+                style: TextStyle(fontSize: 15),
+              ),
+              Image.asset('assets/dot.png', height: 15),
+              Text(
+                '${widget.fashion.musinsaWeight}kg',
+                style: TextStyle(fontSize: 15),
               ),
             ],
           ),
           Center(
-            child: Container(
-              margin: EdgeInsets.fromLTRB(20, 50, 0, 0),
-              padding: EdgeInsets.only(bottom: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '#모델 정보',
-                    style: TextStyle(fontSize: 15),
-                  ),
-                  Text(
-                    '  키: ${widget.fashion.musinsaHeight}',
-                    style: TextStyle(fontSize: 15),
-                  ),
-                  Text(
-                    '  체중: ${widget.fashion.musinsaWeight}',
-                    style: TextStyle(fontSize: 15),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          TextButton(
+            child: TextButton(
               onPressed: () {
                 launchUrl(Uri.parse(
                     'https://www.musinsa.com/app/styles/views/${widget.fashion.musinsaNumber}'));
               },
-              child: Text('패션 링크로 이동하기'))
+              child: Text('패션 링크로 이동하기'),
+            ),
+          )
         ],
       ),
     );

@@ -37,7 +37,6 @@ class _KeywordFashionState extends State<KeywordFashion> {
       fashions =
           fashionSearchController.searchMan(widget.styleKeyword, true, []);
     }
-    // 여기도 API에 따라서 변경해야함.
   }
 
   @override
@@ -65,15 +64,22 @@ class _KeywordFashionState extends State<KeywordFashion> {
                 } else {
                   return GridView.builder(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10),
+                          crossAxisCount: 2, mainAxisSpacing: 2),
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {
                         var fashion = snapshot.data![index];
                         return Stack(children: [
-                          google_drive_image(
-                            id: fashion.musinsaFileid!,
+                          Row(
+                            children: [
+                              SizedBox(width: 35),
+                              Container(
+                                height: 230,
+                                width: 145,
+                                child: google_drive_image(
+                                  id: fashion.musinsaFileid!,
+                                ),
+                              ),
+                            ],
                           ),
                           Positioned.fill(
                               child: Material(
