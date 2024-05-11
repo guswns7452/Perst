@@ -62,13 +62,21 @@ class _StyleFilterState extends State<StyleFilter> {
           children: List.generate(
             widget.colorList.length,
             (index) => Container(
-              width: 30,
-              height: 30,
-              margin: EdgeInsets.only(right: 5),
               decoration: BoxDecoration(
-                color: widget.colorList[index],
-                borderRadius: BorderRadius.circular(50),
-                border: Border.all(width: 0.3, color: Colors.black),
+                  border: Border.all(
+                      width: 1, color: Color.fromRGBO(133, 133, 133, 1)),
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.transparent),
+              padding: EdgeInsets.fromLTRB(8, 4, 3, 4),
+              child: Container(
+                width: 30,
+                height: 30,
+                margin: EdgeInsets.only(right: 5),
+                decoration: BoxDecoration(
+                  color: widget.colorList[index],
+                  borderRadius: BorderRadius.circular(50),
+                  border: Border.all(width: 0.3, color: Colors.black),
+                ),
               ),
             ),
           ),
