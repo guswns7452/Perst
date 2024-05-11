@@ -98,94 +98,108 @@ class _CameraScreenState extends State<CameraScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 255, 255, 255),
-      body: Stack(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: Center(
-                  child: _image != null
-                      ? Image.file(
-                          File(_image!.path),
-                          fit: BoxFit.cover, // 화면에 가득 채우도록 설정
-                        )
-                      : Text(
-                          '카메라 버튼을 눌러 사진을 찍어보세요.',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500,
-                          ),
+      body: Stack(children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: Center(
+                child: _image != null
+                    ? Image.file(
+                        File(_image!.path),
+                        fit: BoxFit.cover, // 화면에 가득 채우도록 설정
+                      )
+                    : Text(
+                        '카메라 버튼을 눌러 사진을 찍어보세요.',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
                         ),
-                ),
+                      ),
               ),
-              Container(
-                height: 80,
-                width: double.infinity,
-                color: Colors.black,
+            ),
+            Container(
+              height: 80,
+              width: double.infinity,
+              color: Colors.black,
+            ),
+          ],
+        ),
+        Positioned(
+          bottom: 15.0,
+          left: 0,
+          right: 0,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  _image != null
+                      ? TextButton(
+                          onPressed: isLoading ? null : _submitForm,
+                          child: Text(
+                            '스타일 분석하러가기',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black,
+                            ),
+                          ),
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(5),
+                              ),
+                            ),
+                          ),
+                        )
+                      : OutlinedButton(
+                          onPressed: () {
+                            _getImage(ImageSource.gallery);
+                          },
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            shape: CircleBorder(),
+                            padding: EdgeInsets.all(30),
+                            backgroundColor: Colors.white,
+                          ),
+                          child: Image.asset(
+                            'assets/camera.png',
+                            width: 30,
+                            height: 30,
+                          ),
+                        )
+                ],
               ),
             ],
           ),
-          Positioned(
-            bottom: 15.0,
-            left: 0,
-            right: 0,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    _image != null
-                        ? TextButton(
-                            onPressed: isLoading ? null : _submitForm,
-                            child: Text(
-                              '스타일 분석하러가기',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black,
-                              ),
-                            ),
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(5),
-                                ),
-                              ),
-                            ),
-                          )
-                        : OutlinedButton(
-                            onPressed: () {
-                              _getImage(ImageSource.gallery);
-                            },
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              shape: CircleBorder(),
-                              padding: EdgeInsets.all(30),
-                              backgroundColor: Colors.white,
-                            ),
-                            child: Image.asset(
-                              'assets/camera.png',
-                              width: 30,
-                              height: 30,
-                            ),
-                          )
-                  ],
-                ),
-              ],
+        ),
+        if (isLoading)
+          Container(
+            color: Colors.black.withOpacity(0.5),
+            child: Center(
+              child: Container(
+                  width: 300,
+                  height: 90,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        ' 사진을 분석중입니다.\n20초정도 소요됩니다.',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                      SizedBox(width: 20),
+                      CircularProgressIndicator(),
+                    ],
+                  ),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20))),
             ),
           ),
-          if (isLoading)
-            Container(
-              color: Colors.black.withOpacity(0.5),
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-        ],
-      ),
+      ]),
     );
   }
 }
