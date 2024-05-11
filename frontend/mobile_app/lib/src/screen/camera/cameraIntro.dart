@@ -71,6 +71,117 @@ class CameraIntro extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                     child: Image.asset('assets/cameraIntro_2.png')),
               ),
+              Padding(
+                padding: EdgeInsets.only(),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 15),
+                  child: Text("패션 분석 결과",
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w800,
+                      )),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 20, top: 10),
+                child: Text("1️⃣ 색 조합 출력",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    )),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 35, top: 5),
+                child: Text(" ・ 내 코디의 색상을 추출해줍니다.",
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    )),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 20.0, bottom: 30.0, right: 020, top: 10),
+                child: Container(
+                  width: double.infinity,
+                  height: 290,
+                  decoration: BoxDecoration(
+                      color: Color.fromRGBO(238, 238, 238, 1),
+                      borderRadius: BorderRadius.circular(10)),
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.asset(
+                        'assets/cameraIntro_4.png',
+                        width: 100,
+                      )),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 20, top: 10),
+                child: Text("2️⃣ 스타일 키워드 분석",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    )),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 35, top: 5),
+                child: Text(" ・ 내 스타일을 분석하여 키워드로 정리해줍니다.",
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    )),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 20.0, bottom: 30.0, right: 020, top: 10),
+                child: Container(
+                  width: double.infinity,
+                  height: 290,
+                  decoration: BoxDecoration(
+                      color: Color.fromRGBO(238, 238, 238, 1),
+                      borderRadius: BorderRadius.circular(10)),
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.asset(
+                        'assets/cameraIntro_3.png',
+                        width: 100,
+                      )),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 20, top: 10),
+                child: Text("3️⃣ 패션 키워드 별 코디 제공",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    )),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 35, top: 5),
+                child: Text(
+                    " ・ 내 스타일에 맞는 코디를 추천해줍니다.\n     아래의 버튼을 눌러 더 많은 코디를 볼 수 있습니다.",
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    )),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 20.0, bottom: 30.0, right: 020, top: 10),
+                child: Container(
+                  width: double.infinity,
+                  height: 290,
+                  decoration: BoxDecoration(
+                      color: Color.fromRGBO(238, 238, 238, 1),
+                      borderRadius: BorderRadius.circular(10)),
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.asset(
+                        'assets/cameraIntro_5.png',
+                        width: 100,
+                      )),
+                ),
+              ),
             ]),
           ),
           Padding(
