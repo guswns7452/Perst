@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:perst/src/screen/camera/cameraIntro.dart';
 
 class MyStyle extends StatelessWidget {
@@ -14,12 +15,16 @@ class MyStyle extends StatelessWidget {
           SizedBox(
             height: 10,
           ),
-          Text(
-            ' Perst',
-            style: TextStyle(
-                color: Color.fromRGBO(255, 191, 25, 1),
-                fontSize: 40,
-                fontWeight: FontWeight.bold),
+          Padding(
+            padding: const EdgeInsets.only(left:10.0),
+            child: Text('Perst',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.archivoBlack(
+                    textStyle: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.w800,
+                      color: Color.fromRGBO(255, 191, 25, 1),
+                    ))),
           ),
           Text(
             '  my 스타일분석 이력',

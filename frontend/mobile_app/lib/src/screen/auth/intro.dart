@@ -50,18 +50,18 @@ class _IntroState extends State<Intro> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(
+              SizedBox(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Perst',
-                      style: TextStyle(
-                        fontSize: 45,
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromRGBO(255, 191, 25, 1),
-                      ),
-                    ),
+                    Text('Perst',
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.archivoBlack(
+                            textStyle: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w800,
+                          color: Color.fromRGBO(255, 191, 25, 1),
+                        ))),
                     Text(
                       '당신만을 위한 의류 스타일 추천',
                       textAlign: TextAlign.start,
@@ -128,7 +128,9 @@ class _IntroState extends State<Intro> {
                         textStyle: TextStyle(
                             fontWeight: FontWeight.w900, fontSize: 17),
                       ))),
-              SizedBox(height: 10,),
+              SizedBox(
+                height: 10,
+              ),
               Container(
                 width: double.infinity,
                 height: 70,
