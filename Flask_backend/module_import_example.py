@@ -21,8 +21,8 @@ def machineLearning(fileID, gender):
     output = cnn_model_main(ori_img, gender)
 
     # 배경이 제거된 이미지 출력
-    plt.imshow(output['no_background_img'])
-    plt.show()
+    # plt.imshow(output['no_background_img'])
+    # plt.show()
 
     # 패션 분류 타입 출력
     print("="*100)
