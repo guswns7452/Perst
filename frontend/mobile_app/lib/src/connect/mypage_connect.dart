@@ -69,7 +69,7 @@ class MypageConnect extends GetConnect {
   }
 
   // 내 정보 변경 - 내 정보 불러오기
-  Future showInformation() async {
+  Future<Map<String, dynamic>> showInformation() async {
     Response response =
         await get('/member/mypage', headers: {'Authorization': await getToken});
 
@@ -106,7 +106,7 @@ class MypageConnect extends GetConnect {
     });
 
     Map<String, dynamic> body = response.body;
-    print(body['data']);
+    print(body);
 
     if (body['code'] != 200) {
       throw Exception(body['message']);

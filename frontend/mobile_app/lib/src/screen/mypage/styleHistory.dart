@@ -41,6 +41,8 @@ class _StyleHistoryState extends State<StyleHistory> {
     results = await mypageController.sendStyleHistory();
     fashion = results['myAnalyzeList'];
     styleResult = results['myStyle'];
+    styleResult = Map<String, dynamic>.fromEntries(styleResult.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value)));
     myStyleLength = results['myStyleLength'];
 
     setState(() {
@@ -97,7 +99,7 @@ class _StyleHistoryState extends State<StyleHistory> {
                     children: [
                       SizedBox(width: 10),
                       Text(
-                        gender,
+                        gender == "woman" ? "WOMEN" : "MAN",
                         style: TextStyle(
                             fontSize: 15,
                             color: gender == "woman"
