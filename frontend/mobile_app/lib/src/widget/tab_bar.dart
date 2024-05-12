@@ -115,12 +115,14 @@ class _TabbarState extends State<Tabbar> {
                           TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                     ),
                     accountEmail: Text(
-                      gender == "woman" ? "Woman" : "Man",
-                      style:
-                          TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                      gender == "man" ? "MAN" : "WOMEN",
+                      style: TextStyle(
+                          color: Color.fromARGB(255, 255, 255, 255),
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold),
                     ),
                     decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 124, 124, 124),
+                      color: Color.fromARGB(255, 0, 0, 0),
                     ),
                   ),
                   ListTile(

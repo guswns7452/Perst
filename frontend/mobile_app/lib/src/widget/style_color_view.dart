@@ -64,7 +64,7 @@ class StyleColorView extends StatelessWidget {
                   ],
                 ),
                 SizedBox(
-                  width: 10,
+                  width: 6,
                 ),
               ],
             ),

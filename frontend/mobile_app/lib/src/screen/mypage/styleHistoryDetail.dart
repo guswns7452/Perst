@@ -74,7 +74,7 @@ class _StyleHistoryDetailState extends State<StyleHistoryDetail> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '  Perst',
+                            ' Perst',
                             style: TextStyle(
                                 color: Color.fromRGBO(255, 191, 25, 1),
                                 fontSize: 45,
@@ -96,17 +96,21 @@ class _StyleHistoryDetailState extends State<StyleHistoryDetail> {
                                   '분석결과',
                                   style: TextStyle(
                                       fontSize: 25,
-                                      fontWeight: FontWeight.w700),
+                                      fontWeight: FontWeight.w800),
                                 ),
                                 Text(
                                   ': 색 조합',
-                                  style: TextStyle(fontSize: 20),
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w500),
                                 ),
                                 StyleColorView(result: result),
                                 SizedBox(height: 20),
                                 Text(
                                   ': 스타일 키워드',
-                                  style: TextStyle(fontSize: 20),
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w500),
                                 ),
                                 Container(
                                   margin: EdgeInsets.only(top: 5),

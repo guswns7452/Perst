@@ -123,7 +123,7 @@ class _ModifyInformationState extends State<ModifyInformation> {
                                 fontSize: 13,
                                 color: const Color.fromARGB(255, 194, 194, 194),
                               )),
-                          Text('*',
+                          Text(' *',
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontSize: 13,
@@ -175,7 +175,7 @@ class _ModifyInformationState extends State<ModifyInformation> {
                                 fontSize: 13,
                                 color: const Color.fromARGB(255, 194, 194, 194),
                               )),
-                          Text('*',
+                          Text(' *',
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontSize: 13,
@@ -227,7 +227,7 @@ class _ModifyInformationState extends State<ModifyInformation> {
                                 fontSize: 13,
                                 color: const Color.fromARGB(255, 194, 194, 194),
                               )),
-                          Text('*',
+                          Text(' *',
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontSize: 13,
@@ -278,7 +278,7 @@ class _ModifyInformationState extends State<ModifyInformation> {
                                 fontSize: 13,
                                 color: const Color.fromARGB(255, 194, 194, 194),
                               )),
-                          Text('*',
+                          Text(' *',
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontSize: 13,
@@ -329,7 +329,7 @@ class _ModifyInformationState extends State<ModifyInformation> {
                                 fontSize: 13,
                                 color: const Color.fromARGB(255, 194, 194, 194),
                               )),
-                          Text('*',
+                          Text(' *',
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontSize: 13,
@@ -380,7 +380,7 @@ class _ModifyInformationState extends State<ModifyInformation> {
                                 fontSize: 13,
                                 color: const Color.fromARGB(255, 194, 194, 194),
                               )),
-                          Text('*',
+                          Text(' *',
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontSize: 13,
@@ -428,7 +428,7 @@ class _ModifyInformationState extends State<ModifyInformation> {
                           backgroundColor: Colors.orange,
                         ),
                         child: const Text(
-                          '로그인',
+                          '저장하기',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
