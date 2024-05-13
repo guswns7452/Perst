@@ -29,13 +29,14 @@ class _KeywordFashionState extends State<KeywordFashion> {
     print(gender);
     if (gender == "woman") {
       print("여자");
-      fashions = fashionSearchController.searchWoman(widget.styleKeyword, true);
+      fashions =
+          fashionSearchController.searchWoman(widget.styleKeyword, true, []);
       print(widget.styleKeyword);
     } else if (gender == "man") {
       print("남자");
-      fashions = fashionSearchController.searchMan(widget.styleKeyword, true);
+      fashions =
+          fashionSearchController.searchMan(widget.styleKeyword, true, []);
     }
-    // 여기도 API에 따라서 변경해야함.
   }
 
   @override
@@ -44,10 +45,10 @@ class _KeywordFashionState extends State<KeywordFashion> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(height: 30),
+          SizedBox(height: 50),
           Text(
             '* 해당 제품을 클릭하면 자세한 정보를 확인할 수 있습니다.*',
-            style: TextStyle(fontSize: 30, fontWeight: FontWeight.w500),
+            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
           ),
           SizedBox(height: 30),
           Expanded(
@@ -63,15 +64,22 @@ class _KeywordFashionState extends State<KeywordFashion> {
                 } else {
                   return GridView.builder(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10),
+                          crossAxisCount: 2, mainAxisSpacing: 2),
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {
                         var fashion = snapshot.data![index];
                         return Stack(children: [
-                          google_drive_image(
-                            id: fashion.musinsaFileid!,
+                          Row(
+                            children: [
+                              SizedBox(width: 35),
+                              Container(
+                                height: 230,
+                                width: 145,
+                                child: google_drive_image(
+                                  id: fashion.musinsaFileid!,
+                                ),
+                              ),
+                            ],
                           ),
                           Positioned.fill(
                               child: Material(

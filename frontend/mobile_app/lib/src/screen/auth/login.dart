@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:perst/src/controller/user_controller.dart';
-import 'package:perst/src/screen/auth/intro.dart';
 import 'package:perst/src/widget/tab_bar.dart';
+
+final GetStorage _storage = GetStorage();
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -23,20 +25,24 @@ class _LoginState extends State<Login> {
     if (_formkey.currentState!.validate()) {
       final String memberPhoneNumber = _phoneNumberController.text;
       final String memberPassword = _passwordController.text;
+      String token = _storage.read("access_token");
+      Future.delayed(Duration(milliseconds: 1000), () async {
+        // 로그인 통신 로직
+        bool result =
+            await userController.login(memberPhoneNumber, memberPassword);
 
-      // 로그인 통신 로직
-      bool result =
-          await userController.login(memberPhoneNumber, memberPassword);
-
-      // 로그인 성공시 다음 화면으로 이동처리
-      if (result) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => Tabbar(),
-          ),
-        );
-      }
+        return result;
+      }).then((value) {
+        if (value) {
+          // 로그인 성공 시 Tabbar 페이지로 이동
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Tabbar(),
+            ),
+          );
+        } else {}
+      });
     }
   }
 

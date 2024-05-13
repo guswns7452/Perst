@@ -31,9 +31,7 @@ class UserController extends GetxController {
         memberHeight,
         memberWeight,
       );
-      print('여기야?');
       await _storage.write('access_token', token);
-      print('여기는?');
       return true;
     } catch (e) {
       print('Error : $e');

@@ -8,10 +8,11 @@ import 'package:perst/src/model/color_radio_model.dart';
 final GetStorage _storage = GetStorage();
 
 class PersonalColorResult extends StatefulWidget {
-  final PersonalColorModel PCM;
   final String season;
+  final List<Map<String, dynamic>> personalSelects;
 
-  const PersonalColorResult({required this.PCM, required this.season, Key? key})
+  const PersonalColorResult(
+      {Key? key, required this.season, required this.personalSelects})
       : super(key: key);
 
   @override
@@ -41,55 +42,14 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
   }
 
   Future<void> fetchData() async {
-    List<Map<String, dynamic>> personalSelects = [
-      {
-        "personalSelectType": widget.PCM.SSpringBright,
-        "personalSelectTimes": widget.PCM.SpringBright
-      },
-      {
-        "personalSelectType": widget.PCM.SSpringRight,
-        "personalSelectTimes": widget.PCM.SpringRight
-      },
-      {
-        "personalSelectType": widget.PCM.SSummerBright,
-        "personalSelectTimes": widget.PCM.SummerBright
-      },
-      {
-        "personalSelectType": widget.PCM.SSummerMute,
-        "personalSelectTimes": widget.PCM.SummerMute
-      },
-      {
-        "personalSelectType": widget.PCM.SSummerRight,
-        "personalSelectTimes": widget.PCM.SummerRight
-      },
-      {
-        "personalSelectType": widget.PCM.SFallDeep,
-        "personalSelectTimes": widget.PCM.FallDeep
-      },
-      {
-        "personalSelectType": widget.PCM.SFallMute,
-        "personalSelectTimes": widget.PCM.FallMute
-      },
-      {
-        "personalSelectType": widget.PCM.SFallStrong,
-        "personalSelectTimes": widget.PCM.FallStrong
-      },
-      {
-        "personalSelectType": widget.PCM.SWinterBright,
-        "personalSelectTimes": widget.PCM.WinterBright
-      },
-      {
-        "personalSelectType": widget.PCM.SWinterDeep,
-        "personalSelectTimes": widget.PCM.WinterDeep
-      },
-    ];
-
     setState(() {
       isLoading = true;
     });
 
     result = await personalColorConnection.personalAnalyze(
-        widget.season, 9, personalSelects);
+        widget.personalSelects[0]['personalSelectType'],
+        9,
+        widget.personalSelects);
 
     setState(() {
       colorList = [

@@ -14,6 +14,11 @@ class StyleTourWidget extends StatefulWidget {
 
 class _StyleTourWidgetState extends State<StyleTourWidget> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Expanded(
       child: FutureBuilder<List<FashionSearchModel>>(
@@ -31,7 +36,7 @@ class _StyleTourWidgetState extends State<StyleTourWidget> {
             List<FashionSearchModel> fashions = snapshot.data!;
             return ListView.builder(
               itemCount: (fashions.length / 2).ceil(),
-              scrollDirection: Axis.vertical, // 세로 방향으로 스크롤
+              scrollDirection: Axis.vertical,
               itemBuilder: (context, index) {
                 int leftIndex = index * 2;
                 int rightIndex = leftIndex + 1;
@@ -84,8 +89,11 @@ Widget _buildFashionItem(BuildContext context, FashionSearchModel fashion) {
         },
         child: Stack(
           children: [
-            google_drive_image(
-              id: fashion.musinsaFileid!,
+            Container(
+              height: 200,
+              child: google_drive_image(
+                id: fashion.musinsaFileid!,
+              ),
             ),
           ],
         ),

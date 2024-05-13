@@ -26,9 +26,11 @@ class _ThreeKeywordFashionState extends State<ThreeKeywordFashion> {
     super.initState();
     String gender = _storage.read("gender");
     if (gender == "woman") {
-      fashions = fashionSearchController.searchWoman(widget.styleKeyword, true);
+      fashions =
+          fashionSearchController.searchWoman(widget.styleKeyword, true, []);
     } else if (gender == "man") {
-      fashions = fashionSearchController.searchMan(widget.styleKeyword, true);
+      fashions =
+          fashionSearchController.searchMan(widget.styleKeyword, true, []);
     }
   }
 
@@ -54,7 +56,7 @@ class _ThreeKeywordFashionState extends State<ThreeKeywordFashion> {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
-                      width: 70,
+                      width: 110,
                       child: google_drive_image(id: fashion.musinsaFileid!)),
                 );
               },
