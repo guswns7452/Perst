@@ -39,16 +39,16 @@ class PersonalColor extends StatelessWidget {
                     width: double.infinity,
                     child: Text('주의사항',
                         style: TextStyle(
-                            fontSize: 30, fontWeight: FontWeight.bold),
+                            fontSize: 26, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center),
                   ),
                   Row(
                     children: [
-                      Text('   휴대폰 설정에서 ', style: TextStyle(fontSize: 18)),
+                      Text('   휴대폰 설정에서 ', style: TextStyle(fontSize: 16)),
                       Text('블루라이트 필터',
                           style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 18)),
-                      Text('를 꺼주세요.', style: TextStyle(fontSize: 18))
+                              fontWeight: FontWeight.bold, fontSize: 16)),
+                      Text('를 꺼주세요.', style: TextStyle(fontSize: 16))
                     ],
                   ),
                   SizedBox(height: 10),
@@ -56,19 +56,19 @@ class PersonalColor extends StatelessWidget {
                     children: [
                       Text('   자연광',
                           style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 18)),
-                      Text('이나 ', style: TextStyle(fontSize: 18)),
+                              fontWeight: FontWeight.bold, fontSize: 16)),
+                      Text('이나 ', style: TextStyle(fontSize: 16)),
                       Text('푸르지 않은 흰색 조명',
                           style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 18)),
+                              fontWeight: FontWeight.bold, fontSize: 16)),
                       Text(
                         '이 좋습니다.',
-                        style: TextStyle(fontSize: 18),
+                        style: TextStyle(fontSize: 16),
                       ),
                     ],
                   ),
                   SizedBox(height: 10),
-                  Text('   사진은 수집되지 않습니다.', style: TextStyle(fontSize: 18)),
+                  Text('   사진은 수집되지 않습니다.', style: TextStyle(fontSize: 16)),
                 ],
               ),
             ),

@@ -17,7 +17,7 @@ class StyleRadioItem extends StatelessWidget {
               child: Text(_item.buttonText,
                   style: TextStyle(
                       color: _item.isSelected ? Colors.white : Colors.black,
-                      fontSize: 18.0)),
+                      fontSize: 16.0)),
             ),
             decoration: BoxDecoration(
                 color: _item.isSelected
