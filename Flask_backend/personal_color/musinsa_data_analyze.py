@@ -194,18 +194,11 @@ def dataChange(save_folderPath, musinsa_type):
 
     freeze_support()  # Windows에서 multiprocessing 사용 시 필요
 
-    t1 = Process(
-        target=update_personalColor_to_DB,
-        args=(["man"], style_args, Data_status, save_folderPath, musinsa_type),
-        name="1",
-    )
+    t1 = Process(target=update_personalColor_to_DB,args=(["man"], style_args, Data_status, save_folderPath, musinsa_type), name="1")
     t1.start()
     processes.append(t1)
-    t2 = Process(
-        target=update_personalColor_to_DB,
-        args=(["woman"], style_args, Data_status, save_folderPath, musinsa_type),
-        name="2",
-    )
+    
+    t2 = Process(target=update_personalColor_to_DB,args=(["woman"], style_args, Data_status, save_folderPath, musinsa_type),  name="2")
     t2.start()
     processes.append(t2)
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:perst/src/controller/user_controller.dart';
 import 'package:perst/src/widget/tab_bar.dart';
@@ -52,38 +53,46 @@ class _LoginState extends State<Login> {
       body: Form(
         key: _formkey,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            SizedBox(height: 70,),
             Container(
               width: double.infinity,
-              margin: EdgeInsets.only(left: 20),
-              child: Text(
-                '반갑습니다! 로그인 정보를 입력해주세요!',
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
+              child: Text('Perst',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.archivoBlack(
+                      textStyle: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w800,
+                        color: Color.fromRGBO(255, 191, 25, 1),
+                      ))),
+            ),
+            SizedBox(height: 70,),
+            Container(
+              width: double.infinity,
+              margin: EdgeInsets.only(left: 30),
+              child: Text('환영해요! 로그인 해주세요!',
+                  textAlign: TextAlign.left,
+                  style: GoogleFonts.nanumGothic(
+                      textStyle: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                  ))),
             ),
             Container(
               margin: EdgeInsets.fromLTRB(20, 10, 20, 0),
               decoration: BoxDecoration(
-                color: Color.fromRGBO(234, 234, 234, 1),
+                // color: Color.fromRGBO(234, 234, 234, 1),
                 borderRadius: BorderRadius.circular(10),
               ),
-              padding: EdgeInsets.all(20),
+              padding: EdgeInsets.all(10),
               child: Column(
                 children: [
                   TextFormField(
                     controller: _phoneNumberController,
+                    keyboardType: TextInputType.number,
                     // obscureText: true,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
-                      icon: Icon(
-                        Icons.phone,
-                        color: Color.fromRGBO(0, 0, 0, 1),
-                      ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                           color: Color.fromRGBO(0, 0, 0, 1),
@@ -117,10 +126,6 @@ class _LoginState extends State<Login> {
                     controller: _passwordController,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
-                      icon: Icon(
-                        Icons.lock,
-                        color: Color.fromRGBO(0, 0, 0, 1),
-                      ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                           color: Color.fromRGBO(0, 0, 0, 1),
@@ -148,10 +153,12 @@ class _LoginState extends State<Login> {
                   ),
                   Container(
                     margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                    width: 500,
                     child: ElevatedButton(
                       onPressed: _submitForm,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color.fromARGB(255, 0, 0, 0),
+                        backgroundColor: Colors.orange,
+
                       ),
                       child: const Text(
                         '로그인',

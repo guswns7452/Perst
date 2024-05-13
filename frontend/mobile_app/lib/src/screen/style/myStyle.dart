@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
 import 'package:perst/src/screen/camera/cameraIntro.dart';
 
@@ -74,11 +75,12 @@ class _MyStyleState extends State<MyStyle> {
                   margin: EdgeInsets.only(left: 25),
                   child: Text(
                     'Perst',
-                    style: TextStyle(
-                        color: Color.fromRGBO(255, 191, 25, 1),
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold),
-                  ),
+                    style:  GoogleFonts.archivoBlack(
+                    textStyle: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.w800,
+                      color: Color.fromRGBO(255, 191, 25, 1),
+                    ))),
                 ),
                 Container(
                   margin: EdgeInsets.only(left: 25),
