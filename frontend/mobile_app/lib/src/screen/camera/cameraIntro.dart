@@ -27,7 +27,7 @@ class CameraIntro extends StatelessWidget {
                       fontWeight: FontWeight.w800,
                     ))),
               ),
-              // TODO 어플 내에서 
+              // TODO 어플 내에서
               Padding(
                 padding: const EdgeInsets.only(left: 20, top: 20),
                 child: Text("❌ 안 좋은 예시",
@@ -70,10 +70,6 @@ class CameraIntro extends StatelessWidget {
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
                     ))),
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                    )),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 35, top: 5),

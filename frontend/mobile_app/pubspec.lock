@@ -88,7 +88,7 @@ packages:
       sha256: fedaadfa3a6996f75211d835aaeb8fede285dae94262485698afd832371b9a5e
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.4+1"
+    version: "0.3.3+8"
   crypto:
     dependency: transitive
     description:
@@ -97,7 +97,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.3"
-    version: "0.3.3+8"
   cupertino_icons:
     dependency: "direct main"
     description:

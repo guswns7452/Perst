@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:perst/src/controller/fashion_search_controller.dart';
 import 'package:perst/src/model/fashion_search_model.dart';
 import 'package:perst/src/widget/radio_item.dart';
@@ -100,14 +99,14 @@ class _StyleTourState extends State<StyleTour> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Perst',
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.archivoBlack(
-                            textStyle: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.w800,
-                              color: Color.fromRGBO(255, 191, 25, 1),
-                            ))),
+                    Text(
+                      'Perst',
+                      style: TextStyle(
+                        fontSize: 45,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromRGBO(255, 191, 25, 1),
+                      ),
+                    ),
                     Text(
                       '스타일 둘러보기',
                       style:
@@ -261,27 +260,12 @@ class _CustomDrawerState extends State<CustomDrawer>
 
   @override
   Widget build(BuildContext context) {
-    final fashionSearchController = Get.put(FashionSearchController());
-
-    void _handleSelectionComplete() {
-      setState(() {
-        if (_seletedGenderInt == 1) {
-          fashions = fashionSearchController.searchWoman(
-              _searchCurrentStyle, _personalColorChecked);
-        } else if (_seletedGenderInt == 0) {
-          fashions = fashionSearchController.searchMan(
-              _searchCurrentStyle, _personalColorChecked);
-        }
-      });
-    }
-
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(20.0),
-          topLeft: Radius.circular(20.0),
           bottomRight: Radius.circular(20.0),
         ),
       ),
@@ -291,7 +275,6 @@ class _CustomDrawerState extends State<CustomDrawer>
             color: Colors.white,
             borderRadius: BorderRadius.only(
               topRight: Radius.circular(20.0),
-              topLeft: Radius.circular(20.0),
               bottomRight: Radius.circular(20.0),
             ),
           ),
@@ -324,53 +307,6 @@ class _CustomDrawerState extends State<CustomDrawer>
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        if (_seletedGenderInt == 0) {
-                          _searchCurrentStyle =
-                              _manstyleKeyward[_currentStyleInt].keyward;
-                          _currentStyle =
-                              _manstyleKeyward[_currentStyleInt].buttonText;
-                          _seletedGender = 'man';
-                        } else if (_seletedGenderInt == 1) {
-                          _searchCurrentStyle =
-                              _womanstyleKeyward[_currentStyleInt].keyward;
-                          _currentStyle =
-                              _womanstyleKeyward[_currentStyleInt].buttonText;
-                          _seletedGender = 'woman';
-                        }
-                        _currentColor = Color.fromRGBO(
-                          _colorList[_currentColorInt].Red,
-                          _colorList[_currentColorInt].Green,
-                          _colorList[_currentColorInt].Blue,
-                          1,
-                        );
-                        widget.onSelectionComplete(
-                            _currentStyle, _seletedGender, _currentColor);
-                        Navigator.pop(context); // drawer 닫기
-                      });
-                      _handleSelectionComplete();
-                    },
-                    child: Text(
-                      '선택 완료',
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.redAccent,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10))),
-                  ),
-                ),
-              ),
-              SizedBox(height: 5,)
             ],
           ),
         ),
@@ -424,7 +360,7 @@ class _CustomDrawerState extends State<CustomDrawer>
               ),
             ],
           ),
-          SizedBox(height: 10),
+          SizedBox(height: 250),
           Row(
             children: [
               SizedBox(width: 20),
