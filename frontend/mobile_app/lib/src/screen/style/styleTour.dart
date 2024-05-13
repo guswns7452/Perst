@@ -24,7 +24,7 @@ late String _seletedGender = "man";
 bool _personalColorChecked = false;
 List<String> colorNameList = [];
 List<Color> colorList = [];
-String _seletedSeason = "Spring";
+String _seletedSeason = "summer";
 late Color _currentColor = Color.fromRGBO(236, 20, 20, 1);
 late Future<List<FashionSearchModel>> fashions;
 
@@ -617,7 +617,6 @@ class _CustomDrawerState extends State<CustomDrawer>
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              SizedBox(width: 10),
               Radio<String>(
                 value: 'spring',
                 groupValue: _seletedSeason,
@@ -629,7 +628,7 @@ class _CustomDrawerState extends State<CustomDrawer>
                 },
               ),
               Text(
-                'Spring',
+                '🌷 Spring',
                 style: TextStyle(
                   fontSize: 18,
                   color:
@@ -648,7 +647,7 @@ class _CustomDrawerState extends State<CustomDrawer>
                 },
               ),
               Text(
-                'Summer',
+                '🌊 Summer',
                 style: TextStyle(
                   fontSize: 18,
                   color:
@@ -656,6 +655,12 @@ class _CustomDrawerState extends State<CustomDrawer>
                 ),
               ),
               SizedBox(width: 20),
+
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
               Radio<String>(
                 value: 'autumn',
                 groupValue: _seletedSeason,
@@ -667,18 +672,13 @@ class _CustomDrawerState extends State<CustomDrawer>
                 },
               ),
               Text(
-                'Autumn',
+                '🍂 Autumn',
                 style: TextStyle(
                   fontSize: 18,
                   color:
-                      _seletedSeason == 'autumn' ? Colors.black : Colors.grey,
+                  _seletedSeason == 'autumn' ? Colors.black : Colors.grey,
                 ),
               ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
               SizedBox(width: 10),
               Radio<String>(
                 value: 'winter',
@@ -691,7 +691,7 @@ class _CustomDrawerState extends State<CustomDrawer>
                 },
               ),
               Text(
-                'Winter',
+                '☃️ Winter',
                 style: TextStyle(
                   fontSize: 18,
                   color:

@@ -192,7 +192,7 @@ class _PersonalColorHistoryState extends State<PersonalColorHistory> {
                         Text(
                           '1',
                           style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
                               height: 1.0),
                         ),
@@ -210,7 +210,7 @@ class _PersonalColorHistoryState extends State<PersonalColorHistory> {
                         child: Text(
                             "${result!["personalSelects"][0]["personalSelectType"]}",
                             style: TextStyle(
-                                fontSize: 12, fontWeight: FontWeight.w600))),
+                                fontSize: 18, fontWeight: FontWeight.w600))),
                     SizedBox(height: 10),
                     Container(
                         width: 150,
@@ -264,7 +264,7 @@ class _PersonalColorHistoryState extends State<PersonalColorHistory> {
                         Text(
                           '2',
                           style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
                               height: 1.0),
                         ),
@@ -282,7 +282,7 @@ class _PersonalColorHistoryState extends State<PersonalColorHistory> {
                         child: Text(
                             "${result!["personalSelects"][1]["personalSelectType"]}",
                             style: TextStyle(
-                                fontSize: 12, fontWeight: FontWeight.w600))),
+                                fontSize: 18, fontWeight: FontWeight.w600))),
                     SizedBox(height: 10),
                     Container(
                         width: 150,
