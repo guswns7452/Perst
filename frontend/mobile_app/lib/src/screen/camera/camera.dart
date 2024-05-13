@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:perst/src/controller/fashion_search_controller.dart';
+import 'package:perst/src/screen/camera/cameraGuide.dart';
 import 'package:perst/src/screen/style/pictureAnalysis.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -109,13 +110,7 @@ class _CameraScreenState extends State<CameraScreen> {
                         File(_image!.path),
                         fit: BoxFit.cover, // 화면에 가득 채우도록 설정
                       )
-                    : Text(
-                        '카메라 버튼을 눌러 사진을 찍어보세요.',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
+                    : CameraGuide()
               ),
             ),
             Container(

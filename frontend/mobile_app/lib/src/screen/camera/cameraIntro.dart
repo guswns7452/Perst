@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:perst/src/screen/camera/camera.dart';
 import 'package:perst/src/screen/camera/cameraGuide.dart';
 
 class CameraIntro extends StatelessWidget {
@@ -196,7 +197,7 @@ class CameraIntro extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const CameraGuide()));
+                        builder: (context) => const CameraScreen()));
               },
               style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,
