@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:perst/src/controller/fashion_search_controller.dart';
 import 'package:perst/src/model/fashion_search_model.dart';
 import 'package:perst/src/widget/radio_item.dart';
@@ -102,11 +103,12 @@ class _StyleTourState extends State<StyleTour> {
                   children: [
                     Text(
                       'Perst',
-                      style: TextStyle(
-                        fontSize: 45,
-                        fontWeight: FontWeight.bold,
+                      style: GoogleFonts.archivoBlack(
+                          textStyle: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w800,
                         color: Color.fromRGBO(255, 191, 25, 1),
-                      ),
+                      )),
                     ),
                     Text(
                       '스타일 둘러보기',
