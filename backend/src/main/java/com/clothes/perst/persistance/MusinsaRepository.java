@@ -33,5 +33,29 @@ public interface MusinsaRepository extends JpaRepository<MusinsaVO, Long> {
             int minSaturation, int maxSaturation,
             int minValue, int maxValue
     );
+
+
+
+    // Gender, Style로 검색
+    List<MusinsaVO> findAllByMusinsaSeasonAndMusinsaGenderAndMusinsaStyle(String musinsaSeason, String musinsaGender, String musinsaStyle);
+
+    // Gender, Style, personal로 검색
+    List<MusinsaVO> findAllByMusinsaSeasonAndMusinsaGenderAndMusinsaStyleAndMusinsaPersonal(String musinsaSeason, String musinsaGender, String musinsaStyle, String musinsaPersonal);
+
+    // Gender, Style, Color로 검색
+    List<MusinsaVO> findAllByMusinsaSeasonAndMusinsaGenderAndMusinsaStyleAndMusinsaHueBetweenAndMusinsaSaturationBetweenAndMusinsaValueBetween(
+            String musinsaSeason, String musinsaGender, String musinsaStyle,
+            int minHue, int maxHue,
+            int minSaturation, int maxSaturation,
+            int minValue, int maxValue
+    );
+
+    // Gender, Style, Personal, Color로 검색
+    List<MusinsaVO> findAllByMusinsaSeasonAndMusinsaGenderAndMusinsaStyleAndMusinsaPersonalAndMusinsaHueBetweenAndMusinsaSaturationBetweenAndMusinsaValueBetween(
+            String musinsaSeason, String musinsaGender, String musinsaStyle, String musinsaPersonal,
+            int minHue, int maxHue,
+            int minSaturation, int maxSaturation,
+            int minValue, int maxValue
+    );
 }
 
