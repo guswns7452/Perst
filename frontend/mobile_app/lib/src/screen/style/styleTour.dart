@@ -258,6 +258,20 @@ class _CustomDrawerState extends State<CustomDrawer>
     super.dispose();
   }
 
+  final fashionSearchController = Get.put(FashionSearchController());
+
+  void _handleSelectionComplete() {
+    setState(() {
+      if (_seletedGenderInt == 1) {
+        fashions = fashionSearchController.searchWoman(
+            _searchCurrentStyle, _personalColorChecked, colorNameList);
+      } else if (_seletedGenderInt == 0) {
+        fashions = fashionSearchController.searchMan(
+            _searchCurrentStyle, _personalColorChecked, colorNameList);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -307,6 +321,61 @@ class _CustomDrawerState extends State<CustomDrawer>
                   ],
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        if (_seletedGenderInt == 0) {
+                          _searchCurrentStyle =
+                              _manstyleKeyward[_currentStyleInt].keyward;
+                          _currentStyle =
+                              _manstyleKeyward[_currentStyleInt].buttonText;
+                          _seletedGender = 'man';
+                        } else if (_seletedGenderInt == 1) {
+                          _searchCurrentStyle =
+                              _womanstyleKeyward[_currentStyleInt].keyward;
+                          _currentStyle =
+                              _womanstyleKeyward[_currentStyleInt].buttonText;
+                          _seletedGender = 'woman';
+                        }
+                        _currentColor = Color.fromRGBO(
+                          _colorList[_currentColorInt].Red,
+                          _colorList[_currentColorInt].Green,
+                          _colorList[_currentColorInt].Blue,
+                          1,
+                        );
+
+                        widget.onSelectionComplete(
+                            _currentStyle, _seletedGender, colorList);
+                        _handleSelectionComplete();
+                        Future.delayed(Duration(milliseconds: 1000), () async {
+                          return Navigator.pop(context);
+                        }).then((value) => setState(() {
+                              colorList = [];
+                              colorNameList = [];
+                            }));
+                      });
+                    },
+                    child: Text(
+                      '선택 완료',
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.redAccent,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10))),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 5,
+              )
             ],
           ),
         ),
@@ -360,7 +429,6 @@ class _CustomDrawerState extends State<CustomDrawer>
               ),
             ],
           ),
-          SizedBox(height: 250),
           Row(
             children: [
               SizedBox(width: 20),
@@ -543,48 +611,6 @@ class _CustomDrawerState extends State<CustomDrawer>
                 ),
             ],
           ),
-          Container(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  if (_seletedGenderInt == 0) {
-                    _searchCurrentStyle =
-                        _manstyleKeyward[_currentStyleInt].keyward;
-                    _currentStyle =
-                        _manstyleKeyward[_currentStyleInt].buttonText;
-                    _seletedGender = 'man';
-                  } else if (_seletedGenderInt == 1) {
-                    _searchCurrentStyle =
-                        _womanstyleKeyward[_currentStyleInt].keyward;
-                    _currentStyle =
-                        _womanstyleKeyward[_currentStyleInt].buttonText;
-                    _seletedGender = 'woman';
-                  }
-
-                  colorNameList = [];
-
-                  widget.onSelectionComplete(
-                      _currentStyle, _seletedGender, colorList);
-                  _handleSelectionComplete();
-                  Future.delayed(Duration(milliseconds: 1000), () async {
-                    return Navigator.pop(context);
-                  }).then((value) => colorList = []);
-                });
-              },
-              child: Text(
-                '선택 완료',
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10))),
-            ),
-          )
         ],
       ),
     );

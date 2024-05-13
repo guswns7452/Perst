@@ -52,21 +52,25 @@ class _LoginState extends State<Login> {
       appBar: AppBar(title: const Text('로그인')),
       body: Form(
         key: _formkey,
-        child: Column(
+        child: ListView(
           children: [
-            SizedBox(height: 70,),
+            SizedBox(
+              height: 70,
+            ),
             Container(
               width: double.infinity,
               child: Text('Perst',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.archivoBlack(
                       textStyle: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.w800,
-                        color: Color.fromRGBO(255, 191, 25, 1),
-                      ))),
+                    fontSize: 30,
+                    fontWeight: FontWeight.w800,
+                    color: Color.fromRGBO(255, 191, 25, 1),
+                  ))),
             ),
-            SizedBox(height: 70,),
+            SizedBox(
+              height: 70,
+            ),
             Container(
               width: double.infinity,
               margin: EdgeInsets.only(left: 30),
@@ -158,7 +162,6 @@ class _LoginState extends State<Login> {
                       onPressed: _submitForm,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.orange,
-
                       ),
                       child: const Text(
                         '로그인',
