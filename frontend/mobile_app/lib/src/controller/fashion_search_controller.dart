@@ -10,10 +10,10 @@ class FashionSearchController extends GetxController {
 
   // 여자 키워드별 패션 스타일 불러오기
   Future<List<FashionSearchModel>> searchWoman(String womanFashionKeyword,
-      bool isPersonal, List<String> colorList) async {
+      bool isPersonal, List<String> colorList, String season) async {
     try {
       Map<String, dynamic> response = await fashionSearchConnection.searchWoman(
-          womanFashionKeyword, isPersonal, colorList);
+          womanFashionKeyword, isPersonal, colorList, season);
       List<dynamic> results = response['data'];
       List<FashionSearchModel> fashions = [];
       for (var result in results) {
@@ -27,11 +27,11 @@ class FashionSearchController extends GetxController {
   }
 
   // 남자 키워드별 패션 스타일 불러오기
-  Future<List<FashionSearchModel>> searchMan(
-      String manFashionKeyword, bool isPersonal, List<String> colorList) async {
+  Future<List<FashionSearchModel>> searchMan(String manFashionKeyword,
+      bool isPersonal, List<String> colorList, String season) async {
     try {
       Map<String, dynamic> response = await fashionSearchConnection.searchMan(
-          manFashionKeyword, isPersonal, colorList);
+          manFashionKeyword, isPersonal, colorList, season);
       List<dynamic> results = response['data'];
       List<FashionSearchModel> fashions = [];
       for (var result in results) {

@@ -25,14 +25,14 @@ class FashionSearchConnect extends GetConnect {
 
   // 여자 패션 이미지 받아오기
   Future searchWoman(String womanFashionKeyword, bool isPersonal,
-      List<String> colorList) async {
+      List<String> colorList, String season) async {
     try {
       if (womanFashionKeyword == 'Subculture') {
         womanFashionKeyword = 'street';
       }
       Response response = await post(
           '/clothes/search/woman?style=$womanFashionKeyword',
-          {"color": colorList, "isPersonal": isPersonal},
+          {"color": colorList, "isPersonal": isPersonal, "season": season},
           headers: {'Authorization': await getToken});
       Map<String, dynamic> body = response.body;
 
@@ -47,15 +47,15 @@ class FashionSearchConnect extends GetConnect {
   }
 
   // 남자 패션 이미지 받아오기
-  Future searchMan(
-      String manFashionKeyword, bool isPersonal, List<String> colorList) async {
+  Future searchMan(String manFashionKeyword, bool isPersonal,
+      List<String> colorList, String season) async {
     try {
       if (manFashionKeyword == 'Hip-hop') {
         manFashionKeyword = 'street';
       }
       Response response = await post(
           '/clothes/search/man?style=$manFashionKeyword',
-          {"color": colorList, "isPersonal": isPersonal},
+          {"color": colorList, "isPersonal": isPersonal, "season": season},
           headers: {'Authorization': await getToken});
       Map<String, dynamic> body = response.body;
 

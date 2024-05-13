@@ -29,13 +29,13 @@ class _KeywordFashionState extends State<KeywordFashion> {
     print(gender);
     if (gender == "woman") {
       print("여자");
-      fashions =
-          fashionSearchController.searchWoman(widget.styleKeyword, true, []);
+      fashions = fashionSearchController.searchWoman(
+          widget.styleKeyword, true, [], "all");
       print(widget.styleKeyword);
     } else if (gender == "man") {
       print("남자");
-      fashions =
-          fashionSearchController.searchMan(widget.styleKeyword, true, []);
+      fashions = fashionSearchController.searchMan(
+          widget.styleKeyword, true, [], "all");
     }
   }
 

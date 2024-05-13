@@ -23,6 +23,7 @@ late String _seletedGender = "man";
 bool _personalColorChecked = false;
 List<String> colorNameList = [];
 List<Color> colorList = [];
+String _seletedSeason = "Spring";
 late Color _currentColor = Color.fromRGBO(236, 20, 20, 1);
 late Future<List<FashionSearchModel>> fashions;
 
@@ -57,11 +58,11 @@ class _StyleTourState extends State<StyleTour> {
     gender == "man" ? _seletedGenderInt = 0 : _seletedGenderInt = 1;
 
     if (_seletedGenderInt == 1) {
-      fashions = fashionSearchController.searchWoman(
-          _searchCurrentStyle, _personalColorChecked, colorNameList);
+      fashions = fashionSearchController.searchWoman(_searchCurrentStyle,
+          _personalColorChecked, colorNameList, _seletedSeason);
     } else if (_seletedGenderInt == 0) {
-      fashions = fashionSearchController.searchMan(
-          _searchCurrentStyle, _personalColorChecked, colorNameList);
+      fashions = fashionSearchController.searchMan(_searchCurrentStyle,
+          _personalColorChecked, colorNameList, _seletedSeason);
     }
 
     setState(() {
@@ -249,7 +250,7 @@ class _CustomDrawerState extends State<CustomDrawer>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
   }
 
   @override
@@ -263,11 +264,11 @@ class _CustomDrawerState extends State<CustomDrawer>
   void _handleSelectionComplete() {
     setState(() {
       if (_seletedGenderInt == 1) {
-        fashions = fashionSearchController.searchWoman(
-            _searchCurrentStyle, _personalColorChecked, colorNameList);
+        fashions = fashionSearchController.searchWoman(_searchCurrentStyle,
+            _personalColorChecked, colorNameList, _seletedSeason);
       } else if (_seletedGenderInt == 0) {
-        fashions = fashionSearchController.searchMan(
-            _searchCurrentStyle, _personalColorChecked, colorNameList);
+        fashions = fashionSearchController.searchMan(_searchCurrentStyle,
+            _personalColorChecked, colorNameList, _seletedSeason);
       }
     });
   }
@@ -309,6 +310,7 @@ class _CustomDrawerState extends State<CustomDrawer>
                   Tab(text: '성별'),
                   Tab(text: '스타일'),
                   Tab(text: '색감'),
+                  Tab(text: '계절'),
                 ],
               ),
               Expanded(
@@ -318,6 +320,7 @@ class _CustomDrawerState extends State<CustomDrawer>
                     _buildGenderTab(),
                     _buildStyleTab(),
                     _buildColorTab(),
+                    _buildSeasonTab()
                   ],
                 ),
               ),
@@ -557,18 +560,6 @@ class _CustomDrawerState extends State<CustomDrawer>
   Widget _buildColorTab() {
     final fashionSearchController = Get.put(FashionSearchController());
 
-    void _handleSelectionComplete() {
-      setState(() {
-        if (_seletedGenderInt == 1) {
-          fashions = fashionSearchController.searchWoman(
-              _searchCurrentStyle, _personalColorChecked, colorNameList);
-        } else if (_seletedGenderInt == 0) {
-          fashions = fashionSearchController.searchMan(
-              _searchCurrentStyle, _personalColorChecked, colorNameList);
-        }
-      });
-    }
-
     List<List<ColorRadioModel>> colorGroups = [];
     for (int i = 0; i < _colorList.length; i += 7) {
       colorGroups.add(_colorList.sublist(
@@ -609,6 +600,120 @@ class _CustomDrawerState extends State<CustomDrawer>
                       ),
                   ],
                 ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSeasonTab() {
+    return Container(
+      margin: EdgeInsets.only(top: 30),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(width: 10),
+              Radio<String>(
+                value: 'spring',
+                groupValue: _seletedSeason,
+                onChanged: (String? value) {
+                  setState(() {
+                    _seletedSeason = value!;
+                    print(_seletedSeason);
+                  });
+                },
+              ),
+              Text(
+                'Spring',
+                style: TextStyle(
+                  fontSize: 18,
+                  color:
+                      _seletedSeason == 'spring' ? Colors.black : Colors.grey,
+                ),
+              ),
+              SizedBox(width: 20),
+              Radio<String>(
+                value: 'summer',
+                groupValue: _seletedSeason,
+                onChanged: (String? value) {
+                  setState(() {
+                    _seletedSeason = value!;
+                    print(_seletedSeason);
+                  });
+                },
+              ),
+              Text(
+                'Summer',
+                style: TextStyle(
+                  fontSize: 18,
+                  color:
+                      _seletedSeason == 'summer' ? Colors.black : Colors.grey,
+                ),
+              ),
+              SizedBox(width: 20),
+              Radio<String>(
+                value: 'autumn',
+                groupValue: _seletedSeason,
+                onChanged: (String? value) {
+                  setState(() {
+                    _seletedSeason = value!;
+                    print(_seletedSeason);
+                  });
+                },
+              ),
+              Text(
+                'Autumn',
+                style: TextStyle(
+                  fontSize: 18,
+                  color:
+                      _seletedSeason == 'autumn' ? Colors.black : Colors.grey,
+                ),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(width: 10),
+              Radio<String>(
+                value: 'winter',
+                groupValue: _seletedSeason,
+                onChanged: (String? value) {
+                  setState(() {
+                    _seletedSeason = value!;
+                    print(_seletedSeason);
+                  });
+                },
+              ),
+              Text(
+                'Winter',
+                style: TextStyle(
+                  fontSize: 18,
+                  color:
+                      _seletedSeason == 'winter' ? Colors.black : Colors.grey,
+                ),
+              ),
+              SizedBox(width: 20),
+              Radio<String>(
+                value: 'all',
+                groupValue: _seletedSeason,
+                onChanged: (String? value) {
+                  setState(() {
+                    _seletedSeason = value!;
+                    print(_seletedSeason);
+                  });
+                },
+              ),
+              Text(
+                'All',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: _seletedSeason == 'all' ? Colors.black : Colors.grey,
+                ),
+              ),
             ],
           ),
         ],

@@ -30,7 +30,6 @@ class _LoginState extends State<Login> {
         // 로그인 통신 로직
         bool result =
             await userController.login(memberPhoneNumber, memberPassword);
-
         return result;
       }).then((value) {
         if (value) {
