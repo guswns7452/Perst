@@ -105,13 +105,12 @@ class _CameraScreenState extends State<CameraScreen> {
           children: [
             Expanded(
               child: Center(
-                child: _image != null
-                    ? Image.file(
-                        File(_image!.path),
-                        fit: BoxFit.cover, // 화면에 가득 채우도록 설정
-                      )
-                    : CameraGuide()
-              ),
+                  child: _image != null
+                      ? Image.file(
+                          File(_image!.path),
+                          fit: BoxFit.cover, // 화면에 가득 채우도록 설정
+                        )
+                      : CameraGuide()),
             ),
             Container(
               height: 80,
@@ -176,16 +175,17 @@ class _CameraScreenState extends State<CameraScreen> {
             color: Colors.black.withOpacity(0.5),
             child: Center(
               child: Container(
-                  width: 300,
-                  height: 90,
-                  child: Row(
+                  width: 280,
+                  height: 140,
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         ' 사진을 분석중입니다.\n20초정도 소요됩니다.',
-                        style: TextStyle(fontSize: 15),
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(width: 20),
+                      SizedBox(height: 15),
                       CircularProgressIndicator(),
                     ],
                   ),
