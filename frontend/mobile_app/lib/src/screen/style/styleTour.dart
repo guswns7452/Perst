@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -31,6 +32,7 @@ late Future<List<FashionSearchModel>> fashions;
 int _seletedGenderInt = 0;
 int _currentStyleInt = 0;
 int _currentColorInt = 0;
+String personalColor = '';
 
 class _StyleTourState extends State<StyleTour> {
   final fashionSearchController = Get.put(FashionSearchController());
@@ -65,72 +67,52 @@ class _StyleTourState extends State<StyleTour> {
       fashions = fashionSearchController.searchMan(_searchCurrentStyle,
           _personalColorChecked, colorNameList, _seletedSeason);
     }
-
-    setState(() {
-      if (fashions != null) {
-        isLoading = false;
+    if (fashions != null) {
+      List<FashionSearchModel> fashionList = await fashions;
+      if (_personalColorChecked) {
+        personalColor = fashionList[0].musinsaPersonal!;
+      } else {
+        personalColor = "";
       }
-    });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return fashions == null
-        ? Scaffold(
-            backgroundColor: Colors.white,
-            body: Center(
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              margin: EdgeInsets.fromLTRB(15, 10, 15, 0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '로딩중입니다...',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                  SizedBox(height: 20),
-                  CircularProgressIndicator(),
-                ],
-              ),
-            ),
-          )
-        : Scaffold(
-            body: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                margin: EdgeInsets.fromLTRB(15, 10, 15, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Perst',
-                      style: GoogleFonts.archivoBlack(
-                          textStyle: TextStyle(
+                    'Perst',
+                    style: GoogleFonts.archivoBlack(
+                      textStyle: TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.w800,
                         color: Color.fromRGBO(255, 191, 25, 1),
-                      )),
+                      ),
                     ),
-                    Text(
-                      '스타일 둘러보기',
-                      style:
-                          TextStyle(fontSize: 25, fontWeight: FontWeight.w800),
-                    ),
-                    Text(
-                      '원하는 스타일을 선택하고 의류를 둘러보세요!',
-                      style: TextStyle(fontSize: 15),
-                    ),
-                    SizedBox(height: 15),
-                    Container(
-                      width: double.infinity,
-                      height: 1,
-                      decoration: BoxDecoration(
-                          color: Color.fromRGBO(240, 240, 240, 1),
-                          borderRadius: BorderRadius.circular(50)),
-                    ),
-                    SizedBox(height: 15),
-                    Row(
-                      children: [
-                        OutlinedButton(
+                  ),
+                  Text(
+                    '스타일 둘러보기',
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.w800),
+                  ),
+                  Text(
+                    '원하는 스타일을 선택하고 의류를 둘러보세요!',
+                    style: TextStyle(fontSize: 15),
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Container(
+                        height: 32,
+                        child: OutlinedButton(
                           onPressed: () {
                             showModalBottomSheet(
                               context: context,
@@ -153,39 +135,68 @@ class _StyleTourState extends State<StyleTour> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            padding: EdgeInsets.symmetric(horizontal: 10),
                           ),
                           child: Image.asset('assets/filter.png',
-                              width: 20, height: 20),
+                              width: 16, height: 16),
                         ),
-                        SizedBox(width: 5),
-                        StyleFilter(
-                            colorList: colorList,
-                            currentStyle: _currentStyle,
-                            seletedGender: _seletedGender)
+                      ),
+                      SizedBox(width: 5),
+                      StyleFilter(
+                        colorList: colorList,
+                        currentStyle: _currentStyle,
+                        seletedGender: _seletedGender,
+                        personalColor: personalColor,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Color.fromRGBO(255, 191, 25, 0.3),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    height: 3,
+                    width: double.infinity,
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 15),
+            FutureBuilder<List<FashionSearchModel>>(
+              future: fashions,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          '로딩중입니다...',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        SizedBox(height: 20),
+                        CircularProgressIndicator(),
                       ],
                     ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 10),
-              Container(
-                decoration: BoxDecoration(
-                    color: Color.fromRGBO(255, 191, 25, 0.3),
-                    borderRadius: BorderRadius.circular(50)),
-                height: 3,
-                width: double.infinity,
-                margin: EdgeInsets.only(left: 15, right: 15),
-              ),
-              SizedBox(height: 15),
-              Container(
-                height: 450,
-                child: StyleTourWidget(
-                  fashions: fashions,
-                ),
-              )
-            ],
-          ));
+                  ); // 로딩중
+                } else if (snapshot.hasError ||
+                    !snapshot.hasData ||
+                    snapshot.data!.isEmpty) {
+                  return Center(child: Text('검색 결과가 없습니다.')); // 데이터가 없을때
+                } else {
+                  return Container(
+                    height: 540,
+                    child: StyleTourWidget(
+                      fashions: fashions,
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -205,8 +216,8 @@ class _CustomDrawerState extends State<CustomDrawer>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final List<StyleRadioModel> _manstyleKeyward = [
-    StyleRadioModel(false, '스포티', 'sporty'),
-    StyleRadioModel(true, '로맨틱', 'romantic'),
+    StyleRadioModel(true, '스포티', 'sporty'),
+    StyleRadioModel(false, '로맨틱', 'romantic'),
     StyleRadioModel(false, '미니멀', 'minimal'),
     StyleRadioModel(false, '캐주얼', 'casual'),
     StyleRadioModel(false, '스트릿', 'street'),
@@ -263,16 +274,27 @@ class _CustomDrawerState extends State<CustomDrawer>
 
   final fashionSearchController = Get.put(FashionSearchController());
 
-  void _handleSelectionComplete() {
-    setState(() {
-      if (_seletedGenderInt == 1) {
-        fashions = fashionSearchController.searchWoman(_searchCurrentStyle,
-            _personalColorChecked, colorNameList, _seletedSeason);
-      } else if (_seletedGenderInt == 0) {
-        fashions = fashionSearchController.searchMan(_searchCurrentStyle,
-            _personalColorChecked, colorNameList, _seletedSeason);
+  Future<void> _handleSelectionComplete() async {
+    try {
+      setState(() {
+        if (_seletedGenderInt == 1) {
+          fashions = fashionSearchController.searchWoman(_searchCurrentStyle,
+              _personalColorChecked, colorNameList, _seletedSeason);
+        } else if (_seletedGenderInt == 0) {
+          fashions = fashionSearchController.searchMan(_searchCurrentStyle,
+              _personalColorChecked, colorNameList, _seletedSeason);
+        }
+      });
+      List<FashionSearchModel> fashionList = await fashions;
+      if (_personalColorChecked) {
+        personalColor =
+            fashionList.isNotEmpty ? fashionList[0].musinsaPersonal! : "";
+      } else {
+        personalColor = "";
       }
-    });
+    } catch (e) {
+      personalColor = "";
+    }
   }
 
   @override
@@ -283,107 +305,97 @@ class _CustomDrawerState extends State<CustomDrawer>
         color: Colors.white,
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(20.0),
-          bottomRight: Radius.circular(20.0),
+          topLeft: Radius.circular(20.0),
         ),
       ),
-      child: Drawer(
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topRight: Radius.circular(20.0),
-              bottomRight: Radius.circular(20.0),
+      child: Column(
+        children: [
+          Container(
+            margin: EdgeInsets.fromLTRB(0, 15, 0, 5),
+            child: Text(
+              '필터',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
             ),
           ),
-          child: Column(
-            children: [
-              Container(
-                margin: EdgeInsets.fromLTRB(0, 15, 0, 5),
-                child: Text(
-                  '필터',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-                ),
-              ),
-              TabBar(
-                controller: _tabController,
-                indicatorColor: Colors.black,
-                labelColor: Colors.black,
-                tabs: [
-                  Tab(text: '성별'),
-                  Tab(text: '스타일'),
-                  Tab(text: '색감'),
-                  Tab(text: '계절'),
-                ],
-              ),
-              Expanded(
-                child: TabBarView(
-                  controller: _tabController,
-                  children: [
-                    _buildGenderTab(),
-                    _buildStyleTab(),
-                    _buildColorTab(),
-                    _buildSeasonTab()
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        if (_seletedGenderInt == 0) {
-                          _searchCurrentStyle =
-                              _manstyleKeyward[_currentStyleInt].keyward;
-                          _currentStyle =
-                              _manstyleKeyward[_currentStyleInt].buttonText;
-                          _seletedGender = 'man';
-                        } else if (_seletedGenderInt == 1) {
-                          _searchCurrentStyle =
-                              _womanstyleKeyward[_currentStyleInt].keyward;
-                          _currentStyle =
-                              _womanstyleKeyward[_currentStyleInt].buttonText;
-                          _seletedGender = 'woman';
-                        }
-                        _currentColor = Color.fromRGBO(
-                          _colorList[_currentColorInt].Red,
-                          _colorList[_currentColorInt].Green,
-                          _colorList[_currentColorInt].Blue,
-                          1,
-                        );
-
-                        widget.onSelectionComplete(
-                            _currentStyle, _seletedGender, colorList);
-                        _handleSelectionComplete();
-                        Future.delayed(Duration(milliseconds: 1000), () async {
-                          return Navigator.pop(context);
-                        }).then((value) => setState(() {
-                              colorList = [];
-                              colorNameList = [];
-                            }));
-                      });
-                    },
-                    child: Text(
-                      '선택 완료',
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.redAccent,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10))),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 5,
-              )
+          TabBar(
+            controller: _tabController,
+            indicatorColor: Colors.black,
+            labelColor: Colors.black,
+            tabs: [
+              Tab(text: '성별'),
+              Tab(text: '스타일'),
+              Tab(text: '색감'),
+              Tab(text: '계절'),
             ],
           ),
-        ),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                _buildGenderTab(),
+                _buildStyleTab(),
+                _buildColorTab(),
+                _buildSeasonTab()
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    if (_seletedGenderInt == 0) {
+                      _searchCurrentStyle =
+                          _manstyleKeyward[_currentStyleInt].keyward;
+                      _currentStyle =
+                          _manstyleKeyward[_currentStyleInt].buttonText;
+                      _seletedGender = 'man';
+                    } else if (_seletedGenderInt == 1) {
+                      _searchCurrentStyle =
+                          _womanstyleKeyward[_currentStyleInt].keyward;
+                      _currentStyle =
+                          _womanstyleKeyward[_currentStyleInt].buttonText;
+                      _seletedGender = 'woman';
+                    }
+                    _currentColor = Color.fromRGBO(
+                      _colorList[_currentColorInt].Red,
+                      _colorList[_currentColorInt].Green,
+                      _colorList[_currentColorInt].Blue,
+                      1,
+                    );
+                    Future.delayed(Duration(milliseconds: 500), () async {
+                      await _handleSelectionComplete();
+                      widget.onSelectionComplete(
+                          _currentStyle, _seletedGender, colorList);
+                      await Future.delayed(Duration(milliseconds: 500));
+                      Navigator.pop(context);
+                      setState(() {
+                        colorList = [];
+                        colorNameList = [];
+                      });
+                    });
+                  });
+                },
+                child: Text(
+                  '선택 완료',
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                ),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.redAccent,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10))),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 5,
+          )
+        ],
       ),
     );
   }
@@ -432,23 +444,6 @@ class _CustomDrawerState extends State<CustomDrawer>
                   color: _seletedGender == 'woman' ? Colors.black : Colors.grey,
                 ),
               ),
-            ],
-          ),
-          Row(
-            children: [
-              SizedBox(width: 20),
-              Checkbox(
-                value: _personalColorChecked,
-                onChanged: (value) {
-                  setState(() {
-                    _personalColorChecked = value!;
-                  });
-                },
-              ),
-              Text(
-                "내 퍼스널 컬러 반영하여 의류 검색하기",
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-              )
             ],
           ),
         ],
@@ -560,8 +555,6 @@ class _CustomDrawerState extends State<CustomDrawer>
   }
 
   Widget _buildColorTab() {
-    final fashionSearchController = Get.put(FashionSearchController());
-
     List<List<ColorRadioModel>> colorGroups = [];
     for (int i = 0; i < _colorList.length; i += 7) {
       colorGroups.add(_colorList.sublist(
@@ -571,7 +564,6 @@ class _CustomDrawerState extends State<CustomDrawer>
     return Container(
       margin: EdgeInsets.fromLTRB(10, 30, 10, 30),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Column(
             children: [
@@ -602,6 +594,22 @@ class _CustomDrawerState extends State<CustomDrawer>
                       ),
                   ],
                 ),
+            ],
+          ),
+          Row(
+            children: [
+              Checkbox(
+                value: _personalColorChecked,
+                onChanged: (value) {
+                  setState(() {
+                    _personalColorChecked = value!;
+                  });
+                },
+              ),
+              Text(
+                "내 퍼스널 컬러 반영하여 의류 검색하기",
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              )
             ],
           ),
         ],
@@ -655,7 +663,6 @@ class _CustomDrawerState extends State<CustomDrawer>
                 ),
               ),
               SizedBox(width: 20),
-
             ],
           ),
           Row(
@@ -676,7 +683,7 @@ class _CustomDrawerState extends State<CustomDrawer>
                 style: TextStyle(
                   fontSize: 18,
                   color:
-                  _seletedSeason == 'autumn' ? Colors.black : Colors.grey,
+                      _seletedSeason == 'autumn' ? Colors.black : Colors.grey,
                 ),
               ),
               SizedBox(width: 10),
