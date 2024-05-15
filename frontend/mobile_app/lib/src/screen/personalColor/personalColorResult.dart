@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:perst/src/connect/personal_color_connect.dart';
 import 'package:perst/src/model/color_model.dart';
 import 'package:perst/src/model/color_radio_model.dart';
@@ -121,7 +122,7 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
         title: Text(
           '퍼스널컬러 결과',
           textAlign: TextAlign.start,
-          style: TextStyle(fontWeight: FontWeight.w500),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
       body: Column(
@@ -131,14 +132,17 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
               SizedBox(width: 20),
               Text(
                 name,
-                style: TextStyle(
-                    fontSize: 25,
-                    color: Color.fromRGBO(255, 191, 25, 1),
-                    fontWeight: FontWeight.bold),
+                style: GoogleFonts.poorStory(
+                    textStyle: TextStyle(
+                        fontSize: 25,
+                        color: Color.fromRGBO(255, 191, 25, 1),
+                        fontWeight: FontWeight.bold)),
               ),
               Text(
                 "님의 퍼스널컬러 진단 결과",
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                style: GoogleFonts.poorStory(
+                    textStyle:
+                        TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
               )
             ],
           ),
@@ -167,17 +171,19 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
                         SizedBox(width: 10),
                         Text(
                           '1',
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              height: 1.0),
+                          style: GoogleFonts.poorStory(
+                              textStyle: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  height: 1.0)),
                         ),
                         Text(
                           '순위',
-                          style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              height: 2.0),
+                          style: GoogleFonts.poorStory(
+                              textStyle: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  height: 2.0)),
                         ),
                       ],
                     ),
@@ -185,8 +191,10 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
                         width: 150,
                         child: Text(
                             "${result["personalSelects"][0]["personalSelectType"]}",
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.w600))),
+                            style: GoogleFonts.poorStory(
+                                textStyle: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600)))),
                     SizedBox(height: 10),
                     Container(
                         width: 150,
@@ -239,17 +247,19 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
                         SizedBox(width: 10),
                         Text(
                           '2',
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              height: 1.0),
+                          style: GoogleFonts.poorStory(
+                              textStyle: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  height: 1.0)),
                         ),
                         Text(
                           '순위',
-                          style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              height: 2.0),
+                          style: GoogleFonts.poorStory(
+                              textStyle: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  height: 2.0)),
                         )
                       ],
                     ),
@@ -257,8 +267,10 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
                         width: 150,
                         child: Text(
                             "${result["personalSelects"][1]["personalSelectType"]}",
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.w600))),
+                            style: GoogleFonts.poorStory(
+                                textStyle: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600)))),
                     SizedBox(height: 10),
                     Container(
                         width: 150,

@@ -107,7 +107,7 @@ class CameraIntro extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 35, top: 5),
                 child: Text(
-                    " ・ 내 스타일에 맞는 코디를 추천해줍니다.\n     아래의 버튼을 눌러 더 많은 코디를 볼 수 있습니다.",
+                    " ・ 내 스타일에 맞는 코디를 추천해줍니다.\n아래의 버튼을 눌러 더 많은 코디를 볼 수 있습니다.",
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
@@ -167,18 +167,20 @@ class CameraIntro extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 20, top: 10),
                 child: Text("✅ 좋은 예시",
-                    style: TextStyle(
+                    style: GoogleFonts.nanumGothic(
+                        textStyle: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
-                    )),
+                    ))),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 35, top: 5),
                 child: Text(" ・ 사람이 꽉 찬 사진을 첨부하면 더 좋은 결과를 얻을 수 있어요!",
-                    style: TextStyle(
+                    style: GoogleFonts.nanumGothic(
+                        textStyle: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
-                    )),
+                    ))),
               ),
               Padding(
                 padding: const EdgeInsets.only(
@@ -193,26 +195,27 @@ class CameraIntro extends StatelessWidget {
             padding: const EdgeInsets.only(
                 left: 20.0, top: 10, bottom: 15, right: 20),
             child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const CameraScreen()));
-              },
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  minimumSize: Size(500, 50),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12))),
-              child: const Text(
-                '스타일 분석하기',
-                style: TextStyle(
-                  fontSize: 21,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const CameraScreen()));
+                },
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    minimumSize: Size(500, 50),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12))),
+                child: Text(
+                  '스타일 분석하기',
+                  style: GoogleFonts.nanumGothic(
+                    textStyle: TextStyle(
+                      fontSize: 21,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                )),
           ),
         ],
       ),

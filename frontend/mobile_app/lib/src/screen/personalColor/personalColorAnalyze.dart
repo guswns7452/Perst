@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:perst/src/model/color_radio_model.dart';
 import 'package:perst/src/screen/personalColor/personalColorResult.dart';
 import 'package:perst/src/widget/personal_color_analyze_widget.dart';
@@ -77,12 +78,14 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
       secondBackgroundColor,
       thirdBackgroundColor,
       backgroundColor;
+  String text = '';
 
   @override
   Widget build(BuildContext context) {
     if (warm + cool < 5 &&
         fallCnt + springCnt == 0 &&
         winterCnt + summerCnt == 0) {
+      text = '색감판단';
       firstBackgroundColor = Color.fromRGBO(
           warmCool[firstColorIndex].Red,
           warmCool[firstColorIndex].Green,
@@ -97,6 +100,7 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
           warmCool[index].Green, warmCool[index].Blue, warmCool[index].O);
     }
     if (warm + cool == 4 && personalCnt >= 4 && personalCnt <= 8) {
+      text = '계절감판단';
       if (warm >= cool) {
         firstBackgroundColor = Color.fromRGBO(
             fallspring[firstColorIndex].Red,
@@ -131,12 +135,14 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
             summerWinter[index].O);
       }
     }
+    if (personalCnt == 10) text = '명도&채도판단';
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          '퍼스널컬러 검사',
+          text,
           textAlign: TextAlign.start,
-          style: TextStyle(fontWeight: FontWeight.w500),
+          style: GoogleFonts.nanumGothicCoding(
+              textStyle: TextStyle(fontWeight: FontWeight.bold)),
         ),
       ),
       body: Stack(
@@ -161,12 +167,14 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
             ),
           ),
           Column(
+            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
+                    margin: EdgeInsets.only(bottom: 20),
                     padding: EdgeInsets.only(right: 15),
                     decoration: BoxDecoration(
                         color: Colors.white,
@@ -457,6 +465,7 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
                   personalCnt == 10
                       ? SizedBox()
                       : Container(
+                          margin: EdgeInsets.only(bottom: 20),
                           height: 50,
                           child: ElevatedButton(
                             onPressed: () {
@@ -611,7 +620,6 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
                         ),
                 ],
               ),
-              personalCnt == 10 ? SizedBox(height: 1) : SizedBox(height: 40),
             ],
           ),
         ],
