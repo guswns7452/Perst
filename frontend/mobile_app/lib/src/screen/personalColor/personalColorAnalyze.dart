@@ -1,7 +1,5 @@
-import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:perst/src/model/color_radio_model.dart';
 import 'package:perst/src/screen/personalColor/personalColorResult.dart';
 import 'package:perst/src/widget/personal_color_analyze_widget.dart';
@@ -85,7 +83,7 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
     if (warm + cool < 5 &&
         fallCnt + springCnt == 0 &&
         winterCnt + summerCnt == 0) {
-      text = '색감판단';
+      text = ' 웜톤, 쿨톤을';
       firstBackgroundColor = Color.fromRGBO(
           warmCool[firstColorIndex].Red,
           warmCool[firstColorIndex].Green,
@@ -100,7 +98,7 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
           warmCool[index].Green, warmCool[index].Blue, warmCool[index].O);
     }
     if (warm + cool == 4 && personalCnt >= 4 && personalCnt <= 8) {
-      text = '계절감판단';
+      text = ' 계절감을';
       if (warm >= cool) {
         firstBackgroundColor = Color.fromRGBO(
             fallspring[firstColorIndex].Red,
@@ -135,14 +133,13 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
             summerWinter[index].O);
       }
     }
-    if (personalCnt == 10) text = '명도&채도판단';
+    if (personalCnt == 9) text = ' 명도와 채도를';
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          text,
+          '퍼스널컬러 검사',
           textAlign: TextAlign.start,
-          style: GoogleFonts.nanumGothicCoding(
-              textStyle: TextStyle(fontWeight: FontWeight.bold)),
+          style: TextStyle(fontWeight: FontWeight.w500),
         ),
       ),
       body: Stack(
@@ -167,9 +164,38 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
             ),
           ),
           Column(
-            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              personalCnt > -1 && personalCnt < 10
+                  ? Column(children: [
+                      Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10)),
+                          padding: EdgeInsets.fromLTRB(13, 7, 13, 5),
+                          child: Text(
+                            text + " 판단하고 있습니다.",
+                            style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
+                          )),
+                      Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10)),
+                          padding: EdgeInsets.fromLTRB(13, 0, 13, 15),
+                          child: Text(
+                            " 둘 중에 본인에게 어울리는 색을 골라주세요.",
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
+                          )),
+                    ])
+                  : Container(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -458,7 +484,7 @@ class _PersonalColorAnalyzeState extends State<PersonalColorAnalyze> {
                                     : Container(
                                         color: Colors.white,
                                         width: 380,
-                                        height: 780,
+                                        height: 760,
                                       ),
                   ),
                   SizedBox(width: 10),
