@@ -11,4 +11,5 @@ public interface StyleAnalyzeColorRepository extends JpaRepository<StyleColorVO,
     StyleColorVO save(StyleColorVO styleAnalyzeColor);
 
     List<StyleColorVO> findAllByStyleNumber(int styleNumber);
+    void deleteByStyleNumber(int styleNumber);
 }

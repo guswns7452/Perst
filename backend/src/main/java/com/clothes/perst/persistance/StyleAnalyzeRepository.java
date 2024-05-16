@@ -13,4 +13,6 @@ public interface StyleAnalyzeRepository extends JpaRepository<StyleAnalyzeVO, St
     StyleAnalyzeVO findByStyleNumber(int StyleNumber);
 
     List<StyleAnalyzeVO> findAllByMemberNumber(int memberNumber);
+
+    void deleteByStyleNumber(int styleNumber);
 }

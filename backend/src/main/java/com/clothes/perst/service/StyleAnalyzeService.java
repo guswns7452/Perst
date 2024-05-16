@@ -13,6 +13,7 @@ import com.google.api.client.http.FileContent;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
+import jakarta.security.auth.message.AuthException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -169,5 +170,27 @@ public class StyleAnalyzeService {
         // 전송용 DTO로 변경하기
         TransferStyleAnalyzeDTO transfer = new TransferStyleAnalyzeDTO(vo);
         return transfer;
+    }
+
+
+
+    public void deleteMyStyle(int memberNumber, int styleNumber) throws Exception{
+        isYoursByStyleNumber(memberNumber, styleNumber);
+        styleAnalyzeColorJPA.deleteByStyleNumber(styleNumber);
+        styleAnalyzeJPA.deleteByStyleNumber(styleNumber);
+    }
+
+    /**
+     * 다른 사람이 이력을 삭제 할 때 오류 발생시킴
+     * @param memberNumber
+     * @param styleNumber
+     * @return
+     * @throws Exception
+     */
+    public void isYoursByStyleNumber(int memberNumber, int styleNumber) throws Exception{
+        StyleAnalyzeVO vo = styleAnalyzeJPA.findByStyleNumber(styleNumber);
+        if (memberNumber != vo.getMemberNumber()){
+            throw new AuthException("다른 사람의 이력은 삭제할 수 없습니다.");
+        }
     }
 }

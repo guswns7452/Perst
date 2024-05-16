@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.security.auth.message.AuthException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -163,6 +164,51 @@ public class StyleAnalyzeController {
 
 
     /**
+     * 상세 분석 이력 삭제하기
+     * @param token
+     * @param styleNumber
+     * @return
+     * @throws Exception
+     */
+    @DeleteMapping("")
+    public ResponseEntity deleteMyStyle(@RequestHeader("Authorization") String token, @RequestParam("number") int styleNumber) throws Exception {
+        try{
+            int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
+
+            // 삭제하는 메소드
+            logger.info("[내 스타일 분석 이력 삭제하기]");
+
+            styleAnalyzeService.deleteMyStyle(memberNumber, styleNumber);
+
+            restResponse = RestResponse.builder()
+                    .code(HttpStatus.OK.value())
+                    .httpStatus(HttpStatus.OK)
+                    .message("정상적으로 삭제되었습니다.")
+                    .data(null)
+                    .build();
+            return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
+        }
+        catch (AuthException e){
+            logger.info("[내 스타일 이력 삭제] 다른 계정으로 삭제할 수 없습니다.");
+            restResponse = RestResponse.builder()
+                    .code(HttpStatus.UNAUTHORIZED.value())
+                    .httpStatus(HttpStatus.UNAUTHORIZED)
+                    .message(e.toString())
+                    .build();
+            return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
+        }
+        catch(Exception e) {
+            logger.info("내 스타일 분석 삭제 중 오류");
+            restResponse = RestResponse.builder()
+                    .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .message(e.toString())
+                    .build();
+            return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
+        }
+    }
+
+    /**
      * 나의 분석 이력들 호출하기
      * @param token
      * @return
@@ -194,4 +240,5 @@ public class StyleAnalyzeController {
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
         }
     }
+
 }
