@@ -27,10 +27,10 @@ class _ThreeKeywordFashionState extends State<ThreeKeywordFashion> {
     String gender = _storage.read("gender");
     if (gender == "woman") {
       fashions = fashionSearchController.searchWoman(
-          widget.styleKeyword, true, [], "all");
+          widget.styleKeyword, false, [], "all");
     } else if (gender == "man") {
       fashions = fashionSearchController.searchMan(
-          widget.styleKeyword, true, [], "all");
+          widget.styleKeyword, false, [], "all");
     }
   }
 
