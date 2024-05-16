@@ -44,7 +44,7 @@ public class MusinsaService {
 
         // 계절감 상관 없이 검색
         if(musinsaSearchRequest.getSeason().equals("all")){
-            logger.info(musinsaSearchRequest.getSeason());
+            logger.info("계절 : " + musinsaSearchRequest.getSeason());
             try {
                 if (!musinsaSearchRequest.getColor().isEmpty()) {
                     for (String color : musinsaSearchRequest.getColor()) {
