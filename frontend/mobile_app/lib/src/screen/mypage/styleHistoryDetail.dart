@@ -3,9 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:perst/src/connect/mypage_connect.dart';
 import 'package:perst/src/screen/style/keywardFashion.dart';
-import 'package:perst/src/widget/color_widget.dart';
 import 'package:perst/src/widget/google_drive_image.dart';
 import 'package:perst/src/widget/style_color_view.dart';
+import '../../widget/keyward_fashion_widget.dart';
 
 class StyleHistoryDetail extends StatefulWidget {
   final int number;

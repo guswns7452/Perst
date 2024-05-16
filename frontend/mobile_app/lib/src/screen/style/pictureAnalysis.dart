@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:perst/src/screen/style/keywardFashion.dart';
-import 'package:perst/src/widget/color_widget.dart';
 import 'package:perst/src/widget/style_color_view.dart';
-
 import '../../widget/google_drive_image.dart';
+import '../../widget/keyward_fashion_widget.dart';
 
 class PictureAnalysis extends StatelessWidget {
   final Map<String, dynamic> result;
@@ -36,7 +35,9 @@ class PictureAnalysis extends StatelessWidget {
                           fontSize: 45,
                           fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: 10,),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Center(
                       child: Container(
                           width: 300,
@@ -52,22 +53,19 @@ class PictureAnalysis extends StatelessWidget {
                           Text(
                             '분석결과',
                             style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.w800),
+                                fontSize: 25, fontWeight: FontWeight.w800),
                           ),
                           Text(
                             ': 색 조합',
                             style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500),
+                                fontSize: 20, fontWeight: FontWeight.w500),
                           ),
                           StyleColorView(result: result),
                           SizedBox(height: 20),
                           Text(
                             ': 스타일 키워드',
                             style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500),
+                                fontSize: 20, fontWeight: FontWeight.w500),
                           ),
                           Container(
                             margin: EdgeInsets.only(top: 5),
@@ -88,8 +86,7 @@ class PictureAnalysis extends StatelessWidget {
                           Container(
                             height: 200,
                             width: double.infinity,
-                            child: ThreeKeywordFashion(
-                                styleKeyword: styleName),
+                            child: ThreeKeywordFashion(styleKeyword: styleName),
                           ),
                           SizedBox(height: 15),
                           Center(
@@ -98,8 +95,8 @@ class PictureAnalysis extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => KeywordFashion(
-                                        styleKeyword: styleName),
+                                    builder: (context) =>
+                                        KeywordFashion(styleKeyword: styleName),
                                   ),
                                 );
                               },
@@ -109,13 +106,11 @@ class PictureAnalysis extends StatelessWidget {
                                 style: TextStyle(
                                     fontSize: 21,
                                     fontWeight: FontWeight.w600,
-                                    color: const Color.fromARGB(
-                                        255, 0, 0, 0)),
+                                    color: const Color.fromARGB(255, 0, 0, 0)),
                               ),
                               style: TextButton.styleFrom(
                                   shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                    BorderRadius.circular(7),
+                                    borderRadius: BorderRadius.circular(7),
                                   ),
                                   backgroundColor: Colors.transparent),
                             ),
@@ -131,6 +126,7 @@ class PictureAnalysis extends StatelessWidget {
           ),
         ],
       ),
-    );;
+    );
+    ;
   }
 }
