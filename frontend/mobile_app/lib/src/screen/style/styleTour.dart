@@ -25,7 +25,7 @@ late String _seletedGender = "man";
 bool _personalColorChecked = false;
 List<String> colorNameList = [];
 List<Color> colorList = [];
-String _seletedSeason = "summer";
+String _seletedSeason = "all";
 late Color _currentColor = Color.fromRGBO(236, 20, 20, 1);
 late Future<List<FashionSearchModel>> fashions;
 
