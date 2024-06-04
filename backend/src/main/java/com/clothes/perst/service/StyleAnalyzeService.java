@@ -166,10 +166,18 @@ public class StyleAnalyzeService {
         return responseBody;
     }
 
-    public StyleAnalyzeVO findMyStyle(int styleNumber){
+    /**
+     * 스타일 이력 상세 조회
+     * @param gender
+     * @param styleNumber
+     * @return
+     */
+    public StyleAnalyzeVO findMyStyle(String gender, int styleNumber){
         StyleAnalyzeVO vo = styleAnalyzeJPA.findByStyleNumber(styleNumber);
         vo.setStyleColor(styleAnalyzeColorJPA.findAllByStyleNumber(styleNumber));
-
+        
+        // 코디법 이미지 추가
+        vo.setStyleCommentFileID(searchStyleCommentFileIDs(gender, vo.getStyleName()));
         return vo;
     }
 

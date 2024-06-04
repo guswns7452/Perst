@@ -143,7 +143,12 @@ public class StyleAnalyzeController {
      */
     @GetMapping("")
     public ResponseEntity findMyStyle(@RequestHeader("Authorization") String token, @RequestParam("number") int styleNumber) throws Exception {
-        StyleAnalyzeVO newstyleAnalyzeVO = styleAnalyzeService.findMyStyle(styleNumber);
+
+        /* 성별 알아내기 */
+        int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
+        String gender = memberService.findMemberGenderByMemberNumber(memberNumber);
+
+        StyleAnalyzeVO newstyleAnalyzeVO = styleAnalyzeService.findMyStyle(gender, styleNumber);
 
         logger.info("[내 상세 분석 이력 불러오기]");
         try{
