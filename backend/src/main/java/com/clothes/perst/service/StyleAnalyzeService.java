@@ -1,5 +1,6 @@
 package com.clothes.perst.service;
 
+import com.clothes.perst.DTO.PersonalColorDTO;
 import com.clothes.perst.DTO.RestResponse;
 import com.clothes.perst.DTO.TransferStyleAnalyzeDTO;
 import com.clothes.perst.config.GoogleDriveAPI;
@@ -78,8 +79,11 @@ public class StyleAnalyzeService {
         LinkedHashMap data = (LinkedHashMap) responseBody.getData();
         logger.info(String.valueOf(data));
 
-        /* 스타일 분석 내용 저장 : styleName, FileID, memberNumber */
-        StyleAnalyzeVO styleAnalyzed = new StyleAnalyzeVO((String) data.get("fashionType"), fileID, memberNumber);
+        /* 퍼스널 컬러 타입 영어 TO 한글*/
+        String AnalyzedPersonalColor = (String) data.get("personalColorType");
+
+        /* 스타일 분석 내용 저장 : styleName, FileID, memberNumber, personalColorType */
+        StyleAnalyzeVO styleAnalyzed = new StyleAnalyzeVO((String) data.get("fashionType"), fileID, memberNumber, PersonalColorDTO.changeEngToKor(AnalyzedPersonalColor));
 
         /* 결과값 받아 DB에 저장하기 */
         StyleAnalyzeVO newstyleAnalyzeVO = saveStyleAnalyze(styleAnalyzed);

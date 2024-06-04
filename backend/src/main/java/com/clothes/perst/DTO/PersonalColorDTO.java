@@ -34,4 +34,28 @@ public class PersonalColorDTO {
 
         return personalColorInfo;
     }
+
+    /**
+     * 퍼스널 컬러 타입 : 영어 -> 한글
+     * @param Eng_personal_color
+     * @return
+     */
+    public static String changeEngToKor(String Eng_personal_color){
+        Map<String, String> lists = new HashMap<>();
+
+        // Spelling 틀릴 수도 있어요..
+        lists.put("Spring Light", "봄 라이트");
+        lists.put("Spring Bright", "봄 브라이트");
+        lists.put("Summber Light", "여름 라이트");
+        lists.put("Summber Bright", "여름 브라이트");
+        lists.put("Summber Mute", "여름 뮤트");
+        lists.put("Autumn Mute", "가을 뮤트");
+        lists.put("Autumn Strong", "가을 스트롱");
+        lists.put("Autumn Deep", "가을 딥");
+        lists.put("Winter Bright", "겨울 브라이트");
+        lists.put("Winter Deep", "겨울 딥");
+
+        return lists.get(Eng_personal_color);
+
+    }
 }
