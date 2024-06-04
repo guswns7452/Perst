@@ -61,15 +61,18 @@ public class StyleAnalyzeController {
     public ResponseEntity Analyze(@RequestHeader("Authorization") String token, @RequestParam("image") MultipartFile file) throws Exception {
         logger.info("[스타일 분석하기]");
         try {
+            /* API 시간 측정 */
             long beforeTime = System.currentTimeMillis(); //코드 실행 전에 시간 받아오기
 
             /* 성별 알아내기 */
             int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
             String gender = memberService.findMemberGenderByMemberNumber(memberNumber);
 
-            StyleAnalyzeVO styleAnalyzeVO = new StyleAnalyzeVO();
+            // 스타일 분석 메소드 호출
+            StyleAnalyzeVO styleAnalyzeVO;
             styleAnalyzeVO = styleAnalyzeService.Analyze(file, memberNumber, gender);
 
+            /* API 시간 측정 */
             long afterTime = System.currentTimeMillis(); // 코드 실행 후에 시간 받아오기
             long secDiffTime = (afterTime - beforeTime); //두 시간에 차 계산
             logger.info("실행 시간 : "+secDiffTime+"ms");
@@ -156,7 +159,6 @@ public class StyleAnalyzeController {
 
             // 삭제하는 메소드
             logger.info("[내 스타일 분석 이력 삭제하기]");
-
             styleAnalyzeService.deleteMyStyle(memberNumber, styleNumber);
 
             restResponse = RestResponse.builder()
