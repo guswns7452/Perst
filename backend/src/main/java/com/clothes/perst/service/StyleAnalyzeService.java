@@ -5,6 +5,7 @@ import com.clothes.perst.DTO.TransferStyleAnalyzeDTO;
 import com.clothes.perst.config.GoogleDriveAPI;
 import com.clothes.perst.domain.StyleAnalyzeVO;
 import com.clothes.perst.domain.StyleColorVO;
+import com.clothes.perst.persistance.CoordinateRepository;
 import com.clothes.perst.persistance.StyleAnalyzeColorRepository;
 import com.clothes.perst.persistance.StyleAnalyzeRepository;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -37,11 +38,20 @@ import java.util.List;
 @Service
 public class StyleAnalyzeService {
     private final StyleAnalyzeRepository styleAnalyzeJPA;
+    private final CoordinateRepository coordinateJPA;
     private final StyleAnalyzeColorRepository styleAnalyzeColorJPA;
     private final GoogleDriveAPI googleDriveAPI;
 
     @Value("${folderId.ClothesAnalyze}")
     String folderID;
+
+    @Autowired
+    public StyleAnalyzeService(StyleAnalyzeRepository styleAnalyzeJPA, CoordinateRepository coordinateJPA, StyleAnalyzeColorRepository styleAnalyzeColorRepository, GoogleDriveAPI googleDriveAPI) {
+        this.styleAnalyzeJPA = styleAnalyzeJPA;
+        this.styleAnalyzeColorJPA = styleAnalyzeColorRepository;
+        this.googleDriveAPI = googleDriveAPI;
+        this.coordinateJPA = coordinateJPA;
+    }
 
     private static String uploadDir = "./src/main/resources/image/";
 
@@ -84,12 +94,7 @@ public class StyleAnalyzeService {
         Files.deleteIfExists(Path.of(uploadDir));
     }
 
-    @Autowired
-    public StyleAnalyzeService(StyleAnalyzeRepository styleAnalyzeJPA, StyleAnalyzeColorRepository styleAnalyzeColorRepository, GoogleDriveAPI googleDriveAPI) {
-        this.styleAnalyzeJPA = styleAnalyzeJPA;
-        this.styleAnalyzeColorJPA = styleAnalyzeColorRepository;
-        this.googleDriveAPI = googleDriveAPI;
-    }
+
 
     /**
      * DB에 저장하는 코드
@@ -102,6 +107,10 @@ public class StyleAnalyzeService {
         for (StyleColorVO color : colors) {
             styleAnalyzeColorJPA.save(color);
         }
+    }
+
+    public List<String> searchStyleCommentFileIDs(String gender, String style) {
+        return coordinateJPA.searchFileID(gender, style);
     }
 
     /**

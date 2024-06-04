@@ -68,9 +68,10 @@ public class StyleAnalyzeController {
             /* 구글 드라이브로 업로드 하기 */
             String fileID = styleAnalyzeService.uploadImage(file, memberNumber);
 
-            /* Flask로 요청 보내기 */
+            /* 성별 알아내기 */
             String gender = memberService.findMemberGenderByMemberNumber(memberNumber);
 
+            /* Flask로 요청 보내기 */
             String requestBody = "{\"fileID\": \"" + fileID + "\", \"gender\": \"" + gender + "\"}";
             RestResponse responseBody = styleAnalyzeService.ConnectFlaskServer(requestBody);
 
@@ -95,6 +96,9 @@ public class StyleAnalyzeController {
 
             /* 이미지 삭제하기 */
             styleAnalyzeService.deleteFile();
+
+            /* 스타일 피드백 FileID 리스트 출력 */
+            newstyleAnalyzeVO.setStyleCommentFileID(styleAnalyzeService.searchStyleCommentFileIDs(gender, newstyleAnalyzeVO.getStyleName()));
 
             long afterTime = System.currentTimeMillis(); // 코드 실행 후에 시간 받아오기
             long secDiffTime = (afterTime - beforeTime); //두 시간에 차 계산
