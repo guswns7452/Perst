@@ -63,42 +63,12 @@ public class StyleAnalyzeController {
         try {
             long beforeTime = System.currentTimeMillis(); //코드 실행 전에 시간 받아오기
 
-            int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
-
-            /* 구글 드라이브로 업로드 하기 */
-            String fileID = styleAnalyzeService.uploadImage(file, memberNumber);
-
             /* 성별 알아내기 */
+            int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
             String gender = memberService.findMemberGenderByMemberNumber(memberNumber);
 
-            /* Flask로 요청 보내기 */
-            String requestBody = "{\"fileID\": \"" + fileID + "\", \"gender\": \"" + gender + "\"}";
-            RestResponse responseBody = styleAnalyzeService.ConnectFlaskServer(requestBody);
-
-            LinkedHashMap data = (LinkedHashMap) responseBody.getData();
-            logger.info(String.valueOf(data));
-
-            /* 스타일 분석 내용 저장 : styleName, FileID, memberNumber */
-            StyleAnalyzeVO styleAnalyzed = new StyleAnalyzeVO((String) data.get("fashionType"), fileID, memberNumber);
-
-            /* 결과값 받아 DB에 저장하기 */
-            StyleAnalyzeVO newstyleAnalyzeVO = styleAnalyzeService.saveStyleAnalyze(styleAnalyzed);
-            int styleNumber = newstyleAnalyzeVO.getStyleNumber();
-
-            /* DB에 색상 저장하기 */
-            List<StyleColorVO> colors = new ArrayList();
-            colors.add(new StyleColorVO((String) data.get("color1"), styleNumber));
-            colors.add(new StyleColorVO((String) data.get("color2"), styleNumber));
-            colors.add(new StyleColorVO((String) data.get("color3"), styleNumber));
-            colors.add(new StyleColorVO((String) data.get("color4"), styleNumber));
-            styleAnalyzeService.saveStyleColor(colors);
-            newstyleAnalyzeVO.setStyleColor(colors);
-
-            /* 이미지 삭제하기 */
-            styleAnalyzeService.deleteFile();
-
-            /* 스타일 피드백 FileID 리스트 출력 */
-            newstyleAnalyzeVO.setStyleCommentFileID(styleAnalyzeService.searchStyleCommentFileIDs(gender, newstyleAnalyzeVO.getStyleName()));
+            StyleAnalyzeVO styleAnalyzeVO = new StyleAnalyzeVO();
+            styleAnalyzeVO = styleAnalyzeService.Analyze(file, memberNumber, gender);
 
             long afterTime = System.currentTimeMillis(); // 코드 실행 후에 시간 받아오기
             long secDiffTime = (afterTime - beforeTime); //두 시간에 차 계산
@@ -109,7 +79,7 @@ public class StyleAnalyzeController {
                     .code(HttpStatus.OK.value())
                     .httpStatus(HttpStatus.OK)
                     .message("분석이 정상적으로 완료되었습니다!")
-                    .data(newstyleAnalyzeVO)
+                    .data(styleAnalyzeVO)
                     .build();
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
         }
