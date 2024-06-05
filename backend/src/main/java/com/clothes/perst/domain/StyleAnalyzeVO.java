@@ -1,5 +1,6 @@
 package com.clothes.perst.domain;
 
+import com.clothes.perst.DTO.PersonalColorTipDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,6 +44,9 @@ public class StyleAnalyzeVO {
 
     @Transient // DB에 포함하지 않는 변수
     private List<String> styleCommentFileID;
+
+    @Transient // DB에 포함하지 않는 변수
+    private PersonalColorTipDTO personalColorTip;
 
     @CreatedDate
     private Date styleDate;

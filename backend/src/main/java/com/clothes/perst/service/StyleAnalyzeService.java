@@ -1,16 +1,15 @@
 package com.clothes.perst.service;
 
 import com.clothes.perst.DTO.PersonalColorDTO;
+import com.clothes.perst.DTO.PersonalColorTipDTO;
 import com.clothes.perst.DTO.RestResponse;
 import com.clothes.perst.DTO.TransferStyleAnalyzeDTO;
 import com.clothes.perst.config.GoogleDriveAPI;
 import com.clothes.perst.domain.PersonalColorVO;
+import com.clothes.perst.domain.PersonalTipVO;
 import com.clothes.perst.domain.StyleAnalyzeVO;
 import com.clothes.perst.domain.StyleColorVO;
-import com.clothes.perst.persistance.CoordinateRepository;
-import com.clothes.perst.persistance.PersonalColorRepository;
-import com.clothes.perst.persistance.StyleAnalyzeColorRepository;
-import com.clothes.perst.persistance.StyleAnalyzeRepository;
+import com.clothes.perst.persistance.*;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.FileContent;
@@ -44,6 +43,7 @@ public class StyleAnalyzeService {
     private final CoordinateRepository coordinateJPA;
     private final StyleAnalyzeColorRepository styleAnalyzeColorJPA;
     private final PersonalColorRepository personalColorJPA;
+    private final PersonalTipRepository personalTipJPA;
     private final GoogleDriveAPI googleDriveAPI;
     private static final Logger logger = LoggerFactory.getLogger(StyleAnalyzeService.class);
 
@@ -52,12 +52,13 @@ public class StyleAnalyzeService {
     String folderID;
 
     @Autowired
-    public StyleAnalyzeService(StyleAnalyzeRepository styleAnalyzeJPA, PersonalColorRepository personalColorJPA, CoordinateRepository coordinateJPA, StyleAnalyzeColorRepository styleAnalyzeColorRepository, GoogleDriveAPI googleDriveAPI) {
+    public StyleAnalyzeService(StyleAnalyzeRepository styleAnalyzeJPA, PersonalTipRepository personalTipJPA, PersonalColorRepository personalColorJPA, CoordinateRepository coordinateJPA, StyleAnalyzeColorRepository styleAnalyzeColorRepository, GoogleDriveAPI googleDriveAPI) {
         this.styleAnalyzeJPA = styleAnalyzeJPA;
         this.styleAnalyzeColorJPA = styleAnalyzeColorRepository;
         this.googleDriveAPI = googleDriveAPI;
         this.coordinateJPA = coordinateJPA;
         this.personalColorJPA = personalColorJPA;
+        this.personalTipJPA = personalTipJPA;
     }
 
     private static String uploadDir = "./src/main/resources/image/";
@@ -83,10 +84,10 @@ public class StyleAnalyzeService {
         logger.info(String.valueOf(data));
 
         /* 퍼스널 컬러 타입 영어 TO 한글*/
-        String AnalyzedPersonalColor = (String) data.get("personalColorType");
+        String AnalyzedPersonalColor = PersonalColorDTO.changeEngToKor((String) data.get("personalColorType"));
 
         /* 스타일 분석 내용 저장 : styleName, FileID, memberNumber, personalColorType */
-        StyleAnalyzeVO styleAnalyzed = new StyleAnalyzeVO((String) data.get("fashionType"), fileID, memberNumber, PersonalColorDTO.changeEngToKor(AnalyzedPersonalColor));
+        StyleAnalyzeVO styleAnalyzed = new StyleAnalyzeVO((String) data.get("fashionType"), fileID, memberNumber, AnalyzedPersonalColor);
 
         /* 결과값 받아 DB에 저장하기 */
         StyleAnalyzeVO newstyleAnalyzeVO = saveStyleAnalyze(styleAnalyzed);
@@ -108,9 +109,7 @@ public class StyleAnalyzeService {
         newstyleAnalyzeVO.setStyleCommentFileID(searchStyleCommentFileIDs(gender, newstyleAnalyzeVO.getStyleName()));
         
         /* 퍼스널 컬러 피드백 */
-        /* TODO 추후 내용 수정해야함 */
-        comparisonMyPersonalColorAndAnalyzedPeronsalColor(memberNumber,newstyleAnalyzeVO.getStylePersonalColor());
-        
+        newstyleAnalyzeVO.setPersonalColorTip(setPersonalColorTip(memberNumber, AnalyzedPersonalColor));
         return newstyleAnalyzeVO;
     }
 
@@ -128,8 +127,7 @@ public class StyleAnalyzeService {
         vo.setStyleCommentFileID(searchStyleCommentFileIDs(gender, vo.getStyleName()));
 
         /* 퍼스널 컬러 피드백 */
-        /* TODO 추후 내용 수정해야함 */
-        comparisonMyPersonalColorAndAnalyzedPeronsalColor(vo.getMemberNumber(), vo.getStylePersonalColor());
+        vo.setPersonalColorTip(setPersonalColorTip(vo.getMemberNumber(), vo.getStylePersonalColor()));
 
         return vo;
     }
@@ -285,26 +283,24 @@ public class StyleAnalyzeService {
     }
 
     /**
-     * 내 퍼스널 컬러와 진단된 퍼스널 컬러를 비교하는 내용
+     * 퍼스널 컬러 피드백 구성하는 메소드
      * @param memberNumber
      * @param analyzedPersonalColor
+     * @return PersonalColorTipDTO
      */
-    public void comparisonMyPersonalColorAndAnalyzedPeronsalColor(int memberNumber, String analyzedPersonalColor){
-        PersonalColorVO myPersonalColor = personalColorJPA.findByMemberNumber(memberNumber);
+    public PersonalColorTipDTO setPersonalColorTip(int memberNumber, String analyzedPersonalColor) {
+        String myPersonalColor = personalColorJPA.findByMemberNumber(memberNumber).getPersonalColorType();
+        String fileID;
 
-        // 진단한 퍼스널 컬러가 없으면?
-        if(myPersonalColor == null){
-            // 진단한 퍼스널 컬러에 대한 내용 전달
-        } else{
-            // 진단한 퍼스널 컬러와 내 퍼스널 컬러가 같으면?
-            if(myPersonalColor.getPersonalColorType().equals(analyzedPersonalColor)){
-                // 잘하고 있다는 텍스트 피드백, 내 퍼스널 컬러에 대한 정보 전달
-            }
 
-            // 진단한 퍼스널 컬러와 내 퍼스널 컬러가 다르면?
-            else{
-                // 내 퍼스널 컬러에 맞는 의류를 입으면 좋다는 피드백, 내 퍼스널 컬러에 대한 정보 전달
-            }
+        if (myPersonalColor == null) {
+            fileID = personalTipJPA.findByPersonalTipType(myPersonalColor).getPersonalTipFileId();
+        } else {
+            fileID = personalTipJPA.findByPersonalTipType(analyzedPersonalColor).getPersonalTipFileId();
         }
+
+        PersonalColorTipDTO personalColorTip = new PersonalColorTipDTO(myPersonalColor, analyzedPersonalColor, fileID);
+
+        return personalColorTip;
     }
 }
