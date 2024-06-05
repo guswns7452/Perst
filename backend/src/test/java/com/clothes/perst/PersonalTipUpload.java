@@ -22,6 +22,7 @@ import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.FileNotFoundException;
@@ -49,6 +50,9 @@ public class PersonalTipUpload {
 
     @Autowired
     private PersonalTipRepository personalTipJPA; // UserRepository는 JPA Repository 인터페이스
+
+    @Value("${folderId.PersonalTip}")
+    String folderID;
 
     public static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         //credentials.json 파일을 in에 저장함
@@ -107,7 +111,6 @@ public class PersonalTipUpload {
                 .build();
 
         String folderPath = "D:\\coding\\perst_dataset\\personal_tip\\";
-        String folderID = "13-zyPQClJNcdVylLFhVxq_9viwtA6Gnt";
 
         // Upload file photo.jpg on drive.
         File fileMetadata = new File();

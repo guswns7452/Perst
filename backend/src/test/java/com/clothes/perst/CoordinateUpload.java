@@ -24,6 +24,7 @@ import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.FileNotFoundException;
@@ -52,6 +53,9 @@ public class CoordinateUpload {
 
     @Autowired
     private CoordinateRepository codiJPA; // UserRepository는 JPA Repository 인터페이스
+
+    @Value("${folderId.Coordinate}")
+    String folderID;
 
     public static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         //credentials.json 파일을 in에 저장함
@@ -113,7 +117,8 @@ public class CoordinateUpload {
                 .build();
 
         String folderPath = "D:\\coding\\perst_dataset\\coordinate\\";
-        String folderID = "1l8xpuhUX28bbRlySGOik2sy-SLckvFG_";
+
+
 
         // Upload file photo.jpg on drive.
         File fileMetadata = new File();
