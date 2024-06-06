@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:perst/src/controller/fashion_search_controller.dart';
+import 'package:perst/src/connect/fashion_search_connect.dart';
 import 'package:perst/src/model/fashion_search_model.dart';
 import 'package:perst/src/widget/radio_item.dart';
 import 'package:perst/src/widget/style_filter.dart';
@@ -19,15 +19,15 @@ class StyleTour extends StatefulWidget {
   State<StyleTour> createState() => _StyleTourState();
 }
 
-late String _currentStyle = '스포티';
-late String _searchCurrentStyle = 'sporty';
-late String _seletedGender = "man";
+String _currentStyle = '스포티';
+String _searchCurrentStyle = 'sporty';
+String _seletedGender = "man";
 bool _personalColorChecked = false;
 List<String> colorNameList = [];
 List<Color> colorList = [];
 String _seletedSeason = "all";
-late Color _currentColor = Color.fromRGBO(236, 20, 20, 1);
-late Future<List<FashionSearchModel>> fashions;
+Color _currentColor = Color.fromRGBO(236, 20, 20, 1);
+List<FashionSearchModel> fashions = [];
 
 int _seletedGenderInt = 0;
 int _currentStyleInt = 0;
@@ -35,8 +35,7 @@ int _currentColorInt = 0;
 String personalColor = '';
 
 class _StyleTourState extends State<StyleTour> {
-  final fashionSearchController = Get.put(FashionSearchController());
-  String gender = _storage.read("gender");
+  final fashionSearchConnect = Get.put(FashionSearchConnect());
 
   bool isLoading = true;
 
@@ -49,31 +48,27 @@ class _StyleTourState extends State<StyleTour> {
   Future<void> _fetchData() async {
     setState(() {
       isLoading = true;
-      if (gender == "man") {
-        _seletedGender = "남성";
-        _seletedGenderInt = 0;
-      } else {
-        _seletedGender = "여성";
-        _seletedGenderInt = 1;
-      }
     });
-    _seletedGender = gender;
-    gender == "man" ? _seletedGenderInt = 0 : _seletedGenderInt = 1;
 
     if (_seletedGenderInt == 1) {
-      fashions = fashionSearchController.searchWoman(_searchCurrentStyle,
+      var response = await fashionSearchConnect.searchWoman(_searchCurrentStyle,
           _personalColorChecked, colorNameList, _seletedSeason);
+
+      List<dynamic> results = response['data'];
+      setState(() {
+        fashions = results
+            .map((result) => FashionSearchModel.fromJson(result))
+            .toList();
+      });
     } else if (_seletedGenderInt == 0) {
-      fashions = fashionSearchController.searchMan(_searchCurrentStyle,
+      var response = await fashionSearchConnect.searchMan(_searchCurrentStyle,
           _personalColorChecked, colorNameList, _seletedSeason);
-    }
-    if (fashions != null) {
-      List<FashionSearchModel> fashionList = await fashions;
-      if (_personalColorChecked) {
-        personalColor = fashionList[0].musinsaPersonal!;
-      } else {
-        personalColor = "";
-      }
+      List<dynamic> results = response['data'];
+      setState(() {
+        fashions = results
+            .map((result) => FashionSearchModel.fromJson(result))
+            .toList();
+      });
     }
   }
 
@@ -162,27 +157,10 @@ class _StyleTourState extends State<StyleTour> {
               ),
             ),
             SizedBox(height: 15),
-            FutureBuilder<List<FashionSearchModel>>(
-              future: fashions,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          '로딩중입니다...',
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        SizedBox(height: 20),
-                        CircularProgressIndicator(),
-                      ],
-                    ),
-                  ); // 로딩중
-                } else if (snapshot.hasError ||
-                    !snapshot.hasData ||
-                    snapshot.data!.isEmpty) {
-                  return Center(child: Text('검색 결과가 없습니다.')); // 데이터가 없을때
+            Builder(
+              builder: (context) {
+                if (fashions.isEmpty) {
+                  return Center(child: Text('검색 결과가 없습니다.')); // 데이터가 없을 때
                 } else {
                   return Container(
                     height: 540,
@@ -202,7 +180,7 @@ class _StyleTourState extends State<StyleTour> {
 
 class CustomDrawer extends StatefulWidget {
   final Function(String, String, List<Color>) onSelectionComplete;
-  final Future<List<FashionSearchModel>> fashions;
+  final List<FashionSearchModel> fashions;
 
   const CustomDrawer(
       {Key? key, required this.onSelectionComplete, required this.fashions})
@@ -230,8 +208,8 @@ class _CustomDrawerState extends State<CustomDrawer>
   ];
 
   final List<StyleRadioModel> _womanstyleKeyward = [
-    StyleRadioModel(false, '스포티', 'sporty'),
-    StyleRadioModel(true, '로맨틱', 'romantic'),
+    StyleRadioModel(true, '스포티', 'sporty'),
+    StyleRadioModel(false, '로맨틱', 'romantic'),
     StyleRadioModel(false, '레트로', 'retro'),
     StyleRadioModel(false, '캐주얼', 'casual'),
     StyleRadioModel(false, '스트릿', 'street'),
@@ -272,26 +250,44 @@ class _CustomDrawerState extends State<CustomDrawer>
     super.dispose();
   }
 
-  final fashionSearchController = Get.put(FashionSearchController());
+  final fashionSearchConnect = Get.put(FashionSearchConnect());
 
   Future<void> _handleSelectionComplete() async {
     try {
-      setState(() {
-        if (_seletedGenderInt == 1) {
-          fashions = fashionSearchController.searchWoman(_searchCurrentStyle,
-              _personalColorChecked, colorNameList, _seletedSeason);
-        } else if (_seletedGenderInt == 0) {
-          fashions = fashionSearchController.searchMan(_searchCurrentStyle,
-              _personalColorChecked, colorNameList, _seletedSeason);
-        }
-      });
-      List<FashionSearchModel> fashionList = await fashions;
-      if (_personalColorChecked) {
-        personalColor =
-            fashionList.isNotEmpty ? fashionList[0].musinsaPersonal! : "";
-      } else {
-        personalColor = "";
+      if (_seletedGenderInt == 1) {
+        var response = await fashionSearchConnect.searchWoman(
+            _searchCurrentStyle,
+            _personalColorChecked,
+            colorNameList,
+            _seletedSeason);
+
+        List<dynamic> results = response['data'];
+        setState(() {
+          fashions = results
+              .map((result) => FashionSearchModel.fromJson(result))
+              .toList();
+          if (_personalColorChecked) {
+            personalColor = response['message'];
+          } else {
+            personalColor = "";
+          }
+        });
+      } else if (_seletedGenderInt == 0) {
+        var response = await fashionSearchConnect.searchMan(_searchCurrentStyle,
+            _personalColorChecked, colorNameList, _seletedSeason);
+        List<dynamic> results = response['data'];
+        setState(() {
+          fashions = results
+              .map((result) => FashionSearchModel.fromJson(result))
+              .toList();
+          if (_personalColorChecked) {
+            personalColor = response['message'];
+          } else {
+            personalColor = "";
+          }
+        });
       }
+      ;
     } catch (e) {
       personalColor = "";
     }

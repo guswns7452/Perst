@@ -4,7 +4,7 @@ import '../model/fashion_search_model.dart';
 import '../screen/style/fashionDetail.dart';
 
 class StyleTourWidget extends StatefulWidget {
-  final Future<List<FashionSearchModel>> fashions;
+  final List<FashionSearchModel> fashions;
 
   const StyleTourWidget({Key? key, required this.fashions}) : super(key: key);
 
@@ -20,53 +20,33 @@ class _StyleTourWidgetState extends State<StyleTourWidget> {
 
   @override
   Widget build(BuildContext context) {
+    List<FashionSearchModel> fashions = widget.fashions;
     return Expanded(
-      child: FutureBuilder<List<FashionSearchModel>>(
-        future: widget.fashions,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
-          } else if (snapshot.hasData) {
-            List<FashionSearchModel> fashions = snapshot.data!;
-            return ListView.builder(
-              itemCount: (fashions.length / 2).ceil(),
-              scrollDirection: Axis.vertical,
-              itemBuilder: (context, index) {
-                int leftIndex = index * 2;
-                int rightIndex = leftIndex + 1;
+      child: ListView.builder(
+        itemCount: (fashions.length / 2).ceil(),
+        scrollDirection: Axis.vertical,
+        itemBuilder: (context, index) {
+          int leftIndex = index * 2;
+          int rightIndex = leftIndex + 1;
 
-                return Row(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: _buildFashionItem(context, fashions[leftIndex]),
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    if (rightIndex < fashions.length)
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child:
-                              _buildFashionItem(context, fashions[rightIndex]),
-                        ),
-                      ),
-                  ],
-                );
-              },
-            );
-          } else {
-            return Center(
-              child: Text('No data'),
-            );
-          }
+          return Row(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: _buildFashionItem(context, fashions[leftIndex]),
+                ),
+              ),
+              SizedBox(width: 8),
+              if (rightIndex < fashions.length)
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: _buildFashionItem(context, fashions[rightIndex]),
+                  ),
+                ),
+            ],
+          );
         },
       ),
     );

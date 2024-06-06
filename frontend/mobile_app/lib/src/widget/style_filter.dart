@@ -62,7 +62,7 @@ class _StyleFilterState extends State<StyleFilter> {
         widget.personalColor == ''
             ? Container()
             : Container(
-                padding: EdgeInsets.fromLTRB(7, 4, 3, 4),
+                padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
                 decoration: BoxDecoration(
                   border: Border.all(
                       width: 1, color: Color.fromRGBO(133, 133, 133, 1)),
