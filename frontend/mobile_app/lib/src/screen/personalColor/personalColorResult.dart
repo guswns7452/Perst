@@ -69,7 +69,15 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
         ResultColorList(
             result["personalColorRepresentative"][3]["red"],
             result["personalColorRepresentative"][3]["green"],
-            result["personalColorRepresentative"][3]["blue"])
+            result["personalColorRepresentative"][3]["blue"]),
+        ResultColorList(
+            result["personalColorRepresentative"][4]["red"],
+            result["personalColorRepresentative"][4]["green"],
+            result["personalColorRepresentative"][4]["blue"]),
+        ResultColorList(
+            result["personalColorRepresentative"][5]["red"],
+            result["personalColorRepresentative"][5]["green"],
+            result["personalColorRepresentative"][5]["blue"])
       ];
 
       firstRatio =
@@ -306,10 +314,11 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
           SizedBox(height: 20),
           Container(
             width: double.infinity,
-            child: Text(
-              '   컬러 팔레트',
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-            ),
+            child: Text('   컬러 팔레트',
+                style: GoogleFonts.poorStory(
+                  textStyle:
+                      TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+                )),
           ),
           Column(
             children: [
@@ -317,19 +326,28 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Container(
                   height: 100,
-                  width: 170,
+                  width: 120,
                   decoration: BoxDecoration(
                       color: Color.fromRGBO(colorList[0].red,
                           colorList[0].green, colorList[0].blue, 1),
                       borderRadius: BorderRadius.circular(8)),
                 ),
-                SizedBox(width: 20),
+                SizedBox(width: 10),
                 Container(
                   height: 100,
-                  width: 170,
+                  width: 120,
                   decoration: BoxDecoration(
                       color: Color.fromRGBO(colorList[1].red,
                           colorList[1].green, colorList[1].blue, 1),
+                      borderRadius: BorderRadius.circular(8)),
+                ),
+                SizedBox(width: 10),
+                Container(
+                  height: 100,
+                  width: 120,
+                  decoration: BoxDecoration(
+                      color: Color.fromRGBO(colorList[2].red,
+                          colorList[2].green, colorList[2].blue, 1),
                       borderRadius: BorderRadius.circular(8)),
                 ),
               ]),
@@ -337,19 +355,28 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Container(
                   height: 100,
-                  width: 170,
-                  decoration: BoxDecoration(
-                      color: Color.fromRGBO(colorList[2].red,
-                          colorList[2].green, colorList[2].blue, 1),
-                      borderRadius: BorderRadius.circular(8)),
-                ),
-                SizedBox(width: 20),
-                Container(
-                  height: 100,
-                  width: 170,
+                  width: 120,
                   decoration: BoxDecoration(
                       color: Color.fromRGBO(colorList[3].red,
                           colorList[3].green, colorList[3].blue, 1),
+                      borderRadius: BorderRadius.circular(8)),
+                ),
+                SizedBox(width: 10),
+                Container(
+                  height: 100,
+                  width: 120,
+                  decoration: BoxDecoration(
+                      color: Color.fromRGBO(colorList[4].red,
+                          colorList[4].green, colorList[4].blue, 1),
+                      borderRadius: BorderRadius.circular(8)),
+                ),
+                SizedBox(width: 10),
+                Container(
+                  height: 100,
+                  width: 120,
+                  decoration: BoxDecoration(
+                      color: Color.fromRGBO(colorList[5].red,
+                          colorList[5].green, colorList[5].blue, 1),
                       borderRadius: BorderRadius.circular(8)),
                 ),
               ]),
@@ -358,10 +385,11 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
           SizedBox(height: 18),
           Container(
             width: double.infinity,
-            child: Text(
-              '   퍼스널 컬러 정보',
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-            ),
+            child: Text('   퍼스널 컬러 정보',
+                style: GoogleFonts.poorStory(
+                  textStyle:
+                      TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+                )),
           ),
           Container(
             height: 1,
