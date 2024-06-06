@@ -9,17 +9,13 @@ class FashionSearchController extends GetxController {
   final fashionSearchConnection = Get.put(FashionSearchConnect());
 
   // 여자 키워드별 패션 스타일 불러오기
-  Future<List<FashionSearchModel>> searchWoman(String womanFashionKeyword,
-      bool isPersonal, List<String> colorList, String season) async {
+  Future searchWoman(String womanFashionKeyword, bool isPersonal,
+      List<String> colorList, String season) async {
     try {
       Map<String, dynamic> response = await fashionSearchConnection.searchWoman(
           womanFashionKeyword, isPersonal, colorList, season);
-      List<dynamic> results = response['data'];
-      List<FashionSearchModel> fashions = [];
-      for (var result in results) {
-        fashions.add(FashionSearchModel.fromJson(result));
-      }
-      return fashions;
+      print(response);
+      return response;
     } catch (e) {
       print('Error in searchWoman: $e');
       throw Exception('통신오류입니다.');
@@ -27,18 +23,13 @@ class FashionSearchController extends GetxController {
   }
 
   // 남자 키워드별 패션 스타일 불러오기
-  Future<List<FashionSearchModel>> searchMan(String manFashionKeyword,
-      bool isPersonal, List<String> colorList, String season) async {
+  Future searchMan(String manFashionKeyword, bool isPersonal,
+      List<String> colorList, String season) async {
     try {
       Map<String, dynamic> response = await fashionSearchConnection.searchMan(
           manFashionKeyword, isPersonal, colorList, season);
-      List<dynamic> results = response['data'];
-      List<FashionSearchModel> fashions = [];
-      for (var result in results) {
-        fashions.add(FashionSearchModel.fromJson(result));
-      }
-      print(fashions);
-      return fashions;
+      print(response);
+      return response;
     } catch (e) {
       print('Error: $e');
       throw Exception('통신오류입니다.');

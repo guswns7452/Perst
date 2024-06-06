@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:perst/src/controller/fashion_search_controller.dart';
+import 'package:perst/src/connect/fashion_search_connect.dart';
 import 'package:perst/src/model/fashion_search_model.dart';
 import 'package:perst/src/widget/google_drive_image.dart';
 
@@ -18,19 +18,19 @@ class ThreeKeywordFashion extends StatefulWidget {
 }
 
 class _ThreeKeywordFashionState extends State<ThreeKeywordFashion> {
-  final fashionSearchController = Get.put(FashionSearchController());
+  final fashionConnect = Get.put(FashionSearchConnect());
   late Future<List<FashionSearchModel>> fashions;
 
   @override
-  void initState() {
+  void initState() async {
     super.initState();
     String gender = _storage.read("gender");
     if (gender == "woman") {
-      fashions = fashionSearchController.searchWoman(
+      fashions = await fashionConnect.searchWoman(
           widget.styleKeyword, false, [], "all");
     } else if (gender == "man") {
-      fashions = fashionSearchController.searchMan(
-          widget.styleKeyword, false, [], "all");
+      fashions =
+          await fashionConnect.searchMan(widget.styleKeyword, false, [], "all");
     }
   }
 

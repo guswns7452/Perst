@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:perst/src/controller/fashion_search_controller.dart';
+import 'package:perst/src/connect/fashion_search_connect.dart';
 import 'package:perst/src/model/fashion_search_model.dart';
 import 'package:perst/src/screen/style/fashionDetail.dart';
 import 'package:perst/src/widget/google_drive_image.dart';
@@ -19,23 +19,37 @@ class KeywordFashion extends StatefulWidget {
 }
 
 class _KeywordFashionState extends State<KeywordFashion> {
-  final fashionSearchController = Get.put(FashionSearchController());
-  late Future<List<FashionSearchModel>>? fashions;
+  final fashionSearchConnect = Get.put(FashionSearchConnect());
+  late List<FashionSearchModel> fashions;
 
   @override
-  void initState() {
+  void initState() async {
     super.initState();
+    getData();
+  }
+
+  getData() async {
     String gender = _storage.read("gender");
     print(gender);
     if (gender == "woman") {
-      print("여자");
-      fashions = fashionSearchController.searchWoman(
+      var response = await fashionSearchConnect.searchWoman(
           widget.styleKeyword, false, [], "all");
+      List<dynamic> results = response['data'];
+      setState(() {
+        fashions = results
+            .map((result) => FashionSearchModel.fromJson(result))
+            .toList();
+      });
       print(widget.styleKeyword);
     } else if (gender == "man") {
-      print("남자");
-      fashions = fashionSearchController.searchMan(
+      var response = await fashionSearchConnect.searchMan(
           widget.styleKeyword, false, [], "all");
+      List<dynamic> results = response['data'];
+      setState(() {
+        fashions = results
+            .map((result) => FashionSearchModel.fromJson(result))
+            .toList();
+      });
     }
   }
 
@@ -52,53 +66,43 @@ class _KeywordFashionState extends State<KeywordFashion> {
           ),
           SizedBox(height: 30),
           Expanded(
-            child: FutureBuilder<List<FashionSearchModel>>(
-              future: fashions,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else {
-                  return GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2, mainAxisSpacing: 2),
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) {
-                        var fashion = snapshot.data![index];
-                        return Stack(children: [
-                          Row(
-                            children: [
-                              SizedBox(width: 35),
-                              Container(
-                                height: 230,
-                                width: 145,
-                                child: google_drive_image(
-                                  id: fashion.musinsaFileid!,
-                                ),
+            child: fashions.isEmpty
+                ? Center(child: CircularProgressIndicator())
+                : GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2, mainAxisSpacing: 2),
+                    itemCount: fashions.length,
+                    itemBuilder: (context, index) {
+                      var fashion = fashions[index];
+                      return Stack(children: [
+                        Row(
+                          children: [
+                            SizedBox(width: 35),
+                            Container(
+                              height: 230,
+                              width: 145,
+                              child: google_drive_image(
+                                id: fashion.musinsaFileid!,
                               ),
-                            ],
-                          ),
-                          Positioned.fill(
-                              child: Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => FashionDetail(
-                                          fashion: fashion,
-                                        ),
+                            ),
+                          ],
+                        ),
+                        Positioned.fill(
+                            child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => FashionDetail(
+                                        fashion: fashion,
                                       ),
-                                    );
-                                  })))
-                        ]);
-                      });
-                }
-              },
-            ),
+                                    ),
+                                  );
+                                })))
+                      ]);
+                    },
+                  ),
           ),
         ],
       ),
