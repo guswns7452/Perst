@@ -1,8 +1,7 @@
 import os.path
 
 from http import HTTPStatus
-from flask import Flask, make_response, request
-import json
+import boto3,json
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -10,18 +9,15 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
-import io
-import google.auth
 from googleapiclient.http import MediaIoBaseDownload
 
 from module_import_example import machineLearning
 
-PATH =  os.getcwd()
+PATH = '/tmp/'
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/drive"]
 
-app = Flask(__name__)
 
 # [1] 분석) 사진을 전송 받음.
 ## 프론트(요청) -> 스프링(요청) -> 머신러닝
@@ -36,17 +32,17 @@ def DownloadByGoogleDrive(fileID):
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
-    if os.path.exists("token.json"):
-        creds = Credentials.from_authorized_user_file("token.json", SCOPES)
+    if os.path.exists(PATH+"token.json"):
+        creds = Credentials.from_authorized_user_file(PATH+"token.json", SCOPES)
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
+            flow = InstalledAppFlow.from_client_secrets_file(PATH+"credentials.json", SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
-        with open("token.json", "w") as token:
+        with open(PATH+"token.json", "w") as token:
             token.write(creds.to_json())
 
     try:
@@ -55,7 +51,7 @@ def DownloadByGoogleDrive(fileID):
 
         # 파일 다운로드
         request = drive_service.files().get_media(fileId=fileID)
-        fh = open("./Models/" + fileID + ".jpg", "wb")
+        fh = open(PATH+ fileID + ".jpg", "wb")
         downloader = MediaIoBaseDownload(fh, request)
         done = False
         while done is False:
@@ -77,10 +73,9 @@ def delete_jpg_files(folder_path):
             os.remove(file_path)
             print(f"{file_path} 삭제되었습니다.")
 
-@app.route('/style/analyze', methods=['POST'])
-def analyzeAPI():
-    fileID = request.json['fileID'] # api 호출 시 반환 하는 값
-    gender = request.json['gender']
+def analyzeAPI(id, gen):
+    fileID = id # api 호출 시 반환 하는 값
+    gender = gen
     print(fileID)
     
     try:
@@ -108,17 +103,31 @@ def analyzeAPI():
     except ConnectionError:
         data = {"code": HTTPStatus.INTERNAL_SERVER_ERROR.value, "httpStatus": "Internal Server Error", "message":"[오류] 구글 드라이브 API 문제가 발생했습니다."}
     
-    # 한글 인코딩 
-    result = json.dumps(data, ensure_ascii=False) 
-    res = make_response(result)
-    res.headers['Content-Type'] = 'application/json'
-    
     # 분석 한 후에 데이터 삭제함
-    delete_jpg_files(PATH+"/Models")
+    delete_jpg_files(PATH)
     
-    return res
+    return data
 
-if __name__ == '__main__':
-    app.config['JSON_AS_ASCII'] = False
-    # app.run()
-    app.run(host='0.0.0.0') 
+def downloadDefaultSetting(s3):
+    bucket_name = os.getenv("bucket_name")
+    
+    # 4개의 모델 /tmp 폴더에 다운로드
+    for i in range(4):
+        file_name = os.getenv("model_"+str(i))
+        local_file_path = '/tmp/' + file_name
+        s3.download_file(bucket_name, file_name, local_file_path)
+    
+    ## credentials 다운로드
+    s3.download_file(bucket_name, 'credentials.json', '/tmp/credentials.json')
+
+    ## token 다운로드
+    s3.download_file(bucket_name, 'token.json', '/tmp/token.json')
+    
+def lambda_handler(event, context):
+    # S3 클라이언트 생성
+    s3 = boto3.client('s3')
+    
+    # 모델 다운로드, Credentials, token 다운로드
+    downloadDefaultSetting(s3)
+    
+    return analyzeAPI(event['fileID'], event['gender'])

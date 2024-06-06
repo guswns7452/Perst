@@ -17,7 +17,7 @@ from tensorflow import keras
 from scipy.cluster import hierarchy  # hierarchical clustering
 
 # 실제 모델파일이 저장된 경로에 맞춰서 수정해주세요
-model_dir_path = os.getcwd()+"\\Models\\"
+model_dir_path = "/tmp/"
 
 # 지금은 200x200 사이즈로 학습중이지만, 나중에 변경될 수도 있으므로 변수로 작성
 img_width = 200
