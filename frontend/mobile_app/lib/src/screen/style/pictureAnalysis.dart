@@ -104,7 +104,7 @@ class PictureAnalysis extends StatelessWidget {
                                 '➤ 내 스타일에 따른 추천 의류 보러가기',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                    fontSize: 21,
+                                    fontSize: 20,
                                     fontWeight: FontWeight.w600,
                                     color: const Color.fromARGB(255, 0, 0, 0)),
                               ),

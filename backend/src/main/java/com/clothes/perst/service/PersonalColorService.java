@@ -60,6 +60,7 @@ public class PersonalColorService {
         personalColor.setPersonalColorInfo(PersonalColorDTO.getSeasonTone(personalColor.getPersonalColorType()));
 
         // 대표색 불러오기
+        // [05/30] 대표 색상 업데이트 완료
         personalColor.setPersonalColorRepresentative(representativeColorJPA.representativeColor(personalColor.getPersonalColorType()));
 
         return personalColor;
