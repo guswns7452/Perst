@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.security.auth.message.AuthException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,41 +61,18 @@ public class StyleAnalyzeController {
     public ResponseEntity Analyze(@RequestHeader("Authorization") String token, @RequestParam("image") MultipartFile file) throws Exception {
         logger.info("[스타일 분석하기]");
         try {
+            /* API 시간 측정 */
             long beforeTime = System.currentTimeMillis(); //코드 실행 전에 시간 받아오기
 
+            /* 성별 알아내기 */
             int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
-
-            /* 구글 드라이브로 업로드 하기 */
-            String fileID = styleAnalyzeService.uploadImage(file, memberNumber);
-
-            /* Flask로 요청 보내기 */
             String gender = memberService.findMemberGenderByMemberNumber(memberNumber);
 
-            String requestBody = "{\"fileID\": \"" + fileID + "\", \"gender\": \"" + gender + "\"}";
-            RestResponse responseBody = styleAnalyzeService.ConnectFlaskServer(requestBody);
+            // 스타일 분석 메소드 호출
+            StyleAnalyzeVO styleAnalyzeVO;
+            styleAnalyzeVO = styleAnalyzeService.Analyze(file, memberNumber, gender);
 
-            LinkedHashMap data = (LinkedHashMap) responseBody.getData();
-            logger.info(String.valueOf(data));
-
-            /* 스타일 분석 내용 저장 : styleName, FileID, memberNumber */
-            StyleAnalyzeVO styleAnalyzed = new StyleAnalyzeVO((String) data.get("fashionType"), fileID, memberNumber);
-
-            /* 결과값 받아 DB에 저장하기 */
-            StyleAnalyzeVO newstyleAnalyzeVO = styleAnalyzeService.saveStyleAnalyze(styleAnalyzed);
-            int styleNumber = newstyleAnalyzeVO.getStyleNumber();
-
-            /* DB에 색상 저장하기 */
-            List<StyleColorVO> colors = new ArrayList();
-            colors.add(new StyleColorVO((String) data.get("color1"), styleNumber));
-            colors.add(new StyleColorVO((String) data.get("color2"), styleNumber));
-            colors.add(new StyleColorVO((String) data.get("color3"), styleNumber));
-            colors.add(new StyleColorVO((String) data.get("color4"), styleNumber));
-            styleAnalyzeService.saveStyleColor(colors);
-            newstyleAnalyzeVO.setStyleColor(colors);
-
-            /* 이미지 삭제하기 */
-            styleAnalyzeService.deleteFile();
-
+            /* API 시간 측정 */
             long afterTime = System.currentTimeMillis(); // 코드 실행 후에 시간 받아오기
             long secDiffTime = (afterTime - beforeTime); //두 시간에 차 계산
             logger.info("실행 시간 : "+secDiffTime+"ms");
@@ -104,7 +82,7 @@ public class StyleAnalyzeController {
                     .code(HttpStatus.OK.value())
                     .httpStatus(HttpStatus.OK)
                     .message("분석이 정상적으로 완료되었습니다!")
-                    .data(newstyleAnalyzeVO)
+                    .data(styleAnalyzeVO)
                     .build();
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
         }
@@ -138,7 +116,12 @@ public class StyleAnalyzeController {
      */
     @GetMapping("")
     public ResponseEntity findMyStyle(@RequestHeader("Authorization") String token, @RequestParam("number") int styleNumber) throws Exception {
-        StyleAnalyzeVO newstyleAnalyzeVO = styleAnalyzeService.findMyStyle(styleNumber);
+
+        /* 성별 알아내기 */
+        int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
+        String gender = memberService.findMemberGenderByMemberNumber(memberNumber);
+
+        StyleAnalyzeVO newstyleAnalyzeVO = styleAnalyzeService.findMyStyle(gender, styleNumber);
 
         logger.info("[내 상세 분석 이력 불러오기]");
         try{
@@ -161,6 +144,50 @@ public class StyleAnalyzeController {
         }
     }
 
+
+    /**
+     * 상세 분석 이력 삭제하기
+     * @param token
+     * @param styleNumber
+     * @return
+     * @throws Exception
+     */
+    @DeleteMapping("")
+    public ResponseEntity deleteMyStyle(@RequestHeader("Authorization") String token, @RequestParam("number") int styleNumber) throws Exception {
+        try{
+            int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
+
+            // 삭제하는 메소드
+            logger.info("[내 스타일 분석 이력 삭제하기]");
+            styleAnalyzeService.deleteMyStyle(memberNumber, styleNumber);
+
+            restResponse = RestResponse.builder()
+                    .code(HttpStatus.OK.value())
+                    .httpStatus(HttpStatus.OK)
+                    .message("정상적으로 삭제되었습니다.")
+                    .data(null)
+                    .build();
+            return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
+        }
+        catch (AuthException e){
+            logger.info("[내 스타일 이력 삭제] 다른 계정으로 삭제할 수 없습니다.");
+            restResponse = RestResponse.builder()
+                    .code(HttpStatus.UNAUTHORIZED.value())
+                    .httpStatus(HttpStatus.UNAUTHORIZED)
+                    .message(e.toString())
+                    .build();
+            return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
+        }
+        catch(Exception e) {
+            logger.info("내 스타일 분석 삭제 중 오류");
+            restResponse = RestResponse.builder()
+                    .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .message(e.toString())
+                    .build();
+            return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
+        }
+    }
 
     /**
      * 나의 분석 이력들 호출하기
@@ -194,4 +221,5 @@ public class StyleAnalyzeController {
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
         }
     }
+
 }

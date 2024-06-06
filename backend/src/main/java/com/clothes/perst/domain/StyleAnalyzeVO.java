@@ -38,6 +38,9 @@ public class StyleAnalyzeVO {
     @Transient // DB에 포함하지 않는 변수
     private List<StyleColorVO> styleColor;
 
+    @Transient // DB에 포함하지 않는 변수
+    private List<String> styleCommentFileID;
+
     @CreatedDate
     private Date styleDate;
 }

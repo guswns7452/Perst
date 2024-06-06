@@ -4,6 +4,7 @@ import com.clothes.perst.DTO.MusinsaSearchRequest;
 import com.clothes.perst.DTO.RestResponse;
 import com.clothes.perst.config.JwtTokenService;
 import com.clothes.perst.domain.MusinsaVO;
+import com.clothes.perst.persistance.PersonalColorRepository;
 import com.clothes.perst.service.MusinsaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -26,6 +27,7 @@ import java.util.List;
 @Tag(name="스타일 둘러보기", description = "스타일 둘러보기와 관련된 API입니다.")
 public class ClothesSearchController {
     final MusinsaService musinsaService;
+    final PersonalColorRepository personalColorJPA;
 
     RestResponse<Object> restResponse = new RestResponse<>();
 
@@ -35,9 +37,10 @@ public class ClothesSearchController {
 
 
     @Autowired
-    public ClothesSearchController(MusinsaService musinsaService, JwtTokenService jwtTokenService){
+    public ClothesSearchController(MusinsaService musinsaService, JwtTokenService jwtTokenService, PersonalColorRepository personalColorJPA){
         this.musinsaService = musinsaService;
         this.jwtTokenService = jwtTokenService;
+        this.personalColorJPA = personalColorJPA;
     }
 
     // TODO 토큰 활용하여 정상적인 사용자를 식별하는 코드 추가
@@ -58,12 +61,14 @@ public class ClothesSearchController {
             int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
             musinsaSearchVO.setMemberNumber(memberNumber);
             MusinsaVO manInfo = new MusinsaVO(); manInfo.setMusinsaGender("man"); manInfo.setMusinsaStyle(style);
+
             List<MusinsaVO> maleClothes = musinsaService.findByMusinsaGenderAndMusinsaStyle(manInfo, musinsaSearchVO); // 맨날 불러오는 것이 성능적으로 괜찮은가?
+            String myPersonal = personalColorJPA.findByMemberNumber(memberNumber).getPersonalColorType();
 
             restResponse = RestResponse.builder()
                     .code(HttpStatus.OK.value())
                     .httpStatus(HttpStatus.OK)
-                    .message(style + " 스타일 조회 성공했습니다. " + maleClothes.size() + "장")
+                    .message(myPersonal)
                     .data(maleClothes)
                     .build();
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
@@ -104,12 +109,14 @@ public class ClothesSearchController {
             int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
             searchVO.setMemberNumber(memberNumber);
             MusinsaVO womanInfo = new MusinsaVO(); womanInfo.setMusinsaGender("woman"); womanInfo.setMusinsaStyle(style);
+
             List<MusinsaVO> femaleClothes = musinsaService.findByMusinsaGenderAndMusinsaStyle(womanInfo, searchVO); // 맨날 불러오는 것이 성능적으로 괜찮은가?
+            String myPersonal = personalColorJPA.findByMemberNumber(memberNumber).getPersonalColorType();
 
             restResponse = RestResponse.builder()
                     .code(HttpStatus.OK.value())
                     .httpStatus(HttpStatus.OK)
-                    .message(style + " 스타일 조회 성공했습니다. " + femaleClothes.size() + "장")
+                    .message(myPersonal)
                     .data(femaleClothes)
                     .build();
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
