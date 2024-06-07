@@ -61,7 +61,7 @@ public class StyleAnalyzeController {
     public ResponseEntity Analyze(@RequestHeader("Authorization") String token, @RequestParam("image") MultipartFile file) throws Exception {
         logger.info("[스타일 분석하기]");
         try {
-            /* API 시간 측정 */
+            /* API 시간 측정 - 시작 */
             long beforeTime = System.currentTimeMillis(); //코드 실행 전에 시간 받아오기
 
             /* 성별 알아내기 */
@@ -72,11 +72,10 @@ public class StyleAnalyzeController {
             StyleAnalyzeVO styleAnalyzeVO;
             styleAnalyzeVO = styleAnalyzeService.Analyze(file, memberNumber, gender);
 
-            /* API 시간 측정 */
+            /* API 시간 측정 - 끝 */
             long afterTime = System.currentTimeMillis(); // 코드 실행 후에 시간 받아오기
             long secDiffTime = (afterTime - beforeTime); //두 시간에 차 계산
             logger.info("실행 시간 : "+secDiffTime+"ms");
-
             
             restResponse = RestResponse.builder()
                     .code(HttpStatus.OK.value())

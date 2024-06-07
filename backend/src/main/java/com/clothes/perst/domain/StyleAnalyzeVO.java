@@ -1,5 +1,6 @@
 package com.clothes.perst.domain;
 
+import com.clothes.perst.DTO.PersonalColorTipDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,10 +16,11 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "style_analyze") // 테이블 이름을 명시해줄 수 있습니다.
 public class StyleAnalyzeVO {
-    public StyleAnalyzeVO(String fashionType, String styleFileID, int memberNumber){
+    public StyleAnalyzeVO(String fashionType, String styleFileID, int memberNumber, String personalColorType){
         this.styleName = fashionType;
         this.styleFileID = styleFileID;
         this.memberNumber = memberNumber;
+        this.stylePersonalColor = personalColorType;
     }
     public StyleAnalyzeVO(){
 
@@ -35,11 +37,16 @@ public class StyleAnalyzeVO {
 
     private String styleFeedback;
 
+    private String stylePersonalColor;
+
     @Transient // DB에 포함하지 않는 변수
     private List<StyleColorVO> styleColor;
 
     @Transient // DB에 포함하지 않는 변수
     private List<String> styleCommentFileID;
+
+    @Transient // DB에 포함하지 않는 변수
+    private PersonalColorTipDTO personalColorTip;
 
     @CreatedDate
     private Date styleDate;

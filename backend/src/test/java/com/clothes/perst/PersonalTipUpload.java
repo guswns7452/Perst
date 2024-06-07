@@ -1,12 +1,10 @@
 package com.clothes.perst;
 
-import com.clothes.perst.DTO.ClothesFolder;
 import com.clothes.perst.config.GoogleDriveAPI;
 import com.clothes.perst.domain.CoordinateVO;
-import com.clothes.perst.domain.MusinsaVO;
+import com.clothes.perst.domain.PersonalTipVO;
 import com.clothes.perst.persistance.CoordinateRepository;
-import com.clothes.perst.persistance.MusinsaRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.clothes.perst.persistance.PersonalTipRepository;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
@@ -31,17 +29,16 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Google Drive에 코디법 업로드 하는 코드
  */
 @SpringBootTest
-public class CoordinateUpload {
+public class PersonalTipUpload {
     //사용자의 토큰을 어디에 저장할지 경로를 지정
     public static final String TOKENS_DIRECTORY_PATH = "tokens";
     //어플리케이션이 요청하는 권한의 범위를 지정
@@ -52,9 +49,9 @@ public class CoordinateUpload {
     public static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
 
     @Autowired
-    private CoordinateRepository codiJPA; // UserRepository는 JPA Repository 인터페이스
+    private PersonalTipRepository personalTipJPA; // UserRepository는 JPA Repository 인터페이스
 
-    @Value("${folderId.Coordinate}")
+    @Value("${folderId.PersonalTip}")
     String folderID;
 
     public static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
@@ -75,8 +72,8 @@ public class CoordinateUpload {
     }
 
     @Test
-    public void updateCodiDB() throws GeneralSecurityException, IOException {
-        String folderPath = "D:\\coding\\perst_dataset\\coordinate";
+    public void updatePersonalTipDB() throws GeneralSecurityException, IOException {
+        String folderPath = "D:\\coding\\perst_dataset\\personal_tip";
 
         // 폴더 객체 생성
         java.io.File folder = new java.io.File(folderPath);
@@ -88,15 +85,12 @@ public class CoordinateUpload {
         if (files != null) {
             for (java.io.File file : files) {
                 String fileName = file.getName();
-                List<String> fileMetaData = new ArrayList<>(List.of(fileName.split("_")));
 
-                // 구글 업로드 후 FileId 필요함
                 String fileId = uploadBasic(fileName);
-                fileMetaData.set(2,fileMetaData.get(2).replace(".png",""));
-                fileMetaData.add(fileId);
+                fileName.replace(".png", "");
 
-                CoordinateVO codi = new CoordinateVO(fileMetaData);
-                codiJPA.save(codi);
+                PersonalTipVO personalTip = new PersonalTipVO(fileName, fileId);
+                personalTipJPA.save(personalTip);
 
                 System.out.println("업로드 완료 : "+fileName);
             }
@@ -116,9 +110,7 @@ public class CoordinateUpload {
                 .setApplicationName(APPLICATION_NAME)
                 .build();
 
-        String folderPath = "D:\\coding\\perst_dataset\\coordinate\\";
-
-
+        String folderPath = "D:\\coding\\perst_dataset\\personal_tip\\";
 
         // Upload file photo.jpg on drive.
         File fileMetadata = new File();

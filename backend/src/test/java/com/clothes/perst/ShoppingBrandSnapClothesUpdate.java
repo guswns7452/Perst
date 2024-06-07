@@ -156,7 +156,7 @@ public class ShoppingBrandSnapClothesUpdate {
 
     public String uploadBasic(String gender, String style, String folderPath, String newFileName) throws IOException, GeneralSecurityException {
         // Load pre-authorized user credentials from the environment.
-        // TODO(developer) - See https://developers.google.com/identity for
+        // (developer) - See https://developers.google.com/identity for
         // guides on implementing OAuth2 for your application.
 
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
@@ -184,7 +184,7 @@ public class ShoppingBrandSnapClothesUpdate {
             // System.out.println("File ID: " + file.getId());
             return file.getId();
         } catch (GoogleJsonResponseException e) {
-            // TODO(developer) - handle error appropriately
+            // (developer) - handle error appropriately
             System.err.println("Unable to upload file: " + e.getDetails());
             throw e;
         }
