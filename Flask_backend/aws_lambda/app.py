@@ -118,6 +118,7 @@ def downloadDefaultSetting(s3):
         s3.download_file(bucket_name, file_name, local_file_path)
     
     ## credentials 다운로드
+    # 06/04 S3에 파일 재업
     s3.download_file(bucket_name, 'credentials.json', '/tmp/credentials.json')
 
     ## token 다운로드
