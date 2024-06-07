@@ -9,6 +9,7 @@ application.properties
 !**/src/tokens/
 StoredCredential
 credentials.json
+credentials_serivce.json
 GoogleDriveFileID.json
 musinsaFolderID.json
 
