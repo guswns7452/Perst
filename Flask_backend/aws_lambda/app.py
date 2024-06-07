@@ -90,8 +90,8 @@ def analyzeAPI(id, gen):
     # except FileNotFoundError:
     #    data = {"code": HTTPStatus.NOT_FOUND.value, "httpStatus": "Not Found", "message": "구글 드라이브에 일치하는 파일이 없습니다."}
     
-    # except ConnectionError:
-    #    data = {"code": HTTPStatus.INTERNAL_SERVER_ERROR.value, "httpStatus": "Internal Server Error", "message":"[오류] 구글 드라이브 API 문제가 발생했습니다."}
+    except ConnectionError:
+        data = {"code": HTTPStatus.INTERNAL_SERVER_ERROR.value, "httpStatus": "Internal Server Error", "message":"[오류] 구글 드라이브 API 문제가 발생했습니다."}
     
     # 분석 한 후에 데이터 삭제함
     delete_jpg_files(PATH)
