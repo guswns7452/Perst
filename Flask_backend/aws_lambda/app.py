@@ -12,7 +12,7 @@ from googleapiclient.http import MediaIoBaseDownload
 
 from module_import_example import machineLearning
 
-PATH = '/tmp/'
+PATH = '/tmp/Models/'
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/drive"]
