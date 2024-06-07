@@ -1,0 +1,78 @@
+name: Deploy Lambda
+
+on:
+  push:
+    paths:
+      - 'Flask_backend/aws_lambda/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      REPOSITORY_NAME: aws-lambda
+      REGION: ap-northeast-2
+      ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+      BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
+      MODEL_0: ${{ secrets.MODEL_0 }}
+      MODEL_1: ${{ secrets.MODEL_1 }}
+      MODEL_2: ${{ secrets.MODEL_2 }}
+      MODEL_3: ${{ secrets.MODEL_3 }}
+      LAMBDA_ROLE: ${{ secrets.LAMBDA_ROLE}}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.REGION }}
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Log in to Amazon ECR
+      id: ecr-login
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build Docker image
+      run: docker build -t ${{ env.REPOSITORY_NAME }} Flask_backend/aws_lambda
+
+    - name: Get image digest
+      id: get-image-digest
+      run: |
+        IMAGE_DIGESTS=$(aws ecr list-images --repository-name ${{ env.REPOSITORY_NAME }} --region ${{ env.REGION }} --query "imageIds[*].imageDigest" --output text)
+        echo "IMAGE_DIGESTS=$IMAGE_DIGESTS" >> $GITHUB_ENV
+
+    - name: Delete old images from ECR
+      if: env.IMAGE_DIGESTS != ''
+      run: |
+        for DIGEST in $IMAGE_DIGESTS; do
+          aws ecr batch-delete-image --repository-name ${{ env.REPOSITORY_NAME }} --region ${{ env.REGION }} --image-ids imageDigest=$DIGEST
+        done
+
+    - name: Delete ECR repository
+      run: aws ecr delete-repository --repository-name ${{ env.REPOSITORY_NAME }} --region ${{ env.REGION }} --force || true
+
+    - name: Create ECR repository
+      run: aws ecr create-repository --repository-name ${{ env.REPOSITORY_NAME }} --image-scanning-configuration scanOnPush=true --region ${{ env.REGION }}
+
+    - name: Tag Docker image
+      run: docker tag ${{ env.REPOSITORY_NAME }}:latest ${{ env.ACCOUNT_ID }}.dkr.ecr.${{ env.REGION }}.amazonaws.com/${{ env.REPOSITORY_NAME }}:latest
+
+    - name: Push Docker image to ECR
+      run: docker push ${{ env.ACCOUNT_ID }}.dkr.ecr.${{ env.REGION }}.amazonaws.com/${{ env.REPOSITORY_NAME }}:latest
+
+    - name: Delete old Lambda function
+      run: aws lambda delete-function --function-name perst1 || true
+
+    - name: Create new Lambda function
+      run: |
+        aws lambda create-function --function-name perst1 --package-type Image \
+          --code ImageUri=${{ env.ACCOUNT_ID }}.dkr.ecr.${{ env.REGION }}.amazonaws.com/${{ env.REPOSITORY_NAME }}:latest \
+          --role ${{ env.LAMBDA_ROLE }} \
+          --environment Variables={bucket_name=${{ env.BUCKET_NAME }},model_0=${{ env.MODEL_0 }},model_1=${{ env.MODEL_1 }},model_2=${{ env.MODEL_2 }},model_3=${{ env.MODEL_3 }}} \
+          --memory-size 3008 --timeout 600 --ephemeral-storage Size=5000
