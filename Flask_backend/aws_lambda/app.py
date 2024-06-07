@@ -108,7 +108,7 @@ def downloadDefaultSetting(s3):
     # 4개의 모델 /tmp 폴더에 다운로드
     for i in range(4):
         folder_name = os.getenv("model_"+str(i))
-        local_file_path = '/tmp/Models/' + folder_name
+        local_file_path = '/tmp/Models/' + folder_name + '/'
         
         # S3 버킷에서 파일 목록 가져오기
         response = s3.list_objects_v2(Bucket=bucket_name, Prefix=folder_name)
@@ -119,7 +119,7 @@ def downloadDefaultSetting(s3):
                 file_name = file_key.split('/')[-1]
                 
                 if file_name:  # 폴더 자체가 아닌 경우
-                    local_file_path = os.path.join(download_path, file_name)
+                    local_file_path = os.path.join(local_file_path, file_name)
                     
                     # 파일 다운로드
                     s3.download_file(bucket_name, file_key, local_file_path)
