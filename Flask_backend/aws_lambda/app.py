@@ -112,12 +112,32 @@ def analyzeAPI(id, gen):
 def downloadDefaultSetting(s3):
     bucket_name = os.getenv("bucket_name")
     
+    # Model들 저장할 폴더 생성
+    download_path = '/tmp/Models/'
+    os.makedirs(download_path, exist_ok=True)
+    
     # 4개의 모델 /tmp 폴더에 다운로드
     for i in range(4):
-        file_name = os.getenv("model_"+str(i))
-        local_file_path = '/tmp/' + file_name
-        s3.download_file(bucket_name, file_name, local_file_path)
-    
+        folder_name = os.getenv("model_"+str(i))
+        local_file_path = '/tmp/Models/' + folder_name
+        
+        # S3 버킷에서 파일 목록 가져오기
+        response = s3.list_objects_v2(Bucket=bucket_name, Prefix=folder_name)
+        
+        if 'Contents' in response:
+            for item in response['Contents']:
+                file_key = item['Key']
+                file_name = file_key.split('/')[-1]
+                
+                if file_name:  # 폴더 자체가 아닌 경우
+                    local_file_path = os.path.join(download_path, file_name)
+                    
+                    # 파일 다운로드
+                    s3.download_file(bucket_name, file_key, local_file_path)
+                    print(f'Downloaded {file_key} to {local_file_path}')
+        else:
+            print('No files found in the specified folder.')
+            
     ## credentials 다운로드
     # 06/04 S3에 파일 재업
     s3.download_file(bucket_name, 'credentials.json', '/tmp/credentials.json')
