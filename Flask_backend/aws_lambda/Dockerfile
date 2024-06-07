@@ -5,12 +5,12 @@ FROM public.ecr.aws/lambda/python:3.11
 # Copy the earlier created requirements.txt file to the container
 COPY requirements.txt ./
 
-RUN dnf update -y
-RUN dnf install -y mesa-libGL
+RUN yum update -y
+RUN yum install -y mesa-libGL
 
 # Install the python requirements from requirements.txt
 RUN python3 -m pip config set global.break-system-packages true
-RUN python3.12 -m pip install -r requirements.txt
+RUN python3.11 -m pip install -r requirements.txt
 
 # Copy the earlier created app.py file to the container
 COPY app.py ./
