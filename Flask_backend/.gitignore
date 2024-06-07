@@ -2,6 +2,7 @@ images
 newimages 
 
 credentials.json
+credentials_service.json
 token.json
 
 __pycache__

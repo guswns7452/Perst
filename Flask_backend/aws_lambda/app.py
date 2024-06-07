@@ -4,11 +4,9 @@ import os.path
 from http import HTTPStatus
 import boto3,json
 
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
+from google.oauth2 import service_account
 from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
+from googleapiclient.http import MediaIoBaseDownload
 
 from googleapiclient.http import MediaIoBaseDownload
 
@@ -29,22 +27,7 @@ SCOPES = ["https://www.googleapis.com/auth/drive"]
 # 구글 드라이브에서 이미지를 다운로드하는 코드
 #
 def DownloadByGoogleDrive(fileID):
-    creds = None
-    # The file token.json stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
-    if os.path.exists(PATH+"token.json"):
-        creds = Credentials.from_authorized_user_file(PATH+"token.json", SCOPES)
-    # If there are no (valid) credentials available, let the user log in.
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(PATH+"credentials.json", SCOPES)
-            creds = flow.run_local_server(port=0)
-        # Save the credentials for the next run
-        with open(PATH+"token.json", "w") as token:
-            token.write(creds.to_json())
+    creds = service_account.Credentials.from_service_account_file("/tmp/credentials_service.json")
 
     try:
         # Google 드라이브 API 빌드
@@ -52,16 +35,20 @@ def DownloadByGoogleDrive(fileID):
 
         # 파일 다운로드
         request = drive_service.files().get_media(fileId=fileID)
-        fh = open(PATH+ fileID + ".jpg", "wb")
-        downloader = MediaIoBaseDownload(fh, request)
-        done = False
-        while done is False:
-            status, done = downloader.next_chunk()
-            print("Download %d%%." % int(status.progress() * 100))
+        local_file_path = os.path.join(PATH, f"{fileID}.jpg")
+        with open(local_file_path, "wb") as fh:
+            downloader = MediaIoBaseDownload(fh, request)
+            done = False
+            while not done:
+                status, done = downloader.next_chunk()
+                if status:
+                    print("Download %d%%." % int(status.progress() * 100))
         print("이미지 다운로드가 완료되었습니다.")
+        return local_file_path
     except Exception as e:
         print("이미지 다운로드 중 오류가 발생했습니다:", str(e))
-
+        return None
+        
 ## 
 # 이미지 분석 후 jpg 파일을 삭제하는 코드
 #
@@ -140,7 +127,7 @@ def downloadDefaultSetting(s3):
             
     ## credentials 다운로드
     # 06/04 S3에 파일 재업
-    s3.download_file(bucket_name, 'credentials.json', '/tmp/credentials.json')
+    s3.download_file(bucket_name, 'credentials_service.json', '/tmp/credentials_service.json')
 
     ## token 다운로드
     s3.download_file(bucket_name, 'token.json', '/tmp/token.json')
