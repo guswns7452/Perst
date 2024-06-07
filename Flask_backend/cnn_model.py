@@ -11,8 +11,6 @@
 import cv2
 import numpy as np
 import os
-import PIL
-from PIL import Image
 
 # 모델
 from tensorflow import keras
@@ -42,8 +40,7 @@ def imgLoad(fileID, input_type):
         )
         return
 
-    img_read = Image.open(img_path)
-    img_file = np.array(img_read)
+    img_file = cv2.imread(img_path)
     if img_file is None:
         print(
             "이미지 파일을 불러오는데 실패했습니다. 해당 파일이 존재하는지 확인해주세요"
