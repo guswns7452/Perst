@@ -1,4 +1,4 @@
-# CI/CD TEST3 : 진짜 마지막 가능할 듯
+# CI/CD TEST4 : 환경 변수 오류 설정
 import os.path
 
 from http import HTTPStatus
