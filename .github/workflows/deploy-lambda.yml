@@ -7,7 +7,6 @@ on:
 
 jobs:
   
-
   update_integration:
     runs-on: ubuntu-latest
 
@@ -26,17 +25,18 @@ jobs:
           aws-region: ${{ env.REGION }}
 
       - name: Get Route ID
-        id: get-route
+        id: get_route_id
         run: |
-          ROUTE_ID=$(aws apigatewayv2 get-routes --api-id ${{  secrets.API_ID  }} --query "Items[?RouteKey=='${{  secrets.ROUTE_KEY  }}'].RouteId" --output text)
+          # Get the Route ID from AWS API Gateway
+          ROUTE_ID=$(aws apigatewayv2 get-routes --api-id ${{ secrets.API_ID }} --query "Items[?RouteKey=='${{ secrets.ROUTE_KEY }}'].RouteId" --output text)
+          # Check if the Route ID is found
           if [ -z "$ROUTE_ID" ]; then
             echo "Route not found."
             exit 1
           else
             echo "Route found."
-            echo 'ROUTE_ID=$ROUTE_ID' >> $GITHUB_ENV
-            echo "${{  env.ROUTE_ID  }}"
-          fi
+            echo "ROUTE_ID=$ROUTE_ID" >> $GITHUB_ENV
+            echo "ROUTE_ID is set to $ROUTE_ID"
 
       - name: Get existing integration ID
         run: |
