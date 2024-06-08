@@ -83,7 +83,7 @@ jobs:
 
     env:
       REGION: ap-northeast-2
-      
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -98,4 +98,4 @@ jobs:
       - name: ADD_permission
         id: add_permission
         run: |
-          aws lambda add-permission --function-name perst1 --statement-id FunctionURLAllowPublicAccess --action lambda:InvokeFunctionUrl --principal * --function-url-auth-type NONE
+          aws lambda add-permission --function-name perst1 --statement-id FunctionURLAllowPublicAccess --action lambda:InvokeFunctionUrl --principal "*" --function-url-auth-type NONE

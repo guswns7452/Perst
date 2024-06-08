@@ -1,4 +1,4 @@
-#💚 함수 URL 권한 테스트 #52
+#💚 함수 URL 권한 테스트2 #52
 
 import os.path
 
