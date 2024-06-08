@@ -11,13 +11,14 @@
 import cv2
 import numpy as np
 import os
+from PIL import Image
 
 # 모델
 from tensorflow import keras
 from scipy.cluster import hierarchy  # hierarchical clustering
 
 # 실제 모델파일이 저장된 경로에 맞춰서 수정해주세요
-model_dir_path = "/tmp/"
+model_dir_path = "/tmp/Models/"
 
 # 지금은 200x200 사이즈로 학습중이지만, 나중에 변경될 수도 있으므로 변수로 작성
 img_width = 200
@@ -57,11 +58,11 @@ def imgLoad(fileID, input_type):
 # 출력: 마스크 이미지. [0~5]로 구분됨.
 def clothDetection(input_img):
     # 배경제거 모델 불러오기
-    bg_model_path = model_dir_path + "binary_poly_seg_model_0113_01.keras"
+    bg_model_path = model_dir_path + "binary_poly_seg_model_0113_01"
     bg_detection_model = keras.models.load_model(bg_model_path)
 
     # 의상 파츠분리 모델 불러오기
-    part_model_path = model_dir_path + "poly_seg_model_0428_02.keras"
+    part_model_path = model_dir_path + "poly_seg_model_0428_02"
     part_detection_model = keras.models.load_model(part_model_path)
 
     # 배경제거 예측을 위해 list 형태로 만들기
@@ -103,7 +104,7 @@ def maleFashionClassification(input_img):
         "Normcore",
     ]
 
-    model_path = model_dir_path + "fashion_classification_male_0127_04.keras"
+    model_path = model_dir_path + "fashion_classification_male_0127_04"
     male_fashion_model = keras.models.load_model(model_path)
 
     # 예측을 위해 list 형태로 만들기
@@ -133,7 +134,7 @@ def femaleFashionClassification(input_img):
         "Casual",
     ]
 
-    model_path = model_dir_path + "fashion_classification_female_0123_03.keras"
+    model_path = model_dir_path + "fashion_classification_female_0123_03"
     female_fashion_model = keras.models.load_model(model_path)
 
     # 예측을 위해 list 형태로 만들기

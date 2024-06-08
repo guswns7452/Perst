@@ -18,6 +18,7 @@ def machineLearning(fileID, gender):
     if ori_img is None:
         print("이미지 파일을 불러오는데 실패하였습니다.")
 
+    print("스타일 분석 시작합니다")
     output = cnn_model_main(ori_img, gender)
 
     # 배경이 제거된 이미지 출력    

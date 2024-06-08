@@ -1,14 +1,19 @@
 package com.clothes.perst;
 
 import com.clothes.perst.DTO.ClothesFolder;
+import com.clothes.perst.config.GoogleDriveAPI;
 import com.clothes.perst.domain.ClothesFemaleVO;
 import com.clothes.perst.domain.ClothesMaleVO;
 import com.clothes.perst.persistance.FemaleClothesSearchRepository;
 import com.clothes.perst.persistance.MaleClothesSearchRepository;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.FileList;
+import com.google.auth.http.HttpCredentialsAdapter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -51,8 +56,11 @@ public class ClothesSubmitTests {
         System.out.println(filePath);
 
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        Drive service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
-                .setApplicationName(APPLICATION_NAME)
+        JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
+        HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(getCredentials());
+
+        Drive service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, requestInitializer)
+                .setApplicationName(GoogleDriveAPI.APPLICATION_NAME)
                 .build();
 
         List<ClothesFolder> folders = loadClothesList(filePath);

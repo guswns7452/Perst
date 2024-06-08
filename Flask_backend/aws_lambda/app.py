@@ -1,19 +1,19 @@
+#💚 함수 URL 권한 테스트2 #52
+
 import os.path
 
 from http import HTTPStatus
 import boto3,json
 
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
+from google.oauth2 import service_account
 from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
+from googleapiclient.http import MediaIoBaseDownload
 
 from googleapiclient.http import MediaIoBaseDownload
 
 from module_import_example import machineLearning
 
-PATH = '/tmp/'
+PATH = '/tmp/Models/'
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/drive"]
@@ -28,22 +28,7 @@ SCOPES = ["https://www.googleapis.com/auth/drive"]
 # 구글 드라이브에서 이미지를 다운로드하는 코드
 #
 def DownloadByGoogleDrive(fileID):
-    creds = None
-    # The file token.json stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
-    if os.path.exists(PATH+"token.json"):
-        creds = Credentials.from_authorized_user_file(PATH+"token.json", SCOPES)
-    # If there are no (valid) credentials available, let the user log in.
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(PATH+"credentials.json", SCOPES)
-            creds = flow.run_local_server(port=0)
-        # Save the credentials for the next run
-        with open(PATH+"token.json", "w") as token:
-            token.write(creds.to_json())
+    creds = service_account.Credentials.from_service_account_file("/tmp/credentials_service.json")
 
     try:
         # Google 드라이브 API 빌드
@@ -51,16 +36,20 @@ def DownloadByGoogleDrive(fileID):
 
         # 파일 다운로드
         request = drive_service.files().get_media(fileId=fileID)
-        fh = open(PATH+ fileID + ".jpg", "wb")
-        downloader = MediaIoBaseDownload(fh, request)
-        done = False
-        while done is False:
-            status, done = downloader.next_chunk()
-            print("Download %d%%." % int(status.progress() * 100))
+        local_file_path = os.path.join(PATH, f"{fileID}.jpg")
+        with open(local_file_path, "wb") as fh:
+            downloader = MediaIoBaseDownload(fh, request)
+            done = False
+            while not done:
+                status, done = downloader.next_chunk()
+                if status:
+                    print("Download %d%%." % int(status.progress() * 100))
         print("이미지 다운로드가 완료되었습니다.")
+        return local_file_path
     except Exception as e:
         print("이미지 다운로드 중 오류가 발생했습니다:", str(e))
-
+        return None
+        
 ## 
 # 이미지 분석 후 jpg 파일을 삭제하는 코드
 #
@@ -93,12 +82,14 @@ def analyzeAPI(id, gen):
             
             colors.append([r,g,b,ratio])
         
+        print(output)
+        
         # 현재 사진 데이터 하나라고 가정.
         message = "고객님의 사진을 분석하였습니다!"
         data = {"code": HTTPStatus.OK.value, "httpStatus": "OK", "message":message, "data":{"fashionType" : output['fashion_type'], "color1": str(colors[0]), "color2": str(colors[1]), "color3": str(colors[2]), "color4": str(colors[3]), "personalColorType": output['personal_color_label']}} # 이름의 필요성 없음. , "name": items[0]['name']
     
-    except FileNotFoundError:
-        data = {"code": HTTPStatus.NOT_FOUND.value, "httpStatus": "Not Found", "message": "구글 드라이브에 일치하는 파일이 없습니다."}
+    # except FileNotFoundError:
+    #    data = {"code": HTTPStatus.NOT_FOUND.value, "httpStatus": "Not Found", "message": "구글 드라이브에 일치하는 파일이 없습니다."}
     
     except ConnectionError:
         data = {"code": HTTPStatus.INTERNAL_SERVER_ERROR.value, "httpStatus": "Internal Server Error", "message":"[오류] 구글 드라이브 API 문제가 발생했습니다."}
@@ -111,23 +102,60 @@ def analyzeAPI(id, gen):
 def downloadDefaultSetting(s3):
     bucket_name = os.getenv("bucket_name")
     
+    # Model들 저장할 폴더 생성
+    download_path = '/tmp/Models/'
+    os.makedirs(download_path, exist_ok=True)
+    
     # 4개의 모델 /tmp 폴더에 다운로드
     for i in range(4):
-        file_name = os.getenv("model_"+str(i))
-        local_file_path = '/tmp/' + file_name
-        s3.download_file(bucket_name, file_name, local_file_path)
-    
+        folder_name = os.getenv("model_"+str(i))
+        local_file_path = '/tmp/Models/' + folder_name + '/'
+        
+        if not os.path.exists(local_file_path):
+            os.makedirs(local_file_path)
+        
+        if not os.path.exists(local_file_path+"variables"):
+            os.makedirs(local_file_path+"variables") # Variables 폴더 생성
+        
+        else:
+            print("/tmp/ 폴더에 모델들이 존재하므로, 다운하지 않음")    
+            break # 파일들이 존재하면 다운하지 않음
+            
+        # S3 버킷에서 파일 목록 가져오기
+        response = s3.list_objects_v2(Bucket=bucket_name, Prefix=folder_name)
+        
+        if 'Contents' in response:
+            for item in response['Contents']:
+                file_key = item['Key']
+                file_name = file_key.split('/')[-1]
+                
+                if file_name:  # 폴더 자체가 아닌 경우
+                    # 파일명에 variable이 포함되어있으면 Variables 디렉토리에 다운로드
+                    if 'variables' in file_name:
+                        file_path = os.path.join(local_file_path+'/variables/', file_name)
+                    
+                    else:
+                        file_path = os.path.join(local_file_path, file_name)
+                    
+                    # 파일 다운로드
+                    s3.download_file(bucket_name, file_key, file_path)
+                    print(f'Downloaded {file_key} to {file_path}')
+        else:
+            print('No files found in the specified folder.')
+            
     ## credentials 다운로드
-    s3.download_file(bucket_name, 'credentials.json', '/tmp/credentials.json')
+    # 06/04 S3에 파일 재업
+    s3.download_file(bucket_name, 'credentials_service.json', '/tmp/credentials_service.json')
 
-    ## token 다운로드
-    s3.download_file(bucket_name, 'token.json', '/tmp/token.json')
-    
 def lambda_handler(event, context):
+    print(event)
+    
+    body = json.loads(event['body'])
+    
     # S3 클라이언트 생성
     s3 = boto3.client('s3')
     
     # 모델 다운로드, Credentials, token 다운로드
     downloadDefaultSetting(s3)
     
-    return analyzeAPI(event['fileID'], event['gender'])
+    return analyzeAPI(body.get('fileID'), body.get('gender'))

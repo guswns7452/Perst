@@ -1,15 +1,20 @@
 package com.clothes.perst.service;
 
-import com.clothes.perst.DTO.PersonalColorDTO;
-import com.clothes.perst.DTO.PersonalColorTipDTO;
-import com.clothes.perst.DTO.RestResponse;
-import com.clothes.perst.DTO.TransferStyleAnalyzeDTO;
+import com.clothes.perst.DTO.*;
 import com.clothes.perst.config.GoogleDriveAPI;
 import com.clothes.perst.domain.PersonalColorVO;
 import com.clothes.perst.domain.PersonalTipVO;
 import com.clothes.perst.domain.StyleAnalyzeVO;
 import com.clothes.perst.domain.StyleColorVO;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.clothes.perst.persistance.*;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.FileContent;
@@ -30,6 +35,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -50,6 +56,10 @@ public class StyleAnalyzeService {
 
     @Value("${folderId.ClothesAnalyze}")
     String folderID;
+
+
+    @Value("${apiURL}")
+    String apiUrl;
 
     @Autowired
     public StyleAnalyzeService(StyleAnalyzeRepository styleAnalyzeJPA, PersonalTipRepository personalTipJPA, PersonalColorRepository personalColorJPA, CoordinateRepository coordinateJPA, StyleAnalyzeColorRepository styleAnalyzeColorRepository, GoogleDriveAPI googleDriveAPI) {
@@ -81,7 +91,6 @@ public class StyleAnalyzeService {
         RestResponse responseBody = ConnectFlaskServer(requestBody);
 
         LinkedHashMap data = (LinkedHashMap) responseBody.getData();
-        logger.info(String.valueOf(data));
 
         /* 퍼스널 컬러 타입 영어 TO 한글*/
         String AnalyzedPersonalColor = PersonalColorDTO.changeEngToKor((String) data.get("personalColorType"));
@@ -106,8 +115,10 @@ public class StyleAnalyzeService {
         deleteFile();
 
         /* 스타일 피드백 FileID 리스트 출력 */
-        newstyleAnalyzeVO.setStyleCommentFileID(searchStyleCommentFileIDs(gender, newstyleAnalyzeVO.getStyleName()));
-        
+        String changeStyle = CoordinateTipDTO.changeCodiTip(newstyleAnalyzeVO.getStyleName(), gender);
+        newstyleAnalyzeVO.setStyleCommentFileID(searchStyleCommentFileIDs(gender, changeStyle));
+        newstyleAnalyzeVO.setStyleName(changeStyle);
+
         /* 퍼스널 컬러 피드백 */
         newstyleAnalyzeVO.setPersonalColorTip(setPersonalColorTip(memberNumber, AnalyzedPersonalColor));
         return newstyleAnalyzeVO;
@@ -223,8 +234,14 @@ public class StyleAnalyzeService {
      * @return fileID
      */
     public String uploadImage(MultipartFile uploadFile, int memberNumber) throws IOException, GeneralSecurityException {
-        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        Drive service = new Drive.Builder(HTTP_TRANSPORT, GoogleDriveAPI.JSON_FACTORY, GoogleDriveAPI.getCredentials(HTTP_TRANSPORT))
+        HttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+        JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
+        InputStream in = StyleAnalyzeService.class.getResourceAsStream("/credentials_service.json");
+
+        GoogleCredentials credential = ServiceAccountCredentials.fromStream(in).createScoped("https://www.googleapis.com/auth/drive");
+        HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credential);
+
+        Drive service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, requestInitializer)
                 .setApplicationName(GoogleDriveAPI.APPLICATION_NAME)
                 .build();
 
@@ -260,9 +277,11 @@ public class StyleAnalyzeService {
 
         HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
 
-        String apiUrl = "http://127.0.0.1:5000/style/analyze";
+        // AWS Lambda 함수로 요청, apiUrl은 상단에 명시되어있음.
+
         ResponseEntity<RestResponse> response = restTemplate.postForEntity(apiUrl, entity, RestResponse.class);
 
+        logger.info(response.toString());
         RestResponse responseBody = response.getBody();
 
         return responseBody;
