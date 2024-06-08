@@ -1,4 +1,3 @@
-# CI/CD TEST4 : 환경 변수 오류 설정
 import os.path
 
 from http import HTTPStatus

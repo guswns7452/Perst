@@ -75,4 +75,4 @@ jobs:
           --code ImageUri=${{ env.ACCOUNT_ID }}.dkr.ecr.${{ env.REGION }}.amazonaws.com/${{ env.REPOSITORY_NAME }}:latest \
           --role ${{ env.LAMBDA_ROLE }} \
           --environment "Variables={bucket_name=${{ env.BUCKET_NAME }},model_0=${{ env.MODEL_0 }},model_1=${{ env.MODEL_1 }},model_2=${{ env.MODEL_2 }},model_3=${{ env.MODEL_3 }}}" \
-          --memory-size 3008 --timeout 600 --ephemeral-storage Size=5000
+          --memory-size 6020 --timeout 600 --ephemeral-storage Size=5000
