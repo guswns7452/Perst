@@ -110,6 +110,7 @@ def downloadDefaultSetting(s3):
         folder_name = os.getenv("model_"+str(i))
         local_file_path = '/tmp/Models/' + folder_name + '/'
         os.makedirs(local_file_path, exist_ok=True)
+        os.makedirs(local_file_path+"variables", exist_ok=True) # Variables 폴더 생성
         
         # S3 버킷에서 파일 목록 가져오기
         response = s3.list_objects_v2(Bucket=bucket_name, Prefix=folder_name)
@@ -120,7 +121,12 @@ def downloadDefaultSetting(s3):
                 file_name = file_key.split('/')[-1]
                 
                 if file_name:  # 폴더 자체가 아닌 경우
-                    file_path = os.path.join(local_file_path, file_name)
+                    # 파일명에 variable이 포함되어있으면 Variables 디렉토리에 다운로드
+                    if 'variables' in file_name:
+                        file_path = os.path.join(local_file_path+'/variables/', file_name)
+                    
+                    else:
+                        file_path = os.path.join(local_file_path, file_name)
                     
                     # 파일 다운로드
                     s3.download_file(bucket_name, file_key, file_path)
