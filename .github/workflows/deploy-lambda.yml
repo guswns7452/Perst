@@ -159,7 +159,7 @@ jobs:
           echo "URL=$URL" >> $GITHUB_ENV
           
       - name: ADD_permission
-        id: get_lambda_url
+        id: add_permission
         run: |
           aws lambda add-permission --function-name perst1 --statement-id FunctionURLAllowPublicAccess --action lambda:InvokeFunctionUrl --principal * --function-url-auth-type NONE
 
