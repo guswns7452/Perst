@@ -77,12 +77,9 @@ jobs:
           --environment "Variables={bucket_name=${{ env.BUCKET_NAME }},model_0=${{ env.MODEL_0 }},model_1=${{ env.MODEL_1 }},model_2=${{ env.MODEL_2 }},model_3=${{ env.MODEL_3 }}}" \
           --memory-size 6020 --timeout 600 --ephemeral-storage Size=5000
 
-  update_integration:
+  add_permission_lambda_url:
     needs: deploy
     runs-on: ubuntu-latest
-
-    env:
-      REGION: ap-northeast-2
 
     steps:
       - name: Checkout repository
@@ -95,82 +92,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.REGION }}
 
-      - name: Get Route ID
-        id: get_route_id
-        run: |
-          # Get the Route ID from AWS API Gateway
-          ROUTE_ID=$(aws apigatewayv2 get-routes --api-id ${{ secrets.API_ID }} --query "Items[?RouteKey=='${{ secrets.ROUTE_KEY }}'].RouteId" --output text)
-          # Check if the Route ID is found
-          if [ -z "$ROUTE_ID" ]; then
-            echo "Route not found."
-            exit 1
-          else
-            echo "Route found."
-            echo "::add-mask::$ROUTE_ID"
-            echo "ROUTE_ID=$ROUTE_ID" >> $GITHUB_ENV
-          fi
-
-
-      - name: Get existing integration ID
-        run: |
-          INTEGRATION_ID=$(aws apigatewayv2 get-integrations --api-id ${{  secrets.API_ID  }} --query "Items[?IntegrationType=='AWS_PROXY'].IntegrationId" --output text)
-          if [ -z "$INTEGRATION_ID" ]; then
-            echo "No existing integration found. Creating a new integration."
-          else
-            echo "Removing existing integration from route."
-            aws apigatewayv2 delete-route --api-id ${{  secrets.API_ID  }} --route-id ${{ env.ROUTE_ID }}
-            
-            echo "Deleting existing integration."
-            aws apigatewayv2 delete-integration --api-id ${{  secrets.API_ID  }} --integration-id $INTEGRATION_ID
-            fi
-
-      - name: Create new integration
-        id: get-integration
-        run: |
-          NEW_INTEGRATION_ID=$(aws apigatewayv2 create-integration --api-id ${{  secrets.API_ID  }} --integration-type AWS_PROXY --integration-uri ${{  secrets.LAMBDA_ARN  }} --payload-format-version 2.0 --query "IntegrationId" --output text)
-          echo "::add-mask::$INTEGRATION_ID"
-          echo "INTEGRATION_ID=$NEW_INTEGRATION_ID" >> $GITHUB_ENV
-          
-      - name: Set new integration to route
-        run: |
-          aws apigatewayv2 create-route --api-id ${{  secrets.API_ID  }} --route-key "${{  secrets.ROUTE_KEY  }}" --target integrations/${{ env.INTEGRATION_ID }}
-
-      - name: Add permission to Lambda function
-        run: |
-          aws lambda add-permission --function-name perst1 --statement-id $RANDOM --action lambda:InvokeFunction --principal apigateway.amazonaws.com --source-arn "${{  secrets.SOURCE_ARN  }}"
-
-      - name: Process completed
-        run: echo "Process completed."
-
-  store_lambda_url:
-    needs: update_integration
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Install dependencies
-        run: |
-          pip install boto3 mysql-connector-python
-      
-      - name: Get Lambda URL
-        id: get_lambda_url
-        run: |
-          URL=$(aws lambda create-function-url-config --function-name perst1 --auth-type NONE --query FunctionUrl --output text)
-          echo "::add-mask::$URL"
-          echo "URL=$URL" >> $GITHUB_ENV
-          
       - name: ADD_permission
         id: add_permission
         run: |
           aws lambda add-permission --function-name perst1 --statement-id FunctionURLAllowPublicAccess --action lambda:InvokeFunctionUrl --principal * --function-url-auth-type NONE
-
-      - name: Store URL in Parameter Store
-        run: |
-          aws ssm put-parameter --name "/lambda/url" --value "${{ env.URL }}" --type String
-          
-      - name: Execute Python script
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
-      - name: Run Python script
-        run: |
-          python script.py

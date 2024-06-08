@@ -110,9 +110,17 @@ def downloadDefaultSetting(s3):
     for i in range(4):
         folder_name = os.getenv("model_"+str(i))
         local_file_path = '/tmp/Models/' + folder_name + '/'
-        os.makedirs(local_file_path, exist_ok=True)
-        os.makedirs(local_file_path+"variables", exist_ok=True) # Variables 폴더 생성
         
+        if not os.path.exists(local_file_path):
+            os.makedirs(local_file_path)
+        
+        if not os.path.exists(local_file_path+"variables"):
+            os.makedirs(local_file_path+"variables") # Variables 폴더 생성
+        
+        else:
+            print("/tmp/ 폴더에 모델들이 존재하므로, 다운하지 않음")    
+            break # 파일들이 존재하면 다운하지 않음
+            
         # S3 버킷에서 파일 목록 가져오기
         response = s3.list_objects_v2(Bucket=bucket_name, Prefix=folder_name)
         
@@ -139,9 +147,6 @@ def downloadDefaultSetting(s3):
     # 06/04 S3에 파일 재업
     s3.download_file(bucket_name, 'credentials_service.json', '/tmp/credentials_service.json')
 
-    ## token 다운로드
-    s3.download_file(bucket_name, 'token.json', '/tmp/token.json')
-    
 def lambda_handler(event, context):
     print(event)
     
