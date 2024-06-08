@@ -109,6 +109,7 @@ def downloadDefaultSetting(s3):
     for i in range(4):
         folder_name = os.getenv("model_"+str(i))
         local_file_path = '/tmp/Models/' + folder_name + '/'
+        os.makedirs(local_file_path, exist_ok=True)
         
         # S3 버킷에서 파일 목록 가져오기
         response = s3.list_objects_v2(Bucket=bucket_name, Prefix=folder_name)
