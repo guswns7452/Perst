@@ -1,5 +1,5 @@
-#💚 build: Github Action Yaml 파일 수정 #52
-# 배포 -> API GateWay 까지 테스트 #12
+#💚 Lambda 함수 URL DB 저장 테스트
+
 import os.path
 
 from http import HTTPStatus
