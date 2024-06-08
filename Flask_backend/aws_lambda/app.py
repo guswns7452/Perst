@@ -120,11 +120,11 @@ def downloadDefaultSetting(s3):
                 file_name = file_key.split('/')[-1]
                 
                 if file_name:  # 폴더 자체가 아닌 경우
-                    local_file_path = os.path.join(local_file_path, file_name)
+                    file_path = os.path.join(local_file_path, file_name)
                     
                     # 파일 다운로드
-                    s3.download_file(bucket_name, file_key, local_file_path)
-                    print(f'Downloaded {file_key} to {local_file_path}')
+                    s3.download_file(bucket_name, file_key, file_path)
+                    print(f'Downloaded {file_key} to {file_path}')
         else:
             print('No files found in the specified folder.')
             
