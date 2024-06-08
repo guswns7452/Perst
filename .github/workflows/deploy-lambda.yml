@@ -144,7 +144,8 @@ jobs:
 
   store_lambda_url:
     needs: update_integration
-    run-on: ubuntu-latest
+    runs-on: ubuntu-latest
+
     steps:
       - name: Install dependencies
         run: |
