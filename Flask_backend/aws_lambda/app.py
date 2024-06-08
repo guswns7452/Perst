@@ -145,10 +145,12 @@ def downloadDefaultSetting(s3):
 def lambda_handler(event, context):
     print(event)
     
+    body = json.loads(event['body'])
+    
     # S3 클라이언트 생성
     s3 = boto3.client('s3')
     
     # 모델 다운로드, Credentials, token 다운로드
     downloadDefaultSetting(s3)
     
-    return analyzeAPI(event.get('fileID'), event.get('gender'))
+    return analyzeAPI(body.get('fileID'), body.get('gender'))
