@@ -81,6 +81,10 @@ jobs:
     needs: deploy
     runs-on: ubuntu-latest
 
+    outputs:
+      ROUTE_ID: ${{ steps.get-route.outputs.route_id }}
+      INTEGRATION_ID: ${{ steps.get-integration.outputs.integration_id }}
+
     env:
       REGION: ap-northeast-2
 
@@ -96,6 +100,7 @@ jobs:
           aws-region: ${{ env.REGION }}
 
       - name: Get Route ID
+        id: get-route
         run: |
           ROUTE_ID=$(aws apigatewayv2 get-routes --api-id ${{  secrets.API_ID  }} --query "Items[?RouteKey=='${{  secrets.ROUTE_KEY  }}'].RouteId" --output text)
           if [ -z "$ROUTE_ID" ]; then
@@ -103,7 +108,7 @@ jobs:
             exit 1
           else
             echo "Route found."
-            echo "::set-output name=route_id::$ROUTE_ID"
+            echo 'route_id=$ROUTE_ID' >> $GITHUB_OUTPUT
           fi
 
       - name: Get existing integration ID
@@ -113,19 +118,21 @@ jobs:
             echo "No existing integration found. Creating a new integration."
           else
             echo "Removing existing integration from route."
-            aws apigatewayv2 delete-route --api-id ${{  secrets.API_ID  }} --route-id $ROUTE_ID
+            aws apigatewayv2 delete-route --api-id ${{  secrets.API_ID  }} --route-id ${{ needs.build.outputs.ROUTE_ID }}
             
             echo "Deleting existing integration."
             aws apigatewayv2 delete-integration --api-id ${{  secrets.API_ID  }} --integration-id $INTEGRATION_ID
-          fi
+            fi
 
       - name: Create new integration
+        id: get-integration
         run: |
           NEW_INTEGRATION_ID=$(aws apigatewayv2 create-integration --api-id ${{  secrets.API_ID  }} --integration-type AWS_PROXY --integration-uri ${{  secrets.LAMBDA_ARN  }} --payload-format-version 2.0 --query "IntegrationId" --output text)
-
+          echo 'integration_id=$NEW_INTEGRATION_ID' >> $GITHUB_OUTPUT
+          
       - name: Set new integration to route
         run: |
-          aws apigatewayv2 create-route --api-id ${{  secrets.API_ID  }} --route-key "${{  secrets.ROUTE_KEY  }}" --target integrations/$NEW_INTEGRATION_ID
+          aws apigatewayv2 create-route --api-id ${{  secrets.API_ID  }} --route-key "${{  secrets.ROUTE_KEY  }}" --target integrations/${{ needs.build.outputs.INTEGRATION_ID }}
 
       - name: Add permission to Lambda function
         run: |
