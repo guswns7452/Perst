@@ -1,4 +1,4 @@
-#💚 Lambda 함수 URL DB 저장 테스트
+#💚 Lambda 함수 URL DB 저장 테스트 2
 
 import os.path
 
