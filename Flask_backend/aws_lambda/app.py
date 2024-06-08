@@ -141,6 +141,8 @@ def downloadDefaultSetting(s3):
     s3.download_file(bucket_name, 'token.json', '/tmp/token.json')
     
 def lambda_handler(event, context):
+    print(event)
+    
     # S3 클라이언트 생성
     s3 = boto3.client('s3')
     

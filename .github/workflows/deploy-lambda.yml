@@ -76,3 +76,56 @@ jobs:
           --role ${{ env.LAMBDA_ROLE }} \
           --environment "Variables={bucket_name=${{ env.BUCKET_NAME }},model_0=${{ env.MODEL_0 }},model_1=${{ env.MODEL_1 }},model_2=${{ env.MODEL_2 }},model_3=${{ env.MODEL_3 }}}" \
           --memory-size 6020 --timeout 600 --ephemeral-storage Size=5000
+
+  update_integration:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: your-region
+
+      - name: Get Route ID
+        run: |
+          ROUTE_ID=$(aws apigatewayv2 get-routes --api-id $API_ID --query "Items[?RouteKey=='$ROUTE_KEY'].RouteId" --output text)
+          if [ -z "$ROUTE_ID" ]; then
+            echo "Route not found. Route Key: $ROUTE_KEY"
+            exit 1
+          else
+            echo "Route found. Route ID: $ROUTE_ID"
+          fi
+
+      - name: Get existing integration ID
+        run: |
+          INTEGRATION_ID=$(aws apigatewayv2 get-integrations --api-id $API_ID --query "Items[?IntegrationType=='AWS_PROXY'].IntegrationId" --output text)
+          if [ -z "$INTEGRATION_ID" ]; then
+            echo "No existing integration found. Creating a new integration."
+          else
+            echo "Removing existing integration from route."
+            aws apigatewayv2 delete-route --api-id $API_ID --route-id $ROUTE_ID
+            
+            echo "Deleting existing integration. Integration ID: $INTEGRATION_ID"
+            aws apigatewayv2 delete-integration --api-id $API_ID --integration-id $INTEGRATION_ID
+          fi
+
+      - name: Create new integration
+        run: |
+          NEW_INTEGRATION_ID=$(aws apigatewayv2 create-integration --api-id $API_ID --integration-type AWS_PROXY --integration-uri $LAMBDA_ARN --payload-format-version 2.0 --query "IntegrationId" --output text)
+
+      - name: Set new integration to route
+        run: |
+          aws apigatewayv2 create-route --api-id $API_ID --route-key "$ROUTE_KEY" --target integrations/$NEW_INTEGRATION_ID
+
+      - name: Add permission to Lambda function
+        run: |
+          STATEMENT_ID=apigateway-test-$RANDOM
+          aws lambda add-permission --function-name perst1 --statement-id $STATEMENT_ID --action lambda:InvokeFunction --principal apigateway.amazonaws.com --source-arn "$SOURCE_ARN"
+
+      - name: Process completed
+        run: echo "Process completed."
