@@ -1,5 +1,5 @@
 #💚 build: Github Action Yaml 파일 수정 #52
-# 배포 -> API GateWay 까지 테스트
+# 배포 -> API GateWay 까지 테스트 #2
 import os.path
 
 from http import HTTPStatus
