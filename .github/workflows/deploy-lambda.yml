@@ -81,6 +81,9 @@ jobs:
     needs: deploy
     runs-on: ubuntu-latest
 
+    env:
+      REGION: ap-northeast-2
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
