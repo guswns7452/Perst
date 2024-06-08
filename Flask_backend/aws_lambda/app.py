@@ -147,4 +147,5 @@ def lambda_handler(event, context):
     # 모델 다운로드, Credentials, token 다운로드
     downloadDefaultSetting(s3)
     
-    return analyzeAPI(event['fileID'], event['gender'])
+    body = json.loads(event.get('body', '{}'))
+    return analyzeAPI(body.get('fileID'), body.get('gender'))
