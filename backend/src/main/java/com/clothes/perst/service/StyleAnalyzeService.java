@@ -1,9 +1,6 @@
 package com.clothes.perst.service;
 
-import com.clothes.perst.DTO.PersonalColorDTO;
-import com.clothes.perst.DTO.PersonalColorTipDTO;
-import com.clothes.perst.DTO.RestResponse;
-import com.clothes.perst.DTO.TransferStyleAnalyzeDTO;
+import com.clothes.perst.DTO.*;
 import com.clothes.perst.config.GoogleDriveAPI;
 import com.clothes.perst.domain.PersonalColorVO;
 import com.clothes.perst.domain.PersonalTipVO;
@@ -109,7 +106,8 @@ public class StyleAnalyzeService {
         deleteFile();
 
         /* 스타일 피드백 FileID 리스트 출력 */
-        newstyleAnalyzeVO.setStyleCommentFileID(searchStyleCommentFileIDs(gender, newstyleAnalyzeVO.getStyleName()));
+        String changeStyle = CoordinateTipDTO.changeCodiTip(newstyleAnalyzeVO.getStyleName(), gender);
+        newstyleAnalyzeVO.setStyleCommentFileID(searchStyleCommentFileIDs(gender, changeStyle));
         
         /* 퍼스널 컬러 피드백 */
         newstyleAnalyzeVO.setPersonalColorTip(setPersonalColorTip(memberNumber, AnalyzedPersonalColor));
