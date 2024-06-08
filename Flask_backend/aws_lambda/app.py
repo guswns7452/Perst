@@ -1,4 +1,4 @@
-#💚 Lambda 함수 URL DB 저장 테스트 3
+#💚 함수 URL 권한 테스트 #52
 
 import os.path
 
