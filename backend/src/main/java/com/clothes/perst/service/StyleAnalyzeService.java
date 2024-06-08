@@ -85,7 +85,6 @@ public class StyleAnalyzeService {
         RestResponse responseBody = ConnectFlaskServer(requestBody);
 
         LinkedHashMap data = (LinkedHashMap) responseBody.getData();
-        logger.info(String.valueOf(data));
 
         /* 퍼스널 컬러 타입 영어 TO 한글*/
         String AnalyzedPersonalColor = PersonalColorDTO.changeEngToKor((String) data.get("personalColorType"));
@@ -268,6 +267,7 @@ public class StyleAnalyzeService {
 
         ResponseEntity<RestResponse> response = restTemplate.postForEntity(apiUrl, entity, RestResponse.class);
 
+        logger.info(response.toString());
         RestResponse responseBody = response.getBody();
 
         return responseBody;

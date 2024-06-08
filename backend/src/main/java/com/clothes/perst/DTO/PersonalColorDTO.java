@@ -46,9 +46,9 @@ public class PersonalColorDTO {
         // Spelling 틀릴 수도 있어요..
         lists.put("Spring Light", "봄 라이트");
         lists.put("Spring Bright", "봄 브라이트");
-        lists.put("Summber Light", "여름 라이트");
-        lists.put("Summber Bright", "여름 브라이트");
-        lists.put("Summber Mute", "여름 뮤트");
+        lists.put("Summer Light", "여름 라이트");
+        lists.put("Summer Bright", "여름 브라이트");
+        lists.put("Summer Mute", "여름 뮤트");
         lists.put("Autumn Mute", "가을 뮤트");
         lists.put("Autumn Strong", "가을 스트롱");
         lists.put("Autumn Deep", "가을 딥");
