@@ -135,7 +135,7 @@ jobs:
 
       - name: Add permission to Lambda function
         run: |
-          aws lambda add-permission --function-name perst1 --statement-id ${{  secrets.STATEMENT_ID  }} --action lambda:InvokeFunction --principal apigateway.amazonaws.com --source-arn "${{  secrets.SOURCE_ARN  }}"
+          aws lambda add-permission --function-name perst1 --statement-id $RANDOM --action lambda:InvokeFunction --principal apigateway.amazonaws.com --source-arn "${{  secrets.SOURCE_ARN  }}"
 
       - name: Process completed
         run: echo "Process completed."
