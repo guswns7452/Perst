@@ -78,7 +78,6 @@ jobs:
           --memory-size 6020 --timeout 600 --ephemeral-storage Size=5000
 
   update_integration:
-    needs: deploy
     runs-on: ubuntu-latest
 
     outputs:
@@ -107,8 +106,10 @@ jobs:
             echo "Route not found. Route Key: ${{  secrets.ROUTE_KEY  }}"
             exit 1
           else
-            echo "Route found."
+            echo "Route found. "
             echo 'route_id=$ROUTE_ID' >> $GITHUB_OUTPUT
+            echo "${{ needs.build.outputs.ROUTE_ID }}"
+            echo "$ROUTE_ID"
           fi
 
       - name: Get existing integration ID
