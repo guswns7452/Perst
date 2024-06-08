@@ -103,6 +103,7 @@ jobs:
             exit 1
           else
             echo "Route found."
+            echo "::set-output name=route_id::$ROUTE_ID"
           fi
 
       - name: Get existing integration ID
@@ -112,7 +113,7 @@ jobs:
             echo "No existing integration found. Creating a new integration."
           else
             echo "Removing existing integration from route."
-            aws apigatewayv2 delete-route --api-id ${{  secrets.API_ID  }} --route-id ${{ secrets.ROUTE_ID }}
+            aws apigatewayv2 delete-route --api-id ${{  secrets.API_ID  }} --route-id $ROUTE_ID
             
             echo "Deleting existing integration."
             aws apigatewayv2 delete-integration --api-id ${{  secrets.API_ID  }} --integration-id $INTEGRATION_ID

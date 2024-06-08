@@ -51,6 +51,10 @@ public class StyleAnalyzeService {
     @Value("${folderId.ClothesAnalyze}")
     String folderID;
 
+
+    @Value("${apiURL}")
+    String apiUrl;
+
     @Autowired
     public StyleAnalyzeService(StyleAnalyzeRepository styleAnalyzeJPA, PersonalTipRepository personalTipJPA, PersonalColorRepository personalColorJPA, CoordinateRepository coordinateJPA, StyleAnalyzeColorRepository styleAnalyzeColorRepository, GoogleDriveAPI googleDriveAPI) {
         this.styleAnalyzeJPA = styleAnalyzeJPA;
@@ -260,7 +264,8 @@ public class StyleAnalyzeService {
 
         HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
 
-        String apiUrl = "http://127.0.0.1:5000/style/analyze";
+        // AWS Lambda 함수로 요청, apiUrl은 상단에 명시되어있음.
+
         ResponseEntity<RestResponse> response = restTemplate.postForEntity(apiUrl, entity, RestResponse.class);
 
         RestResponse responseBody = response.getBody();
