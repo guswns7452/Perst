@@ -6,7 +6,15 @@ import com.clothes.perst.domain.PersonalColorVO;
 import com.clothes.perst.domain.PersonalTipVO;
 import com.clothes.perst.domain.StyleAnalyzeVO;
 import com.clothes.perst.domain.StyleColorVO;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.clothes.perst.persistance.*;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.FileContent;
@@ -27,6 +35,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -108,7 +117,8 @@ public class StyleAnalyzeService {
         /* 스타일 피드백 FileID 리스트 출력 */
         String changeStyle = CoordinateTipDTO.changeCodiTip(newstyleAnalyzeVO.getStyleName(), gender);
         newstyleAnalyzeVO.setStyleCommentFileID(searchStyleCommentFileIDs(gender, changeStyle));
-        
+        newstyleAnalyzeVO.setStyleName(changeStyle);
+
         /* 퍼스널 컬러 피드백 */
         newstyleAnalyzeVO.setPersonalColorTip(setPersonalColorTip(memberNumber, AnalyzedPersonalColor));
         return newstyleAnalyzeVO;
@@ -224,8 +234,14 @@ public class StyleAnalyzeService {
      * @return fileID
      */
     public String uploadImage(MultipartFile uploadFile, int memberNumber) throws IOException, GeneralSecurityException {
-        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        Drive service = new Drive.Builder(HTTP_TRANSPORT, GoogleDriveAPI.JSON_FACTORY, GoogleDriveAPI.getCredentials(HTTP_TRANSPORT))
+        HttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+        JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
+        InputStream in = StyleAnalyzeService.class.getResourceAsStream("/credentials_service.json");
+
+        GoogleCredentials credential = ServiceAccountCredentials.fromStream(in).createScoped("https://www.googleapis.com/auth/drive");
+        HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credential);
+
+        Drive service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, requestInitializer)
                 .setApplicationName(GoogleDriveAPI.APPLICATION_NAME)
                 .build();
 
