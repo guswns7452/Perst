@@ -45,40 +45,6 @@ class _CameraScreenState extends State<CameraScreen> {
         Map<String, dynamic> result =
             await _fashionSearchController.sendStyleAnalyze(_image!);
 
-        if (result['styleName'] == "Ivy") {
-          result['styleName'] = "businessCasual";
-        } else if (result['styleName'] == "Mods") {
-          result['styleName'] = "";
-        } else if (result['styleName'] == "Bold") {
-          result['styleName'] = "dandy";
-        } else if (result['styleName'] == "Hippie") {
-          result['styleName'] = "";
-        } else if (result['styleName'] == "Hip-hop") {
-          result['styleName'] = "street";
-        } else if (result['styleName'] == "Metrosexual") {
-          result['styleName'] = "chic";
-        } else if (result['styleName'] == "Spotivecasual") {
-          result['styleName'] = "gofcore";
-        } else if (result['styleName'] == "Normcore") {
-          result['styleName'] = "minimal";
-        } else if (result['styleName'] == "Traditional") {
-          result['styleName'] = "casual";
-        } else if (result['styleName'] == "Manish") {
-          result['styleName'] = "businessCasual";
-        } else if (result['styleName'] == "Feminine") {
-          result['styleName'] = "romantic";
-        } else if (result['styleName'] == "Ethnic") {
-          result['styleName'] = "retro";
-        } else if (result['styleName'] == "Contemporary") {
-          result['styleName'] = "casual";
-        } else if (result['styleName'] == "Natural") {
-          result['styleName'] = "girlish";
-        } else if (result['styleName'] == "Gender-fluid") {
-          result['styleName'] = "";
-        } else if (result['styleName'] == "Subculture") {
-          result['styleName'] = "street";
-        }
-
         if (result.isNotEmpty) {
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => PictureAnalysis(result)));

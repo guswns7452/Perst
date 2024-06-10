@@ -62,7 +62,6 @@ class UserConnect extends GetConnect {
     _storage.remove('gender');
     _storage.write('gender', body['data']['memberGender']);
     _storage.write('name', body['data']['memberName']);
-
     if (body['code'] != 200) {
       throw Exception(body['code']);
     }

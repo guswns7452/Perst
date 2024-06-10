@@ -12,7 +12,7 @@ class StyleColorView extends StatelessWidget {
     List<StyleColor> styleColors = [];
 
     if (styleColorData != null) {
-      styleColorData!.forEach((json) {
+      styleColorData.forEach((json) {
         styleColors.add(StyleColor.fromJson(json));
       });
     }

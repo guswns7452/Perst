@@ -25,6 +25,7 @@ class _LoginState extends State<Login> {
     if (_formkey.currentState!.validate()) {
       final String memberPhoneNumber = _phoneNumberController.text;
       final String memberPassword = _passwordController.text;
+
       Future.delayed(Duration(milliseconds: 1000), () async {
         // 로그인 통신 로직
         bool result =
