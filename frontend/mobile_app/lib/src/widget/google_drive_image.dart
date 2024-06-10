@@ -14,7 +14,7 @@ class google_drive_image extends StatelessWidget {
           image: DecorationImage(
             fit: BoxFit.cover,
             image: NetworkImage(
-                "https://drive.google.com/thumbnail?id=$id&sz=w300"),
+                "https://drive.google.com/thumbnail?id=$id&sz=w1000"),
           ),
           borderRadius: BorderRadius.circular(7)),
     );

@@ -39,6 +39,7 @@ class FashionSearchConnect extends GetConnect {
       if (body['code'] != 200) {
         throw Exception(body['message']);
       }
+      print(body['data']);
       return body;
     } catch (e) {
       print('Error: $e');
