@@ -135,7 +135,10 @@ class _StyleHistoryDetailState extends State<StyleHistoryDetail> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => KeywordFashion(
-                                              styleKeyword: styleName),
+                                            styleKeyword: styleName,
+                                            kRStyleName: '캐주얼',
+                                            personalColor: '',
+                                          ),
                                         ),
                                       );
                                     },

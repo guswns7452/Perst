@@ -63,7 +63,10 @@ Widget _buildFashionItem(BuildContext context, FashionSearchModel fashion) {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => FashionDetail(fashion: fashion),
+              builder: (context) => FashionDetail(
+                fashion: fashion,
+                personalColorChecked: true,
+              ),
             ),
           );
         },

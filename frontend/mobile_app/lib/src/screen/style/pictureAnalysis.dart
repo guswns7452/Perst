@@ -239,9 +239,10 @@ class PictureAnalysis extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            KeywordFashion(styleKeyword: styleName),
-                        // TODO: 이거 연결되는 페이지 바꿔야행
+                        builder: (context) => KeywordFashion(
+                            styleKeyword: styleName,
+                            kRStyleName: kRStyleName,
+                            personalColor: ''),
                       ),
                     );
                   },
@@ -315,9 +316,11 @@ class PictureAnalysis extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            KeywordFashion(styleKeyword: styleName),
-                        // TODO: 이거 연결되는 페이지 바꿔야행
+                        builder: (context) => KeywordFashion(
+                            styleKeyword: styleName,
+                            kRStyleName: kRStyleName,
+                            personalColor: result['personalColorTip']
+                                ['analyzedPersonalColor']),
                       ),
                     );
                   },
