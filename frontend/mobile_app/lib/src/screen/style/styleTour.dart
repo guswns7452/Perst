@@ -59,6 +59,7 @@ class _StyleTourState extends State<StyleTour> {
         fashions = results
             .map((result) => FashionSearchModel.fromJson(result))
             .toList();
+        isLoading = false;
       });
     } else if (_seletedGenderInt == 0) {
       var response = await fashionSearchConnect.searchMan(_searchCurrentStyle,
@@ -68,6 +69,7 @@ class _StyleTourState extends State<StyleTour> {
         fashions = results
             .map((result) => FashionSearchModel.fromJson(result))
             .toList();
+        isLoading = false;
       });
     }
   }
@@ -159,7 +161,9 @@ class _StyleTourState extends State<StyleTour> {
             SizedBox(height: 15),
             Builder(
               builder: (context) {
-                if (fashions.isEmpty) {
+                if (isLoading) {
+                  return Center(child: CircularProgressIndicator()); // 로딩 중일 때
+                } else if (fashions.isEmpty) {
                   return Center(child: Text('검색 결과가 없습니다.')); // 데이터가 없을 때
                 } else {
                   return Container(
