@@ -17,15 +17,17 @@ public class CoordinateTipDTO {
         if(gender.equals("man")){
             Map<String, String> lists = new HashMap<>();
 
-            // TODO 추후 Mods 고려 해야함 -> 현재 casual 매치가 되어있지 않아, 캐주얼에 매칭
-            lists.put("Ivy", "businessCasual");
-            lists.put("Mods", "casual");
-            lists.put("Hippie", "amkaji");
-            lists.put("Bold", "dandy");
-            lists.put("Hip-hop", "street");
-            lists.put("Metrosexual", "chic");
-            lists.put("Sportive-Casual", "gofcore");
-            lists.put("Normcore", "minimal");
+            lists.put("Business-Casual", "businessCasual");
+            lists.put("Casual", "casual");
+            lists.put("Amekaji", "amkaji");
+            lists.put("Dandy", "dandy");
+            lists.put("Street", "street");
+            lists.put("Chic", "chic");
+            lists.put("Gofcore", "gofcore");
+            lists.put("Minimal", "minimal");
+            lists.put("Golf", "golf");
+            lists.put("Sporty", "sporty");
+            // lists.put("Romantic", "romantic");
 
             return lists.get(prev_codi);
         }
@@ -33,15 +35,16 @@ public class CoordinateTipDTO {
         else {
             Map<String, String> lists = new HashMap<>();
 
-            lists.put("Traditional", "casual");
-            lists.put("Manish", "businessCasual");
-            lists.put("Feminine", "romantic");
-            lists.put("Ethnic", "retro");
-            lists.put("Contemporary", "casual");
-            lists.put("Natural", "girlish");
-            lists.put("Gender-Fluid", "businessCasual");
+            lists.put("Girlish", "girlish");
+            lists.put("Gofcore", "gofcore");
+            lists.put("Golf", "golf");
+            lists.put("Retro", "retro");
+            lists.put("Romantic", "romantic");
+            lists.put("Business-Casual", "businessCasual");
+            lists.put("Street", "street");
             lists.put("Sporty", "sporty");
-            lists.put("Subculture", "casual");
+            lists.put("Chic", "chic");
+            lists.put("Amekaji", "amekaji");
             lists.put("Casual", "casual");
 
             return lists.get(prev_codi);
