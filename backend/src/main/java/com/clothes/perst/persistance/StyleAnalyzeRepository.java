@@ -1,6 +1,7 @@
 package com.clothes.perst.persistance;
 
 import com.clothes.perst.domain.StyleAnalyzeVO;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,5 +15,6 @@ public interface StyleAnalyzeRepository extends JpaRepository<StyleAnalyzeVO, St
 
     List<StyleAnalyzeVO> findAllByMemberNumber(int memberNumber);
 
+    @Transactional
     void deleteByStyleNumber(int styleNumber);
 }
