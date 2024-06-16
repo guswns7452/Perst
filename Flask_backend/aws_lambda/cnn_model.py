@@ -15,7 +15,7 @@ from scipy.cluster import hierarchy
 # import personal_color.personal_color # hierarchical clustering
 
 # 실제 모델파일이 저장된 경로에 맞춰서 수정해주세요
-model_dir_path = '/tmp/Models/'
+model_dir_path = "/tmp/Models/"
 
 # 지금은 200x200 사이즈로 학습중이지만, 나중에 변경될 수도 있으므로 변수로 작성
 img_width = 200
@@ -24,22 +24,27 @@ img_height = 200
 
 # 원본 이미지 입력 함수
 # 지금은 샘플 이미지를 불러오는 함수인데 나중에 api에서 이미지를 불러오는 방식에 따라 바뀔 수 있습니다.
-def imgLoad(input_type):
-    if input_type == 'male':
+def imgLoad(fileID, input_type):
+    if input_type == "man":
         # 남성 샘플 이미지 불러오기
-        img_path = model_dir_path + 'img_sample_male.jpg'
-    elif input_type == 'female':
+        img_path = model_dir_path + fileID + ".jpg"
+    elif input_type == "woman":
         # 여성 샘플 이미지 불러오기
-        img_path = model_dir_path + 'img_sample_female.jpg'
+        img_path = model_dir_path + fileID + ".jpg"
     else:
-        img_path = input_type
+        print(
+            "img_type 변수의 입력 형태가 올바르지 않습니다. man과 woman중 하나를 입력해주세요"
+        )
+        return
 
     # 한글 파일 경로도 읽을 수 있도록
     img_array = np.fromfile(img_path, dtype=np.uint8)
     img_file = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
 
     if img_file is None:
-        print("이미지 파일을 불러오는데 실패했습니다. 해당 파일이 존재하는지 확인해주세요")
+        print(
+            "이미지 파일을 불러오는데 실패했습니다. 해당 파일이 존재하는지 확인해주세요"
+        )
         return
     else:
         # 색상 공간을 RGB 형태로 변경
@@ -56,7 +61,7 @@ def clothDetection(input_img):
     # bg_detection_model = keras.models.load_model(bg_model_path)
 
     # 의상 파츠분리 모델 불러오기
-    part_model_path = model_dir_path + 'poly_seg_model_0428_02'
+    part_model_path = model_dir_path + "poly_seg_model_0428_02"
     part_detection_model = keras.models.load_model(part_model_path)
 
     # 예측을 위해 원본 이미지를 list 형태로 만들기
@@ -81,15 +86,27 @@ def clothDetection(input_img):
     part_pred_mask = part_list[0]
 
     return part_pred_mask
-    
+
 
 # 패션 분류 모델 (남성)
 # 입력: 원본 이미지 (200x200 사이즈)
 # 출력: 패션 분류명 string
 def maleFashionClassification(input_img):
-    male_label_name = ['Gofcore', 'Golf', 'Dandy', 'Romantic', 'Minimal', 'Business-Casual', 'Street', 'Sporty', 'Chic', 'Amekaji', 'Casual']
-    
-    model_path = model_dir_path + 'fashion_classification_male_0609_02'
+    male_label_name = [
+        "Gofcore",
+        "Golf",
+        "Dandy",
+        "Romantic",
+        "Minimal",
+        "Business-Casual",
+        "Street",
+        "Sporty",
+        "Chic",
+        "Amekaji",
+        "Casual",
+    ]
+
+    model_path = model_dir_path + "fashion_classification_male_0609_02"
     male_fashion_model = keras.models.load_model(model_path)
 
     # 예측을 위해 list 형태로 만들기
@@ -106,9 +123,21 @@ def maleFashionClassification(input_img):
 # 입력: 원본 이미지 (200x200 사이즈)
 # 출력: 패션 분류명 string
 def femaleFashionClassification(input_img):
-    female_label_name = ['Girlish', 'Gofcore', 'Golf', 'Retro', 'Romantic', 'Business-Casual', 'Street', 'Sporty', 'Chic', 'Amekaji', 'Casual']
-    
-    model_path = model_dir_path + 'fashion_classification_female_0611_01'
+    female_label_name = [
+        "Girlish",
+        "Gofcore",
+        "Golf",
+        "Retro",
+        "Romantic",
+        "Business-Casual",
+        "Street",
+        "Sporty",
+        "Chic",
+        "Amekaji",
+        "Casual",
+    ]
+
+    model_path = model_dir_path + "fashion_classification_female_0611_01"
     female_fashion_model = keras.models.load_model(model_path)
 
     # 예측을 위해 list 형태로 만들기
@@ -137,8 +166,10 @@ def totalColorExtract(ori_img, mask_img):
     pixel_list = np.array(pixel_list)
 
     # 픽셀값 클러스터링
-    cluster = hierarchy.linkage(pixel_list, method='centroid', metric='euclidean')
-    predict = hierarchy.fcluster(cluster, 70, criterion='distance') # 거리 70까지 cluster 개수 정하기
+    cluster = hierarchy.linkage(pixel_list, method="centroid", metric="euclidean")
+    predict = hierarchy.fcluster(
+        cluster, 70, criterion="distance"
+    )  # 거리 70까지 cluster 개수 정하기
 
     # 각 군집별 평균색상 계산
     cluster_pixel = []
@@ -146,7 +177,7 @@ def totalColorExtract(ori_img, mask_img):
         cluster_pixel.append([])
 
     for i in range(0, len(predict)):
-        cluster_pixel[predict[i]-1].append(pixel_list[i])
+        cluster_pixel[predict[i] - 1].append(pixel_list[i])
 
     for i in range(0, len(cluster_pixel)):
         cluster_pixel[i] = np.array(cluster_pixel[i])
@@ -161,8 +192,10 @@ def totalColorExtract(ori_img, mask_img):
     cluster_count_dict = {}
     for i in range(0, len(cluster_label)):
         cluster_count_dict[cluster_label[i]] = cluster_count[i]
-    
-    cluster_count_dict = sorted(cluster_count_dict.items(), key= lambda item:item[1], reverse=True)
+
+    cluster_count_dict = sorted(
+        cluster_count_dict.items(), key=lambda item: item[1], reverse=True
+    )
 
     cluster_label = []
     cluster_count = []
@@ -170,18 +203,18 @@ def totalColorExtract(ori_img, mask_img):
     for item in cluster_count_dict:
         cluster_label.append(item[0])
         cluster_count.append(item[1])
-    
+
     cluster_total = np.sum(cluster_count)
     cluster_ratio = []
 
     for i in range(0, len(cluster_count)):
-        ratio = (cluster_count[i]/cluster_total) * 100
+        ratio = (cluster_count[i] / cluster_total) * 100
         cluster_ratio.append(ratio)
-    
+
     # 새롭게 리스트 형태로 만들기
     output_list = []
     for i in range(0, len(cluster_label)):
-        rgb = cluster_pixel[cluster_label[i]-1]
+        rgb = cluster_pixel[cluster_label[i] - 1]
         ratio = cluster_ratio[i]
         tmp_list = [rgb, ratio]
         output_list.append(tmp_list)
@@ -193,7 +226,7 @@ def totalColorExtract(ori_img, mask_img):
 # 입력: 원본 이미지, 마스크 이미지
 # 출력: [퍼스널컬러 분류, [R값, G값, B값], 퍼스널컬러 마스크 적용된 이미지]
 def personalColorExtract(ori_img, mask_img):
-    #어느 파츠의 색상을 추출할 것인지 결정
+    # 어느 파츠의 색상을 추출할 것인지 결정
     if 2 in np.unique(mask_img):
         mask_part = 2
     elif 1 in np.unique(mask_img):
@@ -228,7 +261,7 @@ def personalColorExtract(ori_img, mask_img):
 
     # 중간값을 계산하여 대표값으로 사용
     median_color = np.median(pixel_list, axis=0)
-    
+
     # 색공간을 RGB에서 HSV로 변경
     # rgb_view= np.full((1, 1, 3), median_color, dtype=np.uint8)
     # hsv_view = cv2.cvtColor(rgb_view, cv2.COLOR_RGB2HSV)
@@ -243,7 +276,6 @@ def personalColorExtract(ori_img, mask_img):
     # 3분할 s/v  0 < 85 < 170 < 255
     # 영역 정의 알고리즘을 다시 짜야 한다
 
-
     # 출력: [퍼스널컬러 분류, [R값, G값, B값], 퍼스널컬러 마스크 적용된 이미지]
     # output_list = [personal_label, median_color, part_img]
     output_list = [median_color, part_img]
@@ -255,7 +287,9 @@ def personalColorExtract(ori_img, mask_img):
 # 출력: 딕셔너리 [no_background_img, fashion_type, total_color_list, personal_color_label, personal_color_rgb, personal_masked_img]
 def cnn_model_main(ori_img, type):
     # 입력 이미지의 크기를 200x200 크기로 조정
-    res_img = cv2.resize(ori_img, dsize=(img_height, img_width), interpolation=cv2.INTER_AREA)
+    res_img = cv2.resize(
+        ori_img, dsize=(img_height, img_width), interpolation=cv2.INTER_AREA
+    )
     res_img = np.array(res_img)
 
     # 입력 이미지의 의상 영역 마스크 생성
@@ -270,14 +304,16 @@ def cnn_model_main(ori_img, type):
     masked_img = np.array(masked_img)
 
     # 패션 스타일 분류
-    if type == 'male':
+    if type == "male":
         fashion_label = maleFashionClassification(res_img)
-    elif type == 'female':
+    elif type == "female":
         fashion_label = femaleFashionClassification(res_img)
     else:
-        print("type 변수의 입력 형태가 올바르지 않습니다. male과 female중 하나를 입력해주세요")
+        print(
+            "type 변수의 입력 형태가 올바르지 않습니다. male과 female중 하나를 입력해주세요"
+        )
         return
-    
+
     # 의상 주요 색상 추출
     total_color_list = totalColorExtract(ori_img=res_img, mask_img=total_mask)
 
@@ -286,18 +322,18 @@ def cnn_model_main(ori_img, type):
 
     # 결과 출력
     output_dict = {}
-    output_dict['no_background_img'] = masked_img
-    output_dict['fashion_type'] = fashion_label
-    output_dict['total_color_list'] = total_color_list
-    output_dict['personal_color_rgb'] = personal_color_list[0]
+    output_dict["no_background_img"] = masked_img
+    output_dict["fashion_type"] = fashion_label
+    output_dict["total_color_list"] = total_color_list
+    output_dict["personal_color_rgb"] = personal_color_list[0]
     r = personal_color_list[0][0]
     g = personal_color_list[0][1]
     b = personal_color_list[0][2]
-    
-    HSV_list = personal_color.rgb_to_hsv(r,g,b)
-    output_dict['personal_color_label'] = personal_color.get_season_tone(HSV_list)
-    output_dict['personal_masked_img'] = personal_color_list[1]
-    
+
+    HSV_list = personal_color.rgb_to_hsv(r, g, b)
+    output_dict["personal_color_label"] = personal_color.get_season_tone(HSV_list)
+    output_dict["personal_masked_img"] = personal_color_list[1]
+
     # output_dict['personal_color_label'] = personal_color_list[0]
-    
+
     return output_dict
