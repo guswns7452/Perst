@@ -16,6 +16,7 @@ RUN python3.11 -m pip install -r requirements.txt
 COPY app.py ./
 COPY cnn_model.py ./
 COPY module_import_example.py ./
+COPY personal_color.py ./
 
 # Set the CMD to your handler
 CMD ["app.lambda_handler"]
