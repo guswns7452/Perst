@@ -109,7 +109,7 @@ public class GoogleFileID {
                 .build();
 
         FileList result = service.files().list()
-                .setQ("'1q-P7if9MFNl2LV8nBvzN5tNeOXuiPQVM' in parents and trashed=false") //특정 폴더 만 검색하기
+                .setQ("'폴더 ID' in parents and trashed=false") //특정 폴더 만 검색하기
                 .setPageSize(100)
                 .setFields("nextPageToken, files(id, name)")
                 .execute();

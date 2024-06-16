@@ -6,11 +6,9 @@ import com.clothes.perst.service.StyleAnalyzeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
-import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
@@ -46,15 +44,7 @@ import java.util.regex.Pattern;
 @Service
 public class GoogleDriveAPI {
     public static final String APPLICATION_NAME = "Google Drive API Java Quickstart";
-    public static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
-    //사용자의 토큰을 어디에 저장할지 경로를 지정
-    private static final String TOKENS_DIRECTORY_PATH = "tokens";
-    //어플리케이션이 요청하는 권한의 범위를 지정
-    private static final List<String> SCOPES = Collections.singletonList(DriveScopes.DRIVE);
-    //비밀키 경로
-    private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
 
-    
     //TODO analyzeService uploadImage 메소드 참고하여 서비스 계정으로 변경하기
     public static GoogleCredentials getCredentials() throws IOException {
         InputStream in = StyleAnalyzeService.class.getResourceAsStream("/credentials_service.json");
