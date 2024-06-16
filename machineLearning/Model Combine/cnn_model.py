@@ -1,11 +1,6 @@
-# 24-04-20 코드 변경사항
-# clothDetection() 함수에 배경과 의상파트를 모두 분류해낼 수 있도록 수정하였습니다.
-# 퍼스널 컬러를 추출하는 personalColorExtract()함수를 추가하였습니다.
-# 기존의 colorExtract()함수는 personalColorExtract()와 구분하기 위해, 이름을 totalColorExtract()로 변경하였습니다.
-# 기존에는 마스크가 [0,1]로만 구분했지만, 이제는 [0~5]까지 구분해내므로 colorExtract()함수의 코드 일부를 수정하였습니다.
-# 기존에는 색상의 대표값을 추출할 때, 평균(mean)값을 사용하였지만, 이상값의 영향을 줄이기 위해 중간값(median)을 사용하도록 변경하였습니다.
-# 색상 출력형태를 RGB에서 HSV로 변경할까했지만, 통상적으로 사용하는 HSV 색공간과는 숫자범위가 달라서 그대로 RGB형식으로 출력하고있습니다.
-# 경로에 한글이 포함된 이미지도 불러올 수 있도록 imgLoad() 함수를 개선하였습니다.
+# 24-06-16 코드 변경사항
+# 패션 분류 과정에서 배경 제거 과정을 없앴습니다.
+# 패션 분류 모델과 패션 카테고리를 무신사 데이터셋에 맟추어 변경하였습니다.
 
 
 # 이미지 처리
@@ -86,19 +81,12 @@ def clothDetection(input_img):
     
 
 # 패션 분류 모델 (남성)
-# 입력: 배경이 제거된 이미지 (200x200 사이즈)
+# 입력: 원본 이미지 (200x200 사이즈)
 # 출력: 패션 분류명 string
 def maleFashionClassification(input_img):
-    male_label_name = ['Ivy',
-                       'Mods',
-                       'Hippie',
-                       'Bold',
-                       'Hip-hop',
-                       'Metrosexual',
-                       'Sportive-Casual',
-                       'Normcore']
+    male_label_name = ['Gofcore', 'Golf', 'Dandy', 'Romantic', 'Minimal', 'Business-Casual', 'Street', 'Sporty', 'Chic', 'Amekaji', 'Casual']
     
-    model_path = model_dir_path + 'fashion_classification_male_0127_04'
+    model_path = model_dir_path + 'fashion_classification_male_0609_02'
     male_fashion_model = keras.models.load_model(model_path)
 
     # 예측을 위해 list 형태로 만들기
@@ -112,21 +100,12 @@ def maleFashionClassification(input_img):
 
 
 # 패션 분류 모델 (여성)
-# 입력: 배경이 제거된 이미지 (200x200 사이즈)
+# 입력: 원본 이미지 (200x200 사이즈)
 # 출력: 패션 분류명 string
 def femaleFashionClassification(input_img):
-    female_label_name = ['Traditional',
-                         'Manish',
-                         'Feminine',
-                         'Ethnic',
-                         'Contemporary',
-                         'Natural',
-                         'Gender-Fluid',
-                         'Sporty',
-                         'Subculture',
-                         'Casual']
+    female_label_name = ['Girlish', 'Gofcore', 'Golf', 'Retro', 'Romantic', 'Business-Casual', 'Street', 'Sporty', 'Chic', 'Amekaji', 'Casual']
     
-    model_path = model_dir_path + 'fashion_classification_female_0123_03'
+    model_path = model_dir_path + 'fashion_classification_female_0611_01'
     female_fashion_model = keras.models.load_model(model_path)
 
     # 예측을 위해 list 형태로 만들기
@@ -289,9 +268,9 @@ def cnn_model_main(ori_img, type):
 
     # 패션 스타일 분류
     if type == 'male':
-        fashion_label = maleFashionClassification(masked_img)
+        fashion_label = maleFashionClassification(res_img)
     elif type == 'female':
-        fashion_label = femaleFashionClassification(masked_img)
+        fashion_label = femaleFashionClassification(res_img)
     else:
         print("type 변수의 입력 형태가 올바르지 않습니다. male과 female중 하나를 입력해주세요")
         return
