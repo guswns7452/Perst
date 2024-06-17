@@ -43,7 +43,7 @@ class MypageConnect extends GetConnect {
       Response response = await get('/clothes/analyze?number=$styleNumber',
           headers: {'Authorization': await getToken});
       Map<String, dynamic> body = response.body;
-      print(body['data']);
+      print(body);
 
       if (body['code'] != 200) {
         throw Exception(body['message']);
@@ -112,5 +112,20 @@ class MypageConnect extends GetConnect {
       throw Exception(body['message']);
     }
     return body['data'];
+  }
+
+  // 스타일 이력 삭제하기
+  Future deleteFashion(int fashionNumber) async {
+    Response response = await delete('/clothes/analyze?number=$fashionNumber',
+        headers: {'Authorization': await getToken});
+
+    Map<String, dynamic> body = response.body;
+    print(body);
+
+    if (body['code'] != 200) {
+      print(body['message']);
+      return false;
+    }
+    return true;
   }
 }

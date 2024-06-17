@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:perst/src/connect/mypage_connect.dart';
 import 'package:perst/src/model/mypage_model.dart';
 import 'package:perst/src/screen/mypage/styleHistoryDetail.dart';
 import 'package:perst/src/widget/fl_chart.dart';
@@ -9,6 +10,7 @@ import '../../controller/mypage_controller.dart';
 import '../../widget/google_drive_image.dart';
 
 final GetStorage _storage = GetStorage();
+final mypageConnect = Get.put(MypageConnect());
 
 class StyleHistory extends StatefulWidget {
   const StyleHistory({super.key});
@@ -116,7 +118,9 @@ class _StyleHistoryState extends State<StyleHistory> {
                       child: CustomDrawer(
                           fashion: fashion,
                           styleResult: styleResult,
-                          myStyleLength: myStyleLength)),
+                          myStyleLength: myStyleLength,
+                          fetchData: fetchData,
+                          setState: setState)),
                 ],
               ),
             ),
@@ -128,12 +132,16 @@ class CustomDrawer extends StatefulWidget {
   final int myStyleLength;
   final Map<String, dynamic> styleResult;
   final List<MystyleModel> fashion;
+  final Function fetchData;
+  final Function setState;
 
   const CustomDrawer(
       {super.key,
       required this.fashion,
       required this.styleResult,
-      required this.myStyleLength});
+      required this.myStyleLength,
+      required this.fetchData,
+      required this.setState});
 
   @override
   _CustomDrawerState createState() => _CustomDrawerState();
@@ -194,8 +202,12 @@ class _CustomDrawerState extends State<CustomDrawer>
                 child: TabBarView(
                   controller: _tabController,
                   children: [
-                    _buildStyleTab(widget.fashion, widget.styleResult,
-                        widget.myStyleLength),
+                    _buildStyleTab(
+                        widget.fashion,
+                        widget.styleResult,
+                        widget.myStyleLength,
+                        widget.setState,
+                        widget.fetchData),
                     _buildGraphTab(widget.styleResult, widget.myStyleLength)
                   ],
                 ),
@@ -208,8 +220,12 @@ class _CustomDrawerState extends State<CustomDrawer>
   }
 }
 
-Widget _buildStyleTab(List<MystyleModel> fashion,
-    Map<String, dynamic> styleResult, int myStyleLength) {
+Widget _buildStyleTab(
+    List<MystyleModel> fashion,
+    Map<String, dynamic> styleResult,
+    int myStyleLength,
+    Function setState,
+    Function fetchData) {
   return Scaffold(
     body: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -305,10 +321,26 @@ Widget _buildStyleTab(List<MystyleModel> fashion,
                                       MaterialPageRoute(
                                         builder: (context) =>
                                             StyleHistoryDetail(
-                                                number: fashion.styleNumber!),
+                                                fashion: fashion),
                                       ),
                                     );
                                   }))),
+                          Positioned(
+                            right: 0,
+                            child: IconButton(
+                              onPressed: () async {
+                                bool result = await mypageConnect
+                                    .deleteFashion(fashion.styleNumber!);
+                                if (result) {
+                                  setState(() {
+                                    fetchData();
+                                  });
+                                }
+                              },
+                              icon: Icon(Icons.close, size: 15),
+                              visualDensity: VisualDensity.compact,
+                            ),
+                          ),
                         ]),
                         SizedBox(height: 3),
                         Container(

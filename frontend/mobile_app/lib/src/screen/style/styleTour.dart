@@ -33,11 +33,10 @@ int _seletedGenderInt = 0;
 int _currentStyleInt = 0;
 int _currentColorInt = 0;
 String personalColor = '';
+bool isLoading = true;
 
 class _StyleTourState extends State<StyleTour> {
   final fashionSearchConnect = Get.put(FashionSearchConnect());
-
-  bool isLoading = true;
 
   @override
   void initState() {
@@ -270,6 +269,7 @@ class _CustomDrawerState extends State<CustomDrawer>
           fashions = results
               .map((result) => FashionSearchModel.fromJson(result))
               .toList();
+          isLoading = false;
           if (_personalColorChecked) {
             personalColor = response['message'];
           } else {
@@ -284,6 +284,7 @@ class _CustomDrawerState extends State<CustomDrawer>
           fashions = results
               .map((result) => FashionSearchModel.fromJson(result))
               .toList();
+          isLoading = false;
           if (_personalColorChecked) {
             personalColor = response['message'];
           } else {
