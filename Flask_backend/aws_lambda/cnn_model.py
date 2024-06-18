@@ -304,13 +304,13 @@ def cnn_model_main(ori_img, type):
     masked_img = np.array(masked_img)
 
     # 패션 스타일 분류
-    if type == "male":
+    if type == "man":
         fashion_label = maleFashionClassification(res_img)
-    elif type == "female":
+    elif type == "woman":
         fashion_label = femaleFashionClassification(res_img)
     else:
         print(
-            "type 변수의 입력 형태가 올바르지 않습니다. male과 female중 하나를 입력해주세요"
+            "type 변수의 입력 형태가 올바르지 않습니다. man과 woman중 하나를 입력해주세요"
         )
         return
 
