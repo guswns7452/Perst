@@ -208,6 +208,7 @@ class _KeywordFashionState extends State<KeywordFashion> {
                                         fashion: fashion,
                                         personalColorChecked:
                                             personalColorChecked,
+                                        keywardChecked: true,
                                       ),
                                     ),
                                   );

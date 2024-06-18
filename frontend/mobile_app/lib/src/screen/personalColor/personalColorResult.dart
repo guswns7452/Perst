@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:perst/src/connect/personal_color_connect.dart';
 import 'package:perst/src/model/color_model.dart';
 import 'package:perst/src/model/color_radio_model.dart';
+import 'package:perst/src/screen/personalColor/personalColorFashion.dart';
 
 final GetStorage _storage = GetStorage();
 
@@ -128,7 +129,7 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          '퍼스널컬러 결과',
+          '퍼스널컬러 진단 결과',
           textAlign: TextAlign.start,
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
@@ -600,7 +601,13 @@ class _PersonalColorResultState extends State<PersonalColorResult> {
           Container(
             margin: EdgeInsets.only(left: 20, right: 20, top: 12),
             child: OutlinedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => PersonalColorFashion(
+                        personalColor: result["personalSelects"][0]
+                            ["personalSelectType"]),
+                  ));
+                },
                 style: OutlinedButton.styleFrom(backgroundColor: Colors.black),
                 child: Row(
                   children: [

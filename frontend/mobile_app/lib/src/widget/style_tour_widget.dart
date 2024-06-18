@@ -66,6 +66,7 @@ Widget _buildFashionItem(BuildContext context, FashionSearchModel fashion) {
               builder: (context) => FashionDetail(
                 fashion: fashion,
                 personalColorChecked: true,
+                keywardChecked: false,
               ),
             ),
           );
