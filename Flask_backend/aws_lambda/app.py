@@ -1,5 +1,3 @@
-#💚 함수 URL 권한 테스트2 #52
-
 import os.path
 
 from http import HTTPStatus

@@ -47,15 +47,6 @@ import java.util.*;
  */
 @SpringBootTest
 public class CoordinateUpload {
-    //사용자의 토큰을 어디에 저장할지 경로를 지정
-    public static final String TOKENS_DIRECTORY_PATH = "tokens";
-    //어플리케이션이 요청하는 권한의 범위를 지정
-    public static final List<String> SCOPES = Collections.singletonList(DriveScopes.DRIVE);
-    //비밀키 경로
-    public static final String CREDENTIALS_FILE_PATH = "/credentials.json";
-    public static final String APPLICATION_NAME = "Google Drive API Java Quickstart";
-    public static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
-
     @Autowired
     private CoordinateRepository codiJPA; // UserRepository는 JPA Repository 인터페이스
 
@@ -72,7 +63,8 @@ public class CoordinateUpload {
 
     @Test
     public void updateCodiDB() throws GeneralSecurityException, IOException {
-        String folderPath = "D:\\coding\\perst_dataset\\coordinate";
+        String folderPath = "D:\\coding\\perst_dataset\\coordinate_golf";
+//        String folderPath = "D:\\coding\\perst_dataset\\coordinate";
 
         // 폴더 객체 생성
         java.io.File folder = new java.io.File(folderPath);
@@ -115,7 +107,8 @@ public class CoordinateUpload {
                 .setApplicationName(GoogleDriveAPI.APPLICATION_NAME)
                 .build();
 
-        String folderPath = "D:\\coding\\perst_dataset\\coordinate\\";
+        String folderPath = "D:\\coding\\perst_dataset\\coordinate_golf\\";
+//        String folderPath = "D:\\coding\\perst_dataset\\coordinate\\";
 
         // Upload file photo.jpg on drive.
         File fileMetadata = new File();
