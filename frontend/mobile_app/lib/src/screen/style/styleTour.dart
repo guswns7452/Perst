@@ -33,11 +33,10 @@ int _seletedGenderInt = 0;
 int _currentStyleInt = 0;
 int _currentColorInt = 0;
 String personalColor = '';
+bool isLoading = true;
 
 class _StyleTourState extends State<StyleTour> {
   final fashionSearchConnect = Get.put(FashionSearchConnect());
-
-  bool isLoading = true;
 
   @override
   void initState() {
@@ -59,6 +58,7 @@ class _StyleTourState extends State<StyleTour> {
         fashions = results
             .map((result) => FashionSearchModel.fromJson(result))
             .toList();
+        isLoading = false;
       });
     } else if (_seletedGenderInt == 0) {
       var response = await fashionSearchConnect.searchMan(_searchCurrentStyle,
@@ -68,6 +68,7 @@ class _StyleTourState extends State<StyleTour> {
         fashions = results
             .map((result) => FashionSearchModel.fromJson(result))
             .toList();
+        isLoading = false;
       });
     }
   }
@@ -159,7 +160,9 @@ class _StyleTourState extends State<StyleTour> {
             SizedBox(height: 15),
             Builder(
               builder: (context) {
-                if (fashions.isEmpty) {
+                if (isLoading) {
+                  return Center(child: CircularProgressIndicator()); // 로딩 중일 때
+                } else if (fashions.isEmpty) {
                   return Center(child: Text('검색 결과가 없습니다.')); // 데이터가 없을 때
                 } else {
                   return Container(
@@ -266,6 +269,7 @@ class _CustomDrawerState extends State<CustomDrawer>
           fashions = results
               .map((result) => FashionSearchModel.fromJson(result))
               .toList();
+          isLoading = false;
           if (_personalColorChecked) {
             personalColor = response['message'];
           } else {
@@ -280,6 +284,7 @@ class _CustomDrawerState extends State<CustomDrawer>
           fashions = results
               .map((result) => FashionSearchModel.fromJson(result))
               .toList();
+          isLoading = false;
           if (_personalColorChecked) {
             personalColor = response['message'];
           } else {

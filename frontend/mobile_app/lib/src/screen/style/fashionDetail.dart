@@ -4,8 +4,15 @@ import 'package:url_launcher/url_launcher.dart';
 
 class FashionDetail extends StatefulWidget {
   final fashion;
+  final bool keywardChecked;
+  final bool personalColorChecked;
 
-  const FashionDetail({required this.fashion, Key? key}) : super(key: key);
+  const FashionDetail(
+      {required this.fashion,
+      Key? key,
+      required this.personalColorChecked,
+      required this.keywardChecked})
+      : super(key: key);
 
   @override
   State<FashionDetail> createState() => _FashionDetailState();
@@ -113,15 +120,69 @@ class _FashionDetailState extends State<FashionDetail> {
           Row(
             children: [
               SizedBox(width: 30),
-              Container(
-                padding: EdgeInsets.fromLTRB(7, 7, 7, 7),
-                child: Text(
-                  '#${widget.fashion.musinsaStyle}',
-                  style: TextStyle(
-                      fontSize: 13, color: Color.fromARGB(255, 127, 127, 127)),
-                ),
-                color: Color.fromRGBO(240, 240, 240, 1),
-              ),
+              widget.keywardChecked
+                  ? Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.fromLTRB(7, 7, 7, 7),
+                          child: Text(
+                            '#${widget.fashion.musinsaStyle}',
+                            style: TextStyle(
+                                fontSize: 13,
+                                color: widget.keywardChecked
+                                    ? Color.fromARGB(255, 255, 255, 255)
+                                    : Color.fromARGB(255, 127, 127, 127)),
+                          ),
+                          color: widget.keywardChecked
+                              ? Color.fromARGB(255, 127, 127, 127)
+                              : Color.fromRGBO(240, 240, 240, 1),
+                        ),
+                        SizedBox(width: 10),
+                        Container(
+                            padding: EdgeInsets.fromLTRB(7, 7, 7, 7),
+                            child: Text(
+                              '#${widget.fashion.musinsaPersonal}',
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  color: widget.personalColorChecked
+                                      ? Colors.white
+                                      : Color.fromARGB(255, 127, 127, 127)),
+                            ),
+                            color: widget.personalColorChecked
+                                ? Color.fromARGB(255, 127, 127, 127)
+                                : Color.fromRGBO(240, 240, 240, 1)),
+                      ],
+                    )
+                  : Row(children: [
+                      Container(
+                          padding: EdgeInsets.fromLTRB(7, 7, 7, 7),
+                          child: Text(
+                            '#${widget.fashion.musinsaPersonal}',
+                            style: TextStyle(
+                                fontSize: 13,
+                                color: widget.personalColorChecked
+                                    ? Colors.white
+                                    : Color.fromARGB(255, 127, 127, 127)),
+                          ),
+                          color: widget.personalColorChecked
+                              ? Color.fromARGB(255, 127, 127, 127)
+                              : Color.fromRGBO(240, 240, 240, 1)),
+                      SizedBox(width: 10),
+                      Container(
+                        padding: EdgeInsets.fromLTRB(7, 7, 7, 7),
+                        child: Text(
+                          '#${widget.fashion.musinsaStyle}',
+                          style: TextStyle(
+                              fontSize: 13,
+                              color: widget.keywardChecked
+                                  ? Color.fromARGB(255, 255, 255, 255)
+                                  : Color.fromARGB(255, 127, 127, 127)),
+                        ),
+                        color: widget.keywardChecked
+                            ? Color.fromARGB(255, 127, 127, 127)
+                            : Color.fromRGBO(240, 240, 240, 1),
+                      ),
+                    ]),
               SizedBox(width: 10),
               Container(
                   padding: EdgeInsets.fromLTRB(7, 7, 7, 7),
@@ -137,16 +198,6 @@ class _FashionDetailState extends State<FashionDetail> {
                   padding: EdgeInsets.fromLTRB(7, 7, 7, 7),
                   child: Text(
                     '#${widget.fashion.musinsaGender}',
-                    style: TextStyle(
-                        fontSize: 13,
-                        color: Color.fromARGB(255, 127, 127, 127)),
-                  ),
-                  color: Color.fromRGBO(240, 240, 240, 1)),
-              SizedBox(width: 10),
-              Container(
-                  padding: EdgeInsets.fromLTRB(7, 7, 7, 7),
-                  child: Text(
-                    '#${widget.fashion.musinsaPersonal}',
                     style: TextStyle(
                         fontSize: 13,
                         color: Color.fromARGB(255, 127, 127, 127)),

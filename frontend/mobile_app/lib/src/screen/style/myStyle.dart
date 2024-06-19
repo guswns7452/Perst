@@ -73,14 +73,13 @@ class _MyStyleState extends State<MyStyle> {
                 ),
                 Container(
                   margin: EdgeInsets.only(left: 25),
-                  child: Text(
-                    'Perst',
-                    style:  GoogleFonts.archivoBlack(
-                    textStyle: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.w800,
-                      color: Color.fromRGBO(255, 191, 25, 1),
-                    ))),
+                  child: Text('Perst',
+                      style: GoogleFonts.archivoBlack(
+                          textStyle: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w800,
+                        color: Color.fromRGBO(255, 191, 25, 1),
+                      ))),
                 ),
                 Container(
                   margin: EdgeInsets.only(left: 25),
@@ -216,8 +215,7 @@ class _MyStyleState extends State<MyStyle> {
                                               MaterialPageRoute(
                                                 builder: (context) =>
                                                     StyleHistoryDetail(
-                                                        number: fashion
-                                                            .styleNumber!),
+                                                        fashion: fashion),
                                               ),
                                             );
                                           }))),
