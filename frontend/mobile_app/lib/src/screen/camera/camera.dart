@@ -18,8 +18,7 @@ class _CameraScreenState extends State<CameraScreen> {
       Get.put(FashionSearchController());
   final picker = ImagePicker();
   late File? _image;
-  late Future<Map<String, dynamic>> _analysisFuture;
-  bool isLoading = false; // 로딩 상태를 관리하는 변수
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -79,7 +78,7 @@ class _CameraScreenState extends State<CameraScreen> {
                       : CameraGuide()),
             ),
             Container(
-              height: 80,
+              height: 50,
               width: double.infinity,
               color: Colors.black,
             ),
@@ -115,22 +114,39 @@ class _CameraScreenState extends State<CameraScreen> {
                             ),
                           ),
                         )
-                      : OutlinedButton(
-                          onPressed: () {
-                            _getImage(ImageSource.camera);
-                          },
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            shape: CircleBorder(),
-                            padding: EdgeInsets.all(30),
-                            backgroundColor: Colors.white,
+                      : Row(children: [
+                          OutlinedButton(
+                            onPressed: () {
+                              _getImage(ImageSource.camera);
+                            },
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              padding: EdgeInsets.all(20),
+                              backgroundColor: Colors.white,
+                            ),
+                            child: Image.asset(
+                              'assets/camera.png',
+                              width: 30,
+                              height: 30,
+                            ),
                           ),
-                          child: Image.asset(
-                            'assets/camera.png',
-                            width: 30,
-                            height: 30,
+                          SizedBox(width: 50),
+                          OutlinedButton(
+                            onPressed: () {
+                              _getImage(ImageSource.gallery);
+                            },
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              padding: EdgeInsets.all(20),
+                              backgroundColor: Colors.white,
+                            ),
+                            child: Image.asset(
+                              'assets/gallery.png',
+                              width: 30,
+                              height: 30,
+                            ),
                           ),
-                        )
+                        ])
                 ],
               ),
             ],
