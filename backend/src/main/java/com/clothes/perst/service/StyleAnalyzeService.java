@@ -312,7 +312,7 @@ public class StyleAnalyzeService {
         String fileID;
 
 
-        if (myPersonalColor == null) {
+        if (myPersonalColor != null) {
             fileID = personalTipJPA.findByPersonalTipType(myPersonalColor).getPersonalTipFileId();
         } else {
             fileID = personalTipJPA.findByPersonalTipType(analyzedPersonalColor).getPersonalTipFileId();
