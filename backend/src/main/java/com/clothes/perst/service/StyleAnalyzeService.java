@@ -134,8 +134,10 @@ public class StyleAnalyzeService {
         StyleAnalyzeVO vo = styleAnalyzeJPA.findByStyleNumber(styleNumber);
         vo.setStyleColor(styleAnalyzeColorJPA.findAllByStyleNumber(styleNumber));
 
-        // 코디법 이미지 추가
-        vo.setStyleCommentFileID(searchStyleCommentFileIDs(gender, vo.getStyleName()));
+        /* 스타일 피드백 FileID 리스트 출력 */
+        String changeStyle = CoordinateTipDTO.changeCodiTip(vo.getStyleName(), gender);
+        vo.setStyleCommentFileID(searchStyleCommentFileIDs(gender, changeStyle));
+        vo.setStyleName(changeStyle);
 
         /* 퍼스널 컬러 피드백 */
         vo.setPersonalColorTip(setPersonalColorTip(vo.getMemberNumber(), vo.getStylePersonalColor()));
