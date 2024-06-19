@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:perst/src/screen/personalColor/personalColor.dart';
 import 'package:perst/src/screen/style/keywardFashion.dart';
 import 'package:perst/src/widget/style_color_view.dart';
 import '../../widget/google_drive_image.dart';
@@ -315,23 +316,39 @@ class PictureAnalysis extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => KeywordFashion(
-                            styleKeyword: styleName,
-                            kRStyleName: kRStyleName,
-                            personalColor: result['personalColorTip']
-                                ['analyzedPersonalColor']),
-                      ),
+                      result['personalColorTip']['myPersonalColor'] == null
+                          ? MaterialPageRoute(
+                              builder: (context) => PersonalColor(),
+                            )
+                          : MaterialPageRoute(
+                              builder: (context) => KeywordFashion(
+                                  styleKeyword: styleName,
+                                  kRStyleName: kRStyleName,
+                                  personalColor: result['personalColorTip']
+                                      ['analyzedPersonalColor']),
+                            ),
                     );
                   },
-                  child: Text(
-                    '➤ 봄 브라이트에 어울리는 스타일 둘러보기',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        color: Color.fromARGB(255, 255, 255, 255)),
-                  ),
+                  child: result['personalColorTip']['myPersonalColor'] == null
+                      ? Text(
+                          '퍼스널 컬러 진단하러 가기',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: Color.fromARGB(255, 255, 255, 255)),
+                        )
+                      : Text(
+                          '➤' +
+                              result['personalColorTip']
+                                  ['analyzedPersonalColor'] +
+                              '에 어울리는 스타일 둘러보기',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: Color.fromARGB(255, 255, 255, 255)),
+                        ),
                   style: TextButton.styleFrom(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(7),
@@ -345,6 +362,5 @@ class PictureAnalysis extends StatelessWidget {
         ],
       ),
     );
-    ;
   }
 }
