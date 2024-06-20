@@ -43,7 +43,7 @@ class MypageConnect extends GetConnect {
       Response response = await get('/clothes/analyze?number=$styleNumber',
           headers: {'Authorization': await getToken});
       Map<String, dynamic> body = response.body;
-      print(body);
+      print(body['data']);
 
       if (body['code'] != 200) {
         throw Exception(body['message']);

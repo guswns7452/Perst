@@ -19,7 +19,7 @@ class PersonalColorFashion extends StatefulWidget {
 }
 
 String _searchCurrentStyle = '';
-int _currentStyleInt = 1;
+int _currentStyleInt = 0;
 
 class _PersonalColorFashionState extends State<PersonalColorFashion> {
   final fashionSearchConnect = Get.put(FashionSearchConnect());
@@ -29,13 +29,15 @@ class _PersonalColorFashionState extends State<PersonalColorFashion> {
   @override
   void initState() {
     super.initState();
+    _searchCurrentStyle = 'sporty';
     getData();
   }
 
   getData() async {
     if (_selectedGender == "woman") {
+      print(_searchCurrentStyle);
       var response = await fashionSearchConnect.searchWoman(
-          _searchCurrentStyle, false, [], "all");
+          _searchCurrentStyle, true, [], "all");
       List<dynamic> results = response['data'];
       setState(() {
         fashions = results
@@ -44,7 +46,7 @@ class _PersonalColorFashionState extends State<PersonalColorFashion> {
       });
     } else if (_selectedGender == "man") {
       var response = await fashionSearchConnect.searchMan(
-          _searchCurrentStyle, false, [], "all");
+          _searchCurrentStyle, true, [], "all");
       List<dynamic> results = response['data'];
       setState(() {
         fashions = results
