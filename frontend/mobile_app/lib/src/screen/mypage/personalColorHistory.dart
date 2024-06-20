@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:perst/src/connect/mypage_connect.dart';
+import 'package:perst/src/screen/personalColor/personalColorFashion.dart';
 
 import '../../model/color_model.dart';
 
@@ -74,7 +75,15 @@ class _PersonalColorHistoryState extends State<PersonalColorHistory> {
         ResultColorList(
             result!["personalColorRepresentative"][3]["red"],
             result!["personalColorRepresentative"][3]["green"],
-            result!["personalColorRepresentative"][3]["blue"])
+            result!["personalColorRepresentative"][3]["blue"]),
+        ResultColorList(
+            result!["personalColorRepresentative"][4]["red"],
+            result!["personalColorRepresentative"][4]["green"],
+            result!["personalColorRepresentative"][4]["blue"]),
+        ResultColorList(
+            result!["personalColorRepresentative"][5]["red"],
+            result!["personalColorRepresentative"][5]["green"],
+            result!["personalColorRepresentative"][5]["blue"]),
       ];
 
       firstRatio =
@@ -340,19 +349,28 @@ class _PersonalColorHistoryState extends State<PersonalColorHistory> {
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Container(
                   height: 100,
-                  width: 170,
+                  width: 120,
                   decoration: BoxDecoration(
                       color: Color.fromRGBO(colorList[0].red,
                           colorList[0].green, colorList[0].blue, 1),
                       borderRadius: BorderRadius.circular(8)),
                 ),
-                SizedBox(width: 20),
+                SizedBox(width: 10),
                 Container(
                   height: 100,
-                  width: 170,
+                  width: 120,
                   decoration: BoxDecoration(
                       color: Color.fromRGBO(colorList[1].red,
                           colorList[1].green, colorList[1].blue, 1),
+                      borderRadius: BorderRadius.circular(8)),
+                ),
+                SizedBox(width: 10),
+                Container(
+                  height: 100,
+                  width: 120,
+                  decoration: BoxDecoration(
+                      color: Color.fromRGBO(colorList[2].red,
+                          colorList[2].green, colorList[2].blue, 1),
                       borderRadius: BorderRadius.circular(8)),
                 ),
               ]),
@@ -360,19 +378,28 @@ class _PersonalColorHistoryState extends State<PersonalColorHistory> {
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Container(
                   height: 100,
-                  width: 170,
-                  decoration: BoxDecoration(
-                      color: Color.fromRGBO(colorList[2].red,
-                          colorList[2].green, colorList[2].blue, 1),
-                      borderRadius: BorderRadius.circular(8)),
-                ),
-                SizedBox(width: 20),
-                Container(
-                  height: 100,
-                  width: 170,
+                  width: 120,
                   decoration: BoxDecoration(
                       color: Color.fromRGBO(colorList[3].red,
                           colorList[3].green, colorList[3].blue, 1),
+                      borderRadius: BorderRadius.circular(8)),
+                ),
+                SizedBox(width: 10),
+                Container(
+                  height: 100,
+                  width: 120,
+                  decoration: BoxDecoration(
+                      color: Color.fromRGBO(colorList[4].red,
+                          colorList[4].green, colorList[4].blue, 1),
+                      borderRadius: BorderRadius.circular(8)),
+                ),
+                SizedBox(width: 10),
+                Container(
+                  height: 100,
+                  width: 120,
+                  decoration: BoxDecoration(
+                      color: Color.fromRGBO(colorList[5].red,
+                          colorList[5].green, colorList[5].blue, 1),
                       borderRadius: BorderRadius.circular(8)),
                 ),
               ]),
@@ -595,7 +622,13 @@ class _PersonalColorHistoryState extends State<PersonalColorHistory> {
           Container(
             margin: EdgeInsets.only(left: 20, right: 20, top: 12),
             child: OutlinedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => PersonalColorFashion(
+                        personalColor: result!["personalSelects"][0]
+                            ["personalSelectType"]),
+                  ));
+                },
                 style: OutlinedButton.styleFrom(backgroundColor: Colors.black),
                 child: Row(
                   children: [

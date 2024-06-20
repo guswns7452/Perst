@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:perst/src/connect/mypage_connect.dart';
 import 'package:perst/src/model/mypage_model.dart';
+import 'package:perst/src/screen/personalColor/personalColor.dart';
 import 'package:perst/src/screen/style/keywardFashion.dart';
 import 'package:perst/src/widget/google_drive_image.dart';
 import 'package:perst/src/widget/style_color_view.dart';
@@ -27,11 +28,12 @@ class _StyleHistoryDetailState extends State<StyleHistoryDetail> {
   String kRStyleName = '';
   String? styleName = '';
   int styleNumber = 0;
+  String feedback = '';
+  String feedback2 = '';
 
   @override
   void initState() {
     super.initState();
-    _dataLoading();
     _fetchData();
   }
 
@@ -40,31 +42,56 @@ class _StyleHistoryDetailState extends State<StyleHistoryDetail> {
       isLoading = true;
     });
 
+    MystyleModel fashionData = widget.fashion;
+    styleNumber = fashionData.styleNumber!;
+
     result = await mypageConnection.styleHistoryDetail(styleNumber);
+    String styleNameData = result['styleName'];
 
     setState(() {
       isLoading = false;
+
+      if (styleNameData == "casual") kRStyleName = "캐주얼";
+      if (styleNameData == "street") kRStyleName = "스트릿";
+      if (styleNameData == "dandy") kRStyleName = "댄디";
+      if (styleNameData == "amekaji") kRStyleName = "아메카지";
+      if (styleNameData == "gofcore") kRStyleName = "고프코어";
+      if (styleNameData == "chic") kRStyleName = "시크";
+      if (styleNameData == "businessCasual") kRStyleName = "비즈니스캐주얼";
+      if (styleNameData == "sporty") kRStyleName = "스포티";
+      if (styleNameData == "minimal") kRStyleName = "미니멀";
+      if (styleNameData == "romantic") kRStyleName = "로맨틱";
+      if (styleNameData == "girlish") kRStyleName = "걸리시";
+      if (styleNameData == "retro") kRStyleName = "레트로";
+      if (styleNameData == "golf") kRStyleName = "골프";
+
+      if (result['personalColorTip']['myPersonalColor'] ==
+          result['personalColorTip']['analyzedPersonalColor']) {
+        feedback =
+            ' 당신의 퍼스널 컬러는 ${result['personalColorTip']['myPersonalColor']}입니다. 퍼스널 컬러에 맞는 의상을 잘 입었어요! 앞으로도 비슷한 계열의 색상을 입어보세요.';
+      } else if (result['personalColorTip']['myPersonalColor'] !=
+          result['personalColorTip']['analyzedPersonalColor']) {
+        if (result['personalColorTip']['myPersonalColor'] == '') {
+          feedback =
+              '아직 퍼스널 컬러를 진단하지 않으셨네요! 퍼스널 컬러를 진단하면 나에게 맞는 의류를 찾을 수 있어요. 지금 퍼스널 컬러를 진단하고 나에게 맞는 의류를 찾아보세요! \n그래도 지금 입은 의상은 겨울 딥에 어울리므로, 겨울 딥에 관련한 내용을 제공할게요!';
+        } else {
+          feedback =
+              '당신의 퍼스널 컬러는 ${result['personalColorTip']['myPersonalColor']}입니다. 하지만 현재 \n입은 색상은 ${result['personalColorTip']['analyzedPersonalColor']}에 가까워요. ${result['personalColorTip']['myPersonalColor']}에 맞는 의상을 입는다면 더욱 얼굴 톤이 좋아질 거에요! \n아래 ${result['personalColorTip']['myPersonalColor']}에 관련한 설명을 읽어보세요!';
+        }
+      }
+
+      if (result['personalColorTip']['myPersonalColor'] ==
+          result['personalColorTip']['analyzedPersonalColor']) {
+        feedback2 = '👍 퍼스널 컬러에 맞게 잘 입었어요!';
+      } else if (result['personalColorTip']['myPersonalColor'] !=
+          result['personalColorTip']['analyzedPersonalColor']) {
+        if (result['personalColorTip']['myPersonalColor'] == '') {
+          feedback2 = '🥺 퍼스널 컬러를 진단하면 더 좋은 결과를 얻을 수 있어요!';
+        } else {
+          feedback2 = '😢 퍼스널 컬러에 맞지 않는 의류에요!';
+        }
+      }
     });
-  }
-
-  _dataLoading() {
-    MystyleModel fashionData = widget.fashion;
-
-    styleName = fashionData.styleName;
-    styleNumber = fashionData.styleNumber!;
-
-    if (styleName == "casual") kRStyleName = "캐주얼";
-    if (styleName == "street") kRStyleName = "스트릿";
-    if (styleName == "dandy") kRStyleName = "댄디";
-    if (styleName == "Amekaji") kRStyleName = "아메카지";
-    if (styleName == "gofcore") kRStyleName = "고프코어";
-    if (styleName == "chic") kRStyleName = "시크";
-    if (styleName == "businessCasual") kRStyleName = "비즈니스캐주얼";
-    if (styleName == "Sporty") kRStyleName = "스포티";
-    if (styleName == "minimal") kRStyleName = "미니멀";
-    if (styleName == "romantic") kRStyleName = "로맨틱";
-    if (styleName == "girlish") kRStyleName = "걸리시";
-    if (styleName == "retro") kRStyleName = "레트로";
   }
 
   @override
@@ -288,7 +315,105 @@ class _StyleHistoryDetailState extends State<StyleHistoryDetail> {
                             backgroundColor: Colors.transparent),
                       ),
                     ),
-                    SizedBox(height: 15)
+                    SizedBox(height: 15),
+                    Container(
+                      color: Color.fromARGB(255, 229, 229, 229),
+                      height: 7,
+                      width: double.infinity,
+                      margin: EdgeInsets.only(bottom: 30, top: 30),
+                    ),
+                    Text(
+                      '   🌈 퍼스널 컬러 피드백',
+                      style: GoogleFonts.poorStory(
+                        textStyle: TextStyle(
+                            fontSize: 23, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Row(children: [
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Text(
+                        feedback2,
+                        style: GoogleFonts.poorStory(
+                          textStyle: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ]),
+                    SizedBox(height: 5),
+                    Row(children: [
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Container(
+                        width: 375,
+                        child: Text(
+                          feedback,
+                          style: GoogleFonts.poorStory(
+                            textStyle: TextStyle(
+                                fontWeight: FontWeight.w500, fontSize: 18),
+                          ),
+                        ),
+                      ),
+                    ]),
+                    Container(
+                      margin: EdgeInsets.only(top: 30, bottom: 30),
+                      height: 410,
+                      width: 410,
+                      child: google_drive_image(
+                          id: result['personalColorTip']['fileID']),
+                    ),
+                    Center(
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            result['personalColorTip']['myPersonalColor'] ==
+                                    null
+                                ? MaterialPageRoute(
+                                    builder: (context) => PersonalColor(),
+                                  )
+                                : MaterialPageRoute(
+                                    builder: (context) => KeywordFashion(
+                                        styleKeyword: styleName,
+                                        kRStyleName: kRStyleName,
+                                        personalColor:
+                                            result['personalColorTip']
+                                                ['myPersonalColor']),
+                                  ),
+                          );
+                        },
+                        child: result['personalColorTip']['myPersonalColor'] ==
+                                null
+                            ? Text(
+                                '퍼스널 컬러 진단하러 가기',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color.fromARGB(255, 255, 255, 255)),
+                              )
+                            : Text(
+                                '➤ ' +
+                                    result['personalColorTip']
+                                        ['myPersonalColor'] +
+                                    '에 어울리는 스타일 둘러보기',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color.fromARGB(255, 255, 255, 255)),
+                              ),
+                        style: TextButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(7),
+                            ),
+                            backgroundColor: Colors.black),
+                      ),
+                    ),
+                    SizedBox(height: 30)
                   ],
                 ),
               ],

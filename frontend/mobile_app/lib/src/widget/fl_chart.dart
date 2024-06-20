@@ -25,6 +25,10 @@ class FlChart extends StatelessWidget {
       Color.fromARGB(255, 227, 249, 141),
       Color.fromARGB(255, 141, 153, 249),
       Color.fromARGB(255, 219, 111, 255),
+      Color.fromARGB(255, 246, 218, 255),
+      Color.fromARGB(255, 255, 243, 218),
+      Color.fromARGB(255, 255, 238, 0),
+      Color.fromARGB(255, 0, 255, 217),
     ];
 
     List<String> stylePercent = [];
@@ -61,7 +65,9 @@ class FlChart extends StatelessWidget {
         favoriteStyle = "로맨틱";
       else if (favoriteStyle == "girlish")
         favoriteStyle = "걸리시";
-      else if (favoriteStyle == "retro") favoriteStyle = "레트로";
+      else if (favoriteStyle == "retro")
+        favoriteStyle = "레트로";
+      else if (favoriteStyle == "golf") favoriteStyle = "골프";
 
       if (styleResult.isNotEmpty) {
         for (int style in styleResults.values) {
