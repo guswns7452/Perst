@@ -396,7 +396,7 @@ class _StyleHistoryDetailState extends State<StyleHistoryDetail> {
                                     color: Color.fromARGB(255, 255, 255, 255)),
                               )
                             : Text(
-                                '➤ ' +
+                                '➤' +
                                     result['personalColorTip']
                                         ['myPersonalColor'] +
                                     '에 어울리는 스타일 둘러보기',
