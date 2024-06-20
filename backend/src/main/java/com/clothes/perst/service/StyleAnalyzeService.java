@@ -103,11 +103,12 @@ public class StyleAnalyzeService {
         int styleNumber = newstyleAnalyzeVO.getStyleNumber();
 
         /* DB에 색상 저장하기 */
-        List<StyleColorVO> colors = new ArrayList();
-        colors.add(new StyleColorVO((String) data.get("color1"), styleNumber));
-        colors.add(new StyleColorVO((String) data.get("color2"), styleNumber));
-        colors.add(new StyleColorVO((String) data.get("color3"), styleNumber));
-        colors.add(new StyleColorVO((String) data.get("color4"), styleNumber));
+       List<StyleColorVO> colors = new ArrayList();
+        List getColors = splitArr((String) data.get("colors"));
+        colors.add(new StyleColorVO(getColors.get(0).toString(), styleNumber));
+        colors.add(new StyleColorVO(getColors.get(1).toString(), styleNumber));
+        colors.add(new StyleColorVO(getColors.get(2).toString(), styleNumber));
+        colors.add(new StyleColorVO(getColors.get(3).toString(), styleNumber));
         saveStyleColor(colors);
         newstyleAnalyzeVO.setStyleColor(colors);
 
@@ -122,6 +123,27 @@ public class StyleAnalyzeService {
         /* 퍼스널 컬러 피드백 */
         newstyleAnalyzeVO.setPersonalColorTip(setPersonalColorTip(memberNumber, AnalyzedPersonalColor));
         return newstyleAnalyzeVO;
+    }
+
+    private List splitArr(String s) {
+        // 중괄호와 대괄호 제거
+        s = s.substring(2, s.length() - 2);
+
+        // 각 요소를 쉼표를 기준으로 분리
+        String[] parts = s.split("\\], \\[");
+
+        // 결과를 저장할 리스트
+        List<List<String>> result = new ArrayList<>();
+
+        for (String part : parts) {
+            String[] values = part.split(", ");
+            List<String> innerList = new ArrayList<>();
+            for (String value : values) {
+                innerList.add(value);
+            }
+            result.add(innerList);
+        }
+        return result;
     }
 
     /**
