@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface MusinsaRepository extends JpaRepository<MusinsaVO, Long> {
+public interface MusinsaRepository extends JpaRepository<MusinsaVO, Integer> {
 
     // 필수 : Gender, Style
     // 선택 : musinsa_personal, color

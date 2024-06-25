@@ -12,7 +12,7 @@ import java.util.List;
  * 스타일 분석 후 코디법 이미지 관련 DB 저장
  */
 @Repository
-public interface CoordinateRepository extends CrudRepository<CoordinateVO, CoordinateVO> {
+public interface CoordinateRepository extends CrudRepository<CoordinateVO, Integer> {
 
     CoordinateVO save(CoordinateVO codi);
 

@@ -7,7 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface RepresentativeColorRepository extends CrudRepository<RepresentativeColorVO, RepresentativeColorVO> {
+public interface RepresentativeColorRepository extends CrudRepository<RepresentativeColorVO, Integer> {
 
     List<RepresentativeColorVO> findAllByRepresentativeColorPersonalColor(String personalColor);
 
