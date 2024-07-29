@@ -1,7 +1,6 @@
 package com.clothes.perst.config;
 
 import com.clothes.perst.DTO.ClothesFolder;
-import com.clothes.perst.domain.ClothesFemaleVO;
 import com.clothes.perst.service.StyleAnalyzeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -10,7 +9,6 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
-import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 import com.google.auth.http.HttpCredentialsAdapter;
@@ -18,16 +16,13 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import org.springframework.stereotype.Service;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

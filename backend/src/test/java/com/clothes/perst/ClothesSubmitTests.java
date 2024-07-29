@@ -29,7 +29,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.clothes.perst.GoogleFileID.*;
+import static com.clothes.perst.GoogleFileID.getCredentials;
+import static com.clothes.perst.GoogleFileID.loadClothesList;
 
 /**
  * @implNote 남성, 여성 테이블을 나눠서 남성은 연도별 구분완료함

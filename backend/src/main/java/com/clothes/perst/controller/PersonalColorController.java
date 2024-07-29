@@ -2,7 +2,6 @@ package com.clothes.perst.controller;
 
 import com.clothes.perst.DTO.RestResponse;
 import com.clothes.perst.config.JwtTokenService;
-import com.clothes.perst.domain.MusinsaVO;
 import com.clothes.perst.domain.PersonalColorVO;
 import com.clothes.perst.service.PersonalColorService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,8 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/personal") // API의 기본 경로 설정

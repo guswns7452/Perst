@@ -4,7 +4,6 @@ import com.clothes.perst.DTO.RestResponse;
 import com.clothes.perst.DTO.TransferStyleAnalyzeDTO;
 import com.clothes.perst.config.JwtTokenService;
 import com.clothes.perst.domain.StyleAnalyzeVO;
-import com.clothes.perst.domain.StyleColorVO;
 import com.clothes.perst.service.MemberService;
 import com.clothes.perst.service.StyleAnalyzeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,9 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.ConnectException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
 
 @RestController
 @RequestMapping("/clothes/analyze") // API의 기본 경로 설정
