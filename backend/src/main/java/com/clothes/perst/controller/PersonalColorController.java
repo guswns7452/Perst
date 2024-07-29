@@ -11,27 +11,22 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/personal") // API의 기본 경로 설정
 @Tag(name="퍼스널 컬러 진단하기", description = "퍼스널 컬러 분석하기와 관련된 API입니다.")
 public class PersonalColorController {
     private final PersonalColorService personalColorService;
-    RestResponse<Object> restResponse = new RestResponse<>();
-    private static final Logger logger = LoggerFactory.getLogger(PersonalColorController.class);
     private final JwtTokenService jwtTokenService;
 
-    @Autowired
-    public PersonalColorController(JwtTokenService jwtTokenService, PersonalColorService personalColorService){
-        this.jwtTokenService = jwtTokenService;
-        this.personalColorService = personalColorService;
-    }
+    RestResponse<Object> restResponse = new RestResponse<>();
 
     /**
      * Personal Color를 등록하는 API
@@ -53,7 +48,7 @@ public class PersonalColorController {
     public ResponseEntity registPersonalColor(@RequestHeader("Authorization") String token, @RequestBody PersonalColorVO personalColor) throws Exception {
         int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
 
-        logger.info(String.format("[퍼스널 컬러 등록하기] 회원 번호 : %d / 퍼스널 컬러 : %s", memberNumber, personalColor.getPersonalColorType()));
+        log.info(String.format("[퍼스널 컬러 등록하기] 회원 번호 : %d / 퍼스널 컬러 : %s", memberNumber, personalColor.getPersonalColorType()));
         personalColor.setMemberNumber(memberNumber); // 멤버 번호 할당하기
         
         // 퍼스널 컬러 코드 실행하기
@@ -99,7 +94,7 @@ public class PersonalColorController {
     public ResponseEntity findMyPersonalColor(@RequestHeader("Authorization") String token) throws Exception {
         int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
 
-        logger.info(String.format("[퍼스널 컬러 조회하기] 회원 번호 : %d", memberNumber));
+        log.info(String.format("[퍼스널 컬러 조회하기] 회원 번호 : %d", memberNumber));
 
         // 퍼스널 컬러 조회 코드 실행
         PersonalColorVO personalColor = personalColorService.findMyPersonalColor(memberNumber);

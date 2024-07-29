@@ -13,35 +13,25 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/clothes/search") // API의 기본 경로 설정
 @Tag(name="스타일 둘러보기", description = "스타일 둘러보기와 관련된 API입니다.")
 public class ClothesSearchController {
-    final MusinsaService musinsaService;
-    final PersonalColorRepository personalColorJPA;
-
-    RestResponse<Object> restResponse = new RestResponse<>();
-
-    private static final Logger logger = LoggerFactory.getLogger(ClothesSearchController.class);
-
+    private final MusinsaService musinsaService;
+    private final PersonalColorRepository personalColorJPA;
     private final JwtTokenService jwtTokenService;
 
-
-    @Autowired
-    public ClothesSearchController(MusinsaService musinsaService, JwtTokenService jwtTokenService, PersonalColorRepository personalColorJPA){
-        this.musinsaService = musinsaService;
-        this.jwtTokenService = jwtTokenService;
-        this.personalColorJPA = personalColorJPA;
-    }
+    RestResponse<Object> restResponse = new RestResponse<>();
 
     // TODO 토큰 활용하여 정상적인 사용자를 식별하는 코드 추가
     
@@ -56,7 +46,7 @@ public class ClothesSearchController {
     })
     @PostMapping("/man")
     public ResponseEntity findMaleSearch(@RequestHeader("Authorization") String token, @RequestParam String style, @RequestBody MusinsaSearchRequest musinsaSearchVO) throws Exception {
-        logger.info("[남성 스타일 둘러보기] Style : " + style + " / Color : " + musinsaSearchVO.getColor());
+        log.info("[남성 스타일 둘러보기] Style : " + style + " / Color : " + musinsaSearchVO.getColor());
         try{
             int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
             musinsaSearchVO.setMemberNumber(memberNumber);
@@ -104,7 +94,7 @@ public class ClothesSearchController {
     })
     @PostMapping("/woman")
     public ResponseEntity findFemaleSearch(@RequestHeader("Authorization") String token, @RequestParam String style, @RequestBody MusinsaSearchRequest searchVO) throws Exception {
-        logger.info("[여성 스타일 둘러보기] Style : " + style + " / Color : " + searchVO.getColor());
+        log.info("[여성 스타일 둘러보기] Style : " + style + " / Color : " + searchVO.getColor());
         try{
             int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
             searchVO.setMemberNumber(memberNumber);
@@ -156,7 +146,7 @@ public class ClothesSearchController {
     })
     @GetMapping("/male/{page}")
     public ResponseEntity findMaleSearch(@PathVariable int page, @RequestParam String maleStyle) throws Exception {
-        logger.info("[남성 스타일 둘러보기] Style : " + maleStyle);
+        log.info("[남성 스타일 둘러보기] Style : " + maleStyle);
         try{
             List<ClothesMaleVO> maleClothes = clothesSearchService.findByMaleStyle(maleStyle); // 맨날 불러오는 것이 성능적으로 괜찮은가?
 
@@ -197,7 +187,7 @@ public class ClothesSearchController {
     })
     @GetMapping("/female/{page}")
     public ResponseEntity findFemaleSearch(@PathVariable int page, @RequestParam String femaleStyle) throws Exception {
-        logger.info("[여성 스타일 둘러보기] Style : " + femaleStyle);
+        log.info("[여성 스타일 둘러보기] Style : " + femaleStyle);
         try{
             List<ClothesFemaleVO> femaleClothes = clothesSearchService.findByFemaleStyle(femaleStyle);
 

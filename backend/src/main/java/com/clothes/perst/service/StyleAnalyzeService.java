@@ -18,9 +18,8 @@ import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import jakarta.security.auth.message.AuthException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -39,6 +38,8 @@ import java.security.GeneralSecurityException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class StyleAnalyzeService {
     private final StyleAnalyzeRepository styleAnalyzeJPA;
@@ -47,25 +48,12 @@ public class StyleAnalyzeService {
     private final PersonalColorRepository personalColorJPA;
     private final PersonalTipRepository personalTipJPA;
     private final GoogleDriveAPI googleDriveAPI;
-    private static final Logger logger = LoggerFactory.getLogger(StyleAnalyzeService.class);
-
 
     @Value("${folderId.ClothesAnalyze}")
     String folderID;
 
-
     @Value("${apiURL}")
     String apiUrl;
-
-    @Autowired
-    public StyleAnalyzeService(StyleAnalyzeRepository styleAnalyzeJPA, PersonalTipRepository personalTipJPA, PersonalColorRepository personalColorJPA, CoordinateRepository coordinateJPA, StyleAnalyzeColorRepository styleAnalyzeColorRepository, GoogleDriveAPI googleDriveAPI) {
-        this.styleAnalyzeJPA = styleAnalyzeJPA;
-        this.styleAnalyzeColorJPA = styleAnalyzeColorRepository;
-        this.googleDriveAPI = googleDriveAPI;
-        this.coordinateJPA = coordinateJPA;
-        this.personalColorJPA = personalColorJPA;
-        this.personalTipJPA = personalTipJPA;
-    }
 
     private static String uploadDir = "./src/main/resources/image/";
 
@@ -302,7 +290,7 @@ public class StyleAnalyzeService {
 
         ResponseEntity<RestResponse> response = restTemplate.postForEntity(apiUrl, entity, RestResponse.class);
 
-        logger.info(response.toString());
+        log.info(response.toString());
         RestResponse responseBody = response.getBody();
 
         return responseBody;
