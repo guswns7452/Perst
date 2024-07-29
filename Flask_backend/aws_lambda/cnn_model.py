@@ -330,8 +330,8 @@ def cnn_model_main(ori_img, type):
     g = personal_color_list[0][1]
     b = personal_color_list[0][2]
 
-    HSV_list = personal_color.rgb_to_hsv(r, g, b)
-    output_dict["personal_color_label"] = personal_color.get_season_tone(HSV_list)
+    # @Params : RGB
+    output_dict["personal_color_label"] = personal_color.get_season_tone([r, g, b])
     output_dict["personal_masked_img"] = personal_color_list[1]
 
     # output_dict['personal_color_label'] = personal_color_list[0]

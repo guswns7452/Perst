@@ -4,7 +4,6 @@ import com.clothes.perst.DTO.RestResponse;
 import com.clothes.perst.DTO.TransferStyleAnalyzeDTO;
 import com.clothes.perst.config.JwtTokenService;
 import com.clothes.perst.domain.StyleAnalyzeVO;
-import com.clothes.perst.domain.StyleColorVO;
 import com.clothes.perst.service.MemberService;
 import com.clothes.perst.service.StyleAnalyzeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,8 +14,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.security.auth.message.AuthException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,26 +23,18 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.ConnectException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
 
+@Slf4j
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/clothes/analyze") // API의 기본 경로 설정
 @Tag(name="스타일 분석하기", description = "스타일 분석하기와 관련된 API입니다.")
 public class StyleAnalyzeController {
     private final StyleAnalyzeService styleAnalyzeService;
     private final MemberService memberService;
-    RestResponse<Object> restResponse = new RestResponse<>();
-    private static final Logger logger = LoggerFactory.getLogger(StyleAnalyzeController.class);
     private final JwtTokenService jwtTokenService;
 
-    @Autowired
-    public StyleAnalyzeController(StyleAnalyzeService styleAnalyzeService, MemberService memberService, JwtTokenService jwtTokenService) {
-        this.styleAnalyzeService = styleAnalyzeService;
-        this.memberService = memberService;
-        this.jwtTokenService = jwtTokenService;
-    }
+    RestResponse<Object> restResponse = new RestResponse<>();
 
     /**
      * 스타일 분석하는 API 필요
@@ -59,7 +50,7 @@ public class StyleAnalyzeController {
     })
     @PostMapping("")
     public ResponseEntity Analyze(@RequestHeader("Authorization") String token, @RequestParam("image") MultipartFile file) throws Exception {
-        logger.info("[스타일 분석하기]");
+        log.info("[스타일 분석하기]");
         try {
             /* API 시간 측정 - 시작 */
             long beforeTime = System.currentTimeMillis(); //코드 실행 전에 시간 받아오기
@@ -75,7 +66,7 @@ public class StyleAnalyzeController {
             /* API 시간 측정 - 끝 */
             long afterTime = System.currentTimeMillis(); // 코드 실행 후에 시간 받아오기
             long secDiffTime = (afterTime - beforeTime); //두 시간에 차 계산
-            logger.info("실행 시간 : "+secDiffTime+"ms");
+            log.info("실행 시간 : "+secDiffTime+"ms");
             
             restResponse = RestResponse.builder()
                     .code(HttpStatus.OK.value())
@@ -88,7 +79,7 @@ public class StyleAnalyzeController {
 
         // 일치 하는 의류가 없을 때, IllegalArgumentException 발생
         catch (IllegalArgumentException e) {
-            logger.info(e.getMessage());
+            log.info(e.getMessage());
             restResponse = RestResponse.builder()
                     .code(HttpStatus.FORBIDDEN.value())
                     .httpStatus(HttpStatus.FORBIDDEN)
@@ -96,7 +87,7 @@ public class StyleAnalyzeController {
                     .build();
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
         } catch (ConnectException e) {
-            logger.info(e.getMessage());
+            log.info(e.getMessage());
             restResponse = RestResponse.builder()
                     .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
                     .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -122,7 +113,7 @@ public class StyleAnalyzeController {
 
         StyleAnalyzeVO newstyleAnalyzeVO = styleAnalyzeService.findMyStyle(gender, styleNumber);
 
-        logger.info("[내 상세 분석 이력 불러오기]");
+        log.info("[내 상세 분석 이력 불러오기]");
         try{
             restResponse = RestResponse.builder()
                     .code(HttpStatus.OK.value())
@@ -133,7 +124,7 @@ public class StyleAnalyzeController {
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
         }
         catch(Exception e){
-            logger.info("내 분석 이력 불러오기 중 오류");
+            log.info("내 분석 이력 불러오기 중 오류");
             restResponse = RestResponse.builder()
                     .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
                     .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -157,7 +148,7 @@ public class StyleAnalyzeController {
             int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
 
             // 삭제하는 메소드
-            logger.info("[내 스타일 분석 이력 삭제하기]");
+            log.info("[내 스타일 분석 이력 삭제하기]");
             styleAnalyzeService.deleteMyStyle(memberNumber, styleNumber);
 
             restResponse = RestResponse.builder()
@@ -169,7 +160,7 @@ public class StyleAnalyzeController {
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
         }
         catch (AuthException e){
-            logger.info("[내 스타일 이력 삭제] 다른 계정으로 삭제할 수 없습니다.");
+            log.info("[내 스타일 이력 삭제] 다른 계정으로 삭제할 수 없습니다.");
             restResponse = RestResponse.builder()
                     .code(HttpStatus.UNAUTHORIZED.value())
                     .httpStatus(HttpStatus.UNAUTHORIZED)
@@ -178,7 +169,7 @@ public class StyleAnalyzeController {
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
         }
         catch(Exception e) {
-            logger.info("내 스타일 분석 삭제 중 오류");
+            log.info("내 스타일 분석 삭제 중 오류");
             restResponse = RestResponse.builder()
                     .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
                     .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -200,7 +191,7 @@ public class StyleAnalyzeController {
 
         TransferStyleAnalyzeDTO newstyleAnalyzeVO = styleAnalyzeService.findMyStyleList(memberNumber);
 
-        logger.info("[내 분석 이력 리스튼 불러오기]");
+        log.info("[내 분석 이력 리스튼 불러오기]");
         try{
             restResponse = RestResponse.builder()
                     .code(HttpStatus.OK.value())
@@ -211,7 +202,7 @@ public class StyleAnalyzeController {
             return new ResponseEntity<>(restResponse, restResponse.getHttpStatus());
         }
         catch(Exception e){
-            logger.info("내 분석 이력 불러오기 중 오류");
+            log.info("내 분석 이력 불러오기 중 오류");
             restResponse = RestResponse.builder()
                     .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
                     .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)

@@ -6,25 +6,21 @@ import com.clothes.perst.domain.PersonalSelectVO;
 import com.clothes.perst.persistance.PersonalColorRepository;
 import com.clothes.perst.persistance.PersonalSelectRepository;
 import com.clothes.perst.persistance.RepresentativeColorRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class PersonalColorService {
-
     private final PersonalColorRepository personalColorJPA;
     private final PersonalSelectRepository personalSelectJPA;
     private final RepresentativeColorRepository representativeColorJPA;
-
-    public PersonalColorService(PersonalColorRepository personalColorJPA, PersonalSelectRepository personalSelectJPA, RepresentativeColorRepository representativeColorJPA){
-        this.personalColorJPA = personalColorJPA;
-        this.personalSelectJPA = personalSelectJPA;
-        this.representativeColorJPA = representativeColorJPA;
-
-    }
 
     /**
      * 퍼스널 컬러 진단 후 등록하는 코드

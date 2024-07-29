@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 @Repository
-public interface PersonalColorRepository extends CrudRepository<PersonalColorVO, PersonalColorVO> {
+public interface PersonalColorRepository extends CrudRepository<PersonalColorVO, Integer> {
     PersonalColorVO save(PersonalColorVO personalColorVO);
 
     PersonalColorVO findByMemberNumber(int memberNumber);

@@ -5,27 +5,20 @@ import com.clothes.perst.DTO.MusinsaSearchRequest;
 import com.clothes.perst.domain.MusinsaVO;
 import com.clothes.perst.persistance.MusinsaRepository;
 import com.clothes.perst.persistance.PersonalColorRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class MusinsaService {
     private final MusinsaRepository musinsaJPA;
     private final PersonalColorRepository personalColorJPA;
-    private static final Logger logger = LoggerFactory.getLogger(MusinsaService.class);
-
-
-    @Autowired
-    public MusinsaService(MusinsaRepository musinsaJPA, PersonalColorRepository personalColorJPA) {
-        this.musinsaJPA = musinsaJPA;
-        this.personalColorJPA = personalColorJPA;
-    }
 
     public List<MusinsaVO> findByMusinsaGenderAndMusinsaStyle(MusinsaVO musinsaVO, MusinsaSearchRequest musinsaSearchRequest) {
         List<MusinsaVO> musinsaVOList = new ArrayList<>();
@@ -34,8 +27,8 @@ public class MusinsaService {
         try{
             // 회원의 퍼스널 컬러를 반영할 것인가?
             if(musinsaSearchRequest.getIsPersonal()){
-                logger.info(Integer.toString(musinsaSearchRequest.getMemberNumber()));
-                logger.info(personalColorJPA.findByMemberNumber(musinsaSearchRequest.getMemberNumber()).toString());
+                log.info(Integer.toString(musinsaSearchRequest.getMemberNumber()));
+                log.info(personalColorJPA.findByMemberNumber(musinsaSearchRequest.getMemberNumber()).toString());
                 memberPersonal = personalColorJPA.findByMemberNumber(musinsaSearchRequest.getMemberNumber()).getPersonalColorType();
             }
         } catch (NullPointerException e){
@@ -44,7 +37,7 @@ public class MusinsaService {
 
         // 계절감 상관 없이 검색
         if(musinsaSearchRequest.getSeason().equals("all")){
-            logger.info("계절 : " + musinsaSearchRequest.getSeason());
+            log.info("계절 : " + musinsaSearchRequest.getSeason());
             try {
                 if (!musinsaSearchRequest.getColor().isEmpty()) {
                     for (String color : musinsaSearchRequest.getColor()) {

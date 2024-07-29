@@ -12,14 +12,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.ServletContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/member") // API의 기본 경로 설정
 @Tag(name="Member", description = "회원과 관련된 API입니다.")
@@ -27,19 +27,7 @@ public class HomeController {
     private final MemberService memberService;
     private final JwtTokenService jwtTokenService;
 
-    @Autowired
-    private ServletContext servletContext;
-
     RestResponse<Object> restResponse = new RestResponse<>();
-
-    // 생성자 방식으로 의존성 주입
-    @Autowired
-    public HomeController(MemberService memberService, JwtTokenService jwtTokenService){
-        this.memberService = memberService;
-        this.jwtTokenService = jwtTokenService;
-    }
-
-    private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
     /**
      * [ 로그인 하는 API ]
@@ -59,7 +47,7 @@ public class HomeController {
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody loginRequest loginReq) throws Exception {
         MemberVO member = loginReq.changeToMember();
-        logger.info("[로그인 요청] Phone : " + member.getMemberPhone());
+        log.info("[로그인 요청] Phone : " + member.getMemberPhone());
 
         // 성공적으로 로그인 했을때.
         try{
@@ -181,7 +169,7 @@ public class HomeController {
     })
     @PatchMapping("/mypage")
     public ResponseEntity editMyInfo(@RequestHeader("Authorization") String token, @RequestBody MemberVO member){
-        logger.info("[마이페이지 변경]");
+        log.info("[마이페이지 변경]");
         try{
             int memberNumber = Integer.parseInt(jwtTokenService.getUsernameFromToken(token));
             member.setMemberNumber(memberNumber);

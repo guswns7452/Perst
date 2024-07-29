@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface StyleAnalyzeRepository extends JpaRepository<StyleAnalyzeVO, StyleAnalyzeVO> {
+public interface StyleAnalyzeRepository extends JpaRepository<StyleAnalyzeVO, Integer> {
     StyleAnalyzeVO save(StyleAnalyzeVO styleAnalze);
 
     StyleAnalyzeVO findByStyleNumber(int StyleNumber);

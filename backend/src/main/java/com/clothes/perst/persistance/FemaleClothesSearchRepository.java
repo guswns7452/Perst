@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface FemaleClothesSearchRepository extends CrudRepository<ClothesFemaleVO, ClothesFemaleVO> {
+public interface FemaleClothesSearchRepository extends CrudRepository<ClothesFemaleVO, Integer> {
     List<ClothesFemaleVO> findByClothesStyle(String clothesStyle);
     ClothesFemaleVO save(ClothesFemaleVO clothes);
 }

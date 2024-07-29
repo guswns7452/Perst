@@ -2,29 +2,24 @@ package com.clothes.perst.service;
 
 import com.clothes.perst.DTO.*;
 import com.clothes.perst.config.GoogleDriveAPI;
-import com.clothes.perst.domain.PersonalColorVO;
-import com.clothes.perst.domain.PersonalTipVO;
 import com.clothes.perst.domain.StyleAnalyzeVO;
 import com.clothes.perst.domain.StyleColorVO;
+import com.clothes.perst.persistance.*;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
+import com.google.api.client.http.FileContent;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.model.File;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
-import com.clothes.perst.persistance.*;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.googleapis.json.GoogleJsonResponseException;
-import com.google.api.client.http.FileContent;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.services.drive.Drive;
-import com.google.api.services.drive.model.File;
 import jakarta.security.auth.message.AuthException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -43,6 +38,8 @@ import java.security.GeneralSecurityException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class StyleAnalyzeService {
     private final StyleAnalyzeRepository styleAnalyzeJPA;
@@ -51,25 +48,12 @@ public class StyleAnalyzeService {
     private final PersonalColorRepository personalColorJPA;
     private final PersonalTipRepository personalTipJPA;
     private final GoogleDriveAPI googleDriveAPI;
-    private static final Logger logger = LoggerFactory.getLogger(StyleAnalyzeService.class);
-
 
     @Value("${folderId.ClothesAnalyze}")
     String folderID;
 
-
     @Value("${apiURL}")
     String apiUrl;
-
-    @Autowired
-    public StyleAnalyzeService(StyleAnalyzeRepository styleAnalyzeJPA, PersonalTipRepository personalTipJPA, PersonalColorRepository personalColorJPA, CoordinateRepository coordinateJPA, StyleAnalyzeColorRepository styleAnalyzeColorRepository, GoogleDriveAPI googleDriveAPI) {
-        this.styleAnalyzeJPA = styleAnalyzeJPA;
-        this.styleAnalyzeColorJPA = styleAnalyzeColorRepository;
-        this.googleDriveAPI = googleDriveAPI;
-        this.coordinateJPA = coordinateJPA;
-        this.personalColorJPA = personalColorJPA;
-        this.personalTipJPA = personalTipJPA;
-    }
 
     private static String uploadDir = "./src/main/resources/image/";
 
@@ -104,10 +88,12 @@ public class StyleAnalyzeService {
 
         /* DB에 색상 저장하기 */
         List<StyleColorVO> colors = new ArrayList();
-        colors.add(new StyleColorVO((String) data.get("color1"), styleNumber));
-        colors.add(new StyleColorVO((String) data.get("color2"), styleNumber));
-        colors.add(new StyleColorVO((String) data.get("color3"), styleNumber));
-        colors.add(new StyleColorVO((String) data.get("color4"), styleNumber));
+        List getColors = splitArr((String) data.get("colors"));
+        int i = 0;
+        for (Object k : getColors){
+            colors.add(new StyleColorVO(getColors.get(i).toString(), styleNumber));
+            i += 1;
+        }
         saveStyleColor(colors);
         newstyleAnalyzeVO.setStyleColor(colors);
 
@@ -122,6 +108,27 @@ public class StyleAnalyzeService {
         /* 퍼스널 컬러 피드백 */
         newstyleAnalyzeVO.setPersonalColorTip(setPersonalColorTip(memberNumber, AnalyzedPersonalColor));
         return newstyleAnalyzeVO;
+    }
+
+    private List splitArr(String s) {
+        // 중괄호와 대괄호 제거
+        s = s.substring(2, s.length() - 2);
+
+        // 각 요소를 쉼표를 기준으로 분리
+        String[] parts = s.split("\\], \\[");
+
+        // 결과를 저장할 리스트
+        List<List<String>> result = new ArrayList<>();
+
+        for (String part : parts) {
+            String[] values = part.split(", ");
+            List<String> innerList = new ArrayList<>();
+            for (String value : values) {
+                innerList.add(value);
+            }
+            result.add(innerList);
+        }
+        return result;
     }
 
     /**
@@ -283,7 +290,7 @@ public class StyleAnalyzeService {
 
         ResponseEntity<RestResponse> response = restTemplate.postForEntity(apiUrl, entity, RestResponse.class);
 
-        logger.info(response.toString());
+        log.info(response.toString());
         RestResponse responseBody = response.getBody();
 
         return responseBody;

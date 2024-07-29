@@ -2,25 +2,17 @@ package com.clothes.perst.service;
 
 import com.clothes.perst.domain.MemberVO;
 import com.clothes.perst.persistance.MemberRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    private static final Logger logger = LoggerFactory.getLogger(MemberService.class);
-
-    @Autowired
-    public MemberService(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
-    }
+    private final PasswordEncoder passwordEncoder;
 
     /***
      * 로그인 하는 메소드, 암호화 된 비밀번호로 로그인

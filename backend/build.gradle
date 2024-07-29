@@ -37,8 +37,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	testImplementation 'org.springframework.security:spring-security-test'
 
-	implementation 'org.eclipse.persistence:org.eclipse.persistence.jpa:3.0.2'
-	implementation 'mysql:mysql-connector-java:8.0.23' // MySQL 드라이버 추가
+	implementation 'mysql:mysql-connector-java:8.0.28' // MySQL 드라이버 추가
 
 	implementation ('org.springframework.boot:spring-boot-starter-data-jpa') {
 		exclude group: 'org.hibernate'

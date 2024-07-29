@@ -8,11 +8,14 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload
+from google.oauth2 import service_account
 
 # token 불러오기가 잘 되지 않아 PATH 설정
 PATH =  os.getcwd()
 
 SCOPES = ["https://www.googleapis.com/auth/drive"]
+
+CREDENTIALS_FILE_PATH = os.getcwd()+'/credentials_service.json'  # 실제 서비스 계정 JSON 파일 경로
 
 ## Folder ID 찾기
 def find_folderID(gender, style):
@@ -74,22 +77,9 @@ def upload_basic(file_name, img_path, gender, style):
 
 ## query 검색 잘됨. 
 def googleDrive():
-    creds = None
-    # The file token.json stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
-    if os.path.exists(PATH+"/token.json"):
-        creds = Credentials.from_authorized_user_file(PATH+"/token.json", SCOPES)
-    # If there are no (valid) credentials available, let the user log in.
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(PATH+"/credentials.json", SCOPES)
-            creds = flow.run_local_server(port=0)
-        # Save the credentials for the next run
-        with open(PATH+"/token.json", "w") as token:
-            token.write(creds.to_json())
+    # 서비스 계정 자격 증명 로드
+    creds = service_account.Credentials.from_service_account_file(CREDENTIALS_FILE_PATH)
+
 
     try:
         service = build("drive", "v3", credentials=creds)
@@ -109,7 +99,7 @@ def googleDrive():
 
         # 다음 페이지가 있는 경우 추가 페이지 요청
         while next_page_token:
-            results = service.files().list(q="parents in '10neLNimYRBdqqEDqH9-aN8c3KK5gcXa5'", pageSize=1000, pageToken=next_page_token).execute()
+            results = service.files().list(q="parents in '1WAXcipVND4Z-ERL8mTtFK6fqtVfRVj7O' and trashed=true", pageSize=1000, pageToken=next_page_token).execute()
             items.extend(results.get('files', []))
             next_page_token = results.get('nextPageToken')
 
@@ -129,3 +119,5 @@ def googleDrive():
 
 
 # upload_basic("woman_39331_165_47_겨울_걸리시.jpg",os.path.join("../images/woman/걸리시", "woman_39331_165_47_겨울_걸리시.jpg"),"woman","39331","165","47","겨울","걸리시")
+
+googleDrive()
