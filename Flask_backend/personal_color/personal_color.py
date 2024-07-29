@@ -61,6 +61,12 @@ def get_season_tone(args):
     for tone, conds in conditions.items():
         if any(all(cond) for cond in conds):
             return tone
-    return "해당되는 계절/톤이 없습니다."
+    return "null"
 
 
+for r in range(1, 255):
+    print(f"red : {r}")
+    for g in range(1, 255):
+        for b in range(1, 255):
+            if get_season_tone([r,g,b]) == "null":
+                print(f"{r} / {g} / {b}")
