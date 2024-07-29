@@ -103,12 +103,13 @@ public class StyleAnalyzeService {
         int styleNumber = newstyleAnalyzeVO.getStyleNumber();
 
         /* DB에 색상 저장하기 */
-       List<StyleColorVO> colors = new ArrayList();
+        List<StyleColorVO> colors = new ArrayList();
         List getColors = splitArr((String) data.get("colors"));
-        colors.add(new StyleColorVO(getColors.get(0).toString(), styleNumber));
-        colors.add(new StyleColorVO(getColors.get(1).toString(), styleNumber));
-        colors.add(new StyleColorVO(getColors.get(2).toString(), styleNumber));
-        colors.add(new StyleColorVO(getColors.get(3).toString(), styleNumber));
+        int i = 0;
+        for (Object k : getColors){
+            colors.add(new StyleColorVO(getColors.get(i).toString(), styleNumber));
+            i += 1;
+        }
         saveStyleColor(colors);
         newstyleAnalyzeVO.setStyleColor(colors);
 

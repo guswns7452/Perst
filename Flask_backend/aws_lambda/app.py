@@ -86,7 +86,7 @@ def analyzeAPI(id, gen):
         
         # 현재 사진 데이터 하나라고 가정.
         message = "고객님의 사진을 분석하였습니다!"
-        data = {"code": HTTPStatus.OK.value, "httpStatus": "OK", "message":message, "data":{"fashionType" : output['fashion_type'], "colors": colors, "personalColorType": output['personal_color_label']}} # 이름의 필요성 없음. , "name": items[0]['name']
+        data = {"code": HTTPStatus.OK.value, "httpStatus": "OK", "message":message, "data":{"fashionType" : output['fashion_type'], "colors": str(colors), "personalColorType": output['personal_color_label']}} # 이름의 필요성 없음. , "name": items[0]['name']
     
     # except FileNotFoundError:
     #    data = {"code": HTTPStatus.NOT_FOUND.value, "httpStatus": "Not Found", "message": "구글 드라이브에 일치하는 파일이 없습니다."}
