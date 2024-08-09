@@ -1,4 +1,4 @@
-package com.clothes.perst;
+package com.clothes.perst.GoogleDrive.Clothes;
 
 import com.clothes.perst.DTO.ClothesFolder;
 import com.clothes.perst.config.GoogleDriveAPI;
@@ -29,13 +29,15 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.clothes.perst.GoogleFileID.getCredentials;
-import static com.clothes.perst.GoogleFileID.loadClothesList;
+import static com.clothes.perst.GoogleDrive.GoogleFileID.getCredentials;
+import static com.clothes.perst.GoogleDrive.GoogleFileID.loadClothesList;
 
 /**
- * @implNote 남성, 여성 테이블을 나눠서 남성은 연도별 구분완료함
+ * 쇼핑몰 이미지의 정보 > DB 저장
+ * # 현재는 Python으로 이동함  #
  */
 @SpringBootTest
+@Deprecated
 public class ClothesSubmitTests {
 
     @Autowired

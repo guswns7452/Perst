@@ -1,4 +1,4 @@
-package com.clothes.perst;
+package com.clothes.perst.PersonalColor;
 
 import com.clothes.perst.domain.MusinsaVO;
 import com.clothes.perst.service.MusinsaService;

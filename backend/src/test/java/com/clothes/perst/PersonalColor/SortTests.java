@@ -1,4 +1,4 @@
-package com.clothes.perst;
+package com.clothes.perst.PersonalColor;
 
 import org.springframework.boot.test.context.SpringBootTest;
 
