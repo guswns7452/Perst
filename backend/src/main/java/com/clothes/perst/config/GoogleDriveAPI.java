@@ -40,7 +40,6 @@ import java.util.regex.Pattern;
 public class GoogleDriveAPI {
     public static final String APPLICATION_NAME = "Google Drive API Java Quickstart";
 
-    //TODO analyzeService uploadImage 메소드 참고하여 서비스 계정으로 변경하기
     public static GoogleCredentials getCredentials() throws IOException {
         InputStream in = StyleAnalyzeService.class.getResourceAsStream("/credentials_service.json");
 

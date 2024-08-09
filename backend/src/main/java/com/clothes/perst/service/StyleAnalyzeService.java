@@ -18,7 +18,9 @@ import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import jakarta.security.auth.message.AuthException;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -32,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
@@ -57,6 +60,13 @@ public class StyleAnalyzeService {
 
     private static String uploadDir = "./src/main/resources/image/";
 
+    @Getter
+    @Setter
+    public class FileNameAndID {
+        private String fileID;
+        private String fileName;
+    }
+
     /**
      * 스타일 분석하는 코드
      * @param file (MultipartFile)
@@ -66,12 +76,11 @@ public class StyleAnalyzeService {
      * @throws Exception
      */
     public StyleAnalyzeVO Analyze(MultipartFile file, int memberNumber, String gender) throws Exception {
-
         /* 구글 드라이브로 업로드 하기 */
-        String fileID = uploadImage(file, memberNumber);
+        FileNameAndID fileInfo = uploadImage(file, memberNumber);
 
         /* Flask로 요청 보내기 */
-        String requestBody = "{\"fileID\": \"" + fileID + "\", \"gender\": \"" + gender + "\"}";
+        String requestBody = "{\"fileID\": \"" + fileInfo.getFileID() + "\", \"gender\": \"" + gender + "\"}";
         RestResponse responseBody = ConnectFlaskServer(requestBody);
 
         LinkedHashMap data = (LinkedHashMap) responseBody.getData();
@@ -80,7 +89,7 @@ public class StyleAnalyzeService {
         String AnalyzedPersonalColor = PersonalColorDTO.changeEngToKor((String) data.get("personalColorType"));
 
         /* 스타일 분석 내용 저장 : styleName, FileID, memberNumber, personalColorType */
-        StyleAnalyzeVO styleAnalyzed = new StyleAnalyzeVO((String) data.get("fashionType"), fileID, memberNumber, AnalyzedPersonalColor);
+        StyleAnalyzeVO styleAnalyzed = new StyleAnalyzeVO((String) data.get("fashionType"), fileInfo.getFileID(), memberNumber, AnalyzedPersonalColor);
 
         /* 결과값 받아 DB에 저장하기 */
         StyleAnalyzeVO newstyleAnalyzeVO = saveStyleAnalyze(styleAnalyzed);
@@ -98,7 +107,7 @@ public class StyleAnalyzeService {
         newstyleAnalyzeVO.setStyleColor(colors);
 
         /* 이미지 삭제하기 */
-        deleteFile();
+        deleteFile(fileInfo.getFileName());
 
         /* 스타일 피드백 FileID 리스트 출력 */
         String changeStyle = CoordinateTipDTO.changeCodiTip(newstyleAnalyzeVO.getStyleName(), gender);
@@ -201,21 +210,16 @@ public class StyleAnalyzeService {
     }
 
     /* 사용된 이미지들은 삭제 해버림 */
-    public void deleteFile() throws IOException {
-        Files.walk(Path.of(uploadDir))
-                .sorted(java.util.Comparator.reverseOrder())
-                .map(Path::toFile)
-                .forEach(file -> {
-                    try {
-                        Files.delete(file.toPath());
-                    } catch (IOException e) {
-                        // 예외 처리
-                        e.printStackTrace();
-                    }
-                });
-
-        // 디렉토리 삭제
-        Files.deleteIfExists(Path.of(uploadDir));
+    public void deleteFile(String fileName) throws IOException {
+        Path filePath = Path.of(uploadDir, fileName); // 삭제할 파일의 경로를 설정
+        try {
+            Files.delete(filePath); // 파일 삭제
+        } catch (NoSuchFileException e) {
+            System.err.println("파일이 존재하지 않습니다: " + fileName);
+        } catch (IOException e) {
+            // 기타 예외 처리
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -242,7 +246,7 @@ public class StyleAnalyzeService {
      * @param memberNumber
      * @return fileID
      */
-    public String uploadImage(MultipartFile uploadFile, int memberNumber) throws IOException, GeneralSecurityException {
+    public FileNameAndID uploadImage(MultipartFile uploadFile, int memberNumber) throws IOException, GeneralSecurityException {
         HttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
         InputStream in = StyleAnalyzeService.class.getResourceAsStream("/credentials_service.json");
@@ -254,9 +258,11 @@ public class StyleAnalyzeService {
                 .setApplicationName(GoogleDriveAPI.APPLICATION_NAME)
                 .build();
 
-        /* 구글 드라이브에 저장될 파일 이름 지정 : 회원번호. 현재시간 */
+        /* 구글 드라이브에 저장될 파일 이름 지정 : 회원번호. 현재시간, 랜덤 값 */
+        /* 동시성 오류를 고려하여 랜덤한 값 추가함 */
+        String randomInt = String.valueOf((int)(Math.random()*100000));
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
-        String fileName = memberNumber + "_" + sdf1.format(new Date()) + ".jpg";
+        String fileName = memberNumber + "_" + sdf1.format(new Date()) + randomInt + ".jpg";
 
         File fileMetadata = new File();
         fileMetadata.setName(fileName);
@@ -271,7 +277,12 @@ public class StyleAnalyzeService {
                     .setFields("id")
                     .execute();
             System.out.println("File ID: " + file.getId());
-            return file.getId();
+
+            // 파일 아이디와 파일 이름을 한번에 담은 객체 리턴
+            FileNameAndID fileInfo = new FileNameAndID();
+            fileInfo.setFileID(file.getId());
+            fileInfo.setFileName(fileName);
+            return fileInfo;
         } catch (GoogleJsonResponseException e) {
             System.err.println("Unable to upload file: " + e.getDetails());
             throw e;
