@@ -1,0 +1,5 @@
+# !pip install tensorflow==2.15.1
+
+"poly_seg_model_0428_02"
+'fashion_classification_male_0723_01'
+'fashion_classification_female_0721_01'
