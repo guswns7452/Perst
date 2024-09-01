@@ -1,6 +1,5 @@
-# 24-06-16 코드 변경사항
-# 패션 분류 과정에서 배경 제거 과정을 없앴습니다.
-# 패션 분류 모델과 패션 카테고리를 무신사 데이터셋에 맟추어 변경하였습니다.
+# 24-09-01 코드 변경사항
+# 배경 제거 과정을 직사각형 형식으로 자르는 방식으로 변경했습니다.
 
 
 # 이미지 처리
@@ -48,34 +47,18 @@ def imgLoad(input_type):
 # 입력: 원본 이미지 (200x200 사이즈)
 # 출력: 마스크 이미지. [0~5]로 구분됨.
 def clothDetection(input_img):
-    # 배경제거 모델 불러오기
-    # bg_model_path = model_dir_path + 'binary_poly_seg_model_0113_01'
-    # bg_detection_model = keras.models.load_model(bg_model_path)
-
-    # 의상 파츠분리 모델 불러오기
-    part_model_path = model_dir_path + 'poly_seg_model_0428_02'
-    part_detection_model = keras.models.load_model(part_model_path)
+    # 이미지 영역분리 모델 불러오기
+    seg_model_path = model_dir_path + 'poly_seg_model_0428_02'
+    seg_detection_model = keras.models.load_model(seg_model_path)
 
     # 예측을 위해 원본 이미지를 list 형태로 만들기
     x_test = [input_img]
     x_test = np.array(x_test)
 
     # 모델 예측
-    # bg_preds = bg_detection_model.predict(x_test)
-    # bg_mask = np.ndarray.round(bg_preds[0])
-    # bg_mask = bg_mask.astype('uint8')
+    seg_preds = seg_detection_model.predict(x_test)
 
-    # 생성된 마스크를 원본 이미지에 씌워서 배경 제거하기
-    # bg_masked_img = cv2.bitwise_and(input_img, input_img, mask=bg_mask)
-
-    # 의상 파츠분리 예측을 위해 list 형태로 만들기
-    # x_test2 =[bg_masked_img]
-    # x_test2 = np.array(x_test2)
-
-    # 모델 예측
-    part_preds = part_detection_model.predict(x_test)
-    part_list = part_preds.argmax(axis=-1)
-    part_pred_mask = part_list[0]
+    part_pred_mask = seg_preds[0].argmax(axis=-1)
 
     return part_pred_mask
     
@@ -84,9 +67,9 @@ def clothDetection(input_img):
 # 입력: 원본 이미지 (200x200 사이즈)
 # 출력: 패션 분류명 string
 def maleFashionClassification(input_img):
-    male_label_name = ['Gofcore', 'Golf', 'Dandy', 'Romantic', 'Minimal', 'Business-Casual', 'Street', 'Sporty', 'Chic', 'Amekaji', 'Casual']
+    male_label_name = ['Gofcore', 'Golf', 'Dandy', 'Minimal', 'Business-Casual', 'Street', 'Sporty', 'Chic', 'Amekaji', 'Casual']
     
-    model_path = model_dir_path + 'fashion_classification_male_0609_02'
+    model_path = model_dir_path + 'fashion_classification_male_0723_01'
     male_fashion_model = keras.models.load_model(model_path)
 
     # 예측을 위해 list 형태로 만들기
@@ -105,7 +88,7 @@ def maleFashionClassification(input_img):
 def femaleFashionClassification(input_img):
     female_label_name = ['Girlish', 'Gofcore', 'Golf', 'Retro', 'Romantic', 'Business-Casual', 'Street', 'Sporty', 'Chic', 'Amekaji', 'Casual']
     
-    model_path = model_dir_path + 'fashion_classification_female_0611_01'
+    model_path = model_dir_path + 'fashion_classification_female_0721_01'
     female_fashion_model = keras.models.load_model(model_path)
 
     # 예측을 위해 list 형태로 만들기
@@ -137,7 +120,7 @@ def totalColorExtract(ori_img, mask_img):
     cluster = hierarchy.linkage(pixel_list, method='centroid', metric='euclidean')
     predict = hierarchy.fcluster(cluster, 70, criterion='distance') # 거리 70까지 cluster 개수 정하기
 
-    # 각 군집별 평균색상 계산
+    # 각 군집별 중간색상 계산
     cluster_pixel = []
     for i in range(0, len(np.unique(predict))):
         cluster_pixel.append([])
@@ -178,6 +161,10 @@ def totalColorExtract(ori_img, mask_img):
     # 새롭게 리스트 형태로 만들기
     output_list = []
     for i in range(0, len(cluster_label)):
+        # 비율 2% 미만인 색상은 제외
+        if cluster_ratio[i] < 2:
+            continue
+
         rgb = cluster_pixel[cluster_label[i]-1]
         ratio = cluster_ratio[i]
         tmp_list = [rgb, ratio]
@@ -255,22 +242,51 @@ def cnn_model_main(ori_img, type):
     res_img = cv2.resize(ori_img, dsize=(img_height, img_width), interpolation=cv2.INTER_AREA)
     res_img = np.array(res_img)
 
-    # 입력 이미지의 의상 영역 마스크 생성
+    # 입력 이미지의 전체 영역 마스크 생성
     total_mask = clothDetection(res_img)
 
     # 마스크에서 배경 부분만 빼기
     bg_mask = np.ones(total_mask.shape, dtype=np.uint8)
     bg_mask[total_mask == 0] = 0
 
-    # 마스크를 사용해 배경을 제거
-    masked_img = cv2.bitwise_and(res_img, res_img, mask=bg_mask)
-    masked_img = np.array(masked_img)
+    # 렉트 좌표로 자르기
+    x1 = img_width
+    x2 = 0
+    y1 = img_height
+    y2 = 0
+
+    for y in range(0, img_height):
+        for x in range(0, img_width):
+            if bg_mask[y][x] == 1:
+                if x < x1:
+                    x1 = x
+                elif x > x2:
+                    x2 = x
+
+                if y < y1:
+                    y1 = y
+                elif y > x2:
+                    y2 = y
+
+    x = x1
+    y = y1
+    w = x2-x1
+    h = y2-y1
+
+    if h<=0 or w<=0:
+        croped_img = res_img
+    else:
+        croped_img = res_img[y:y+h, x:x+w]
+
+    # 크롭한 이미지 크기 다시 조정
+    res_croped_img = cv2.resize(croped_img, dsize=(img_height, img_width), interpolation=cv2.INTER_AREA)
+    res_croped_img = np.array(res_croped_img)
 
     # 패션 스타일 분류
     if type == 'male':
-        fashion_label = maleFashionClassification(res_img)
+        fashion_label = maleFashionClassification(res_croped_img)
     elif type == 'female':
-        fashion_label = femaleFashionClassification(res_img)
+        fashion_label = femaleFashionClassification(res_croped_img)
     else:
         print("type 변수의 입력 형태가 올바르지 않습니다. male과 female중 하나를 입력해주세요")
         return
@@ -283,7 +299,7 @@ def cnn_model_main(ori_img, type):
 
     # 결과 출력
     output_dict = {}
-    output_dict['no_background_img'] = masked_img
+    output_dict['no_background_img'] = res_croped_img
     output_dict['fashion_type'] = fashion_label
     output_dict['total_color_list'] = total_color_list
     # output_dict['personal_color_label'] = personal_color_list[0]
