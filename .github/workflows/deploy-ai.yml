@@ -40,5 +40,5 @@ jobs:
       run: |
         ssh -i /tmp/ec2-key.pem ${{ env.EC2_USER }}@${{ env.EC2_HOST }}
         sudo kill -9 `ps -ef | grep python3 | awk '{print $2}' | head -n -1`
-        cd /home/ec2
-        nohup python3 /home/ec2/app.py &
+        cd ~/ec2
+        nohup python3 ~/ec2/app.py &

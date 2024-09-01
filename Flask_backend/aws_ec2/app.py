@@ -1,4 +1,4 @@
-# EC2 배포용 test 5
+# EC2 배포용 test 6
 import os.path
 
 from http import HTTPStatus
