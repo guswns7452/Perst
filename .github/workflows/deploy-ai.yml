@@ -31,10 +31,10 @@ jobs:
 
     - name: Copy files to EC2
       run: |
-        scp -i /tmp/ec2-key.pem -o StrictHostKeyChecking=no ./aws_ec2/app.py ${{ env.EC2_USER }}@${{ env.EC2_HOST }}:~/ec2
-        scp -i /tmp/ec2-key.pem -o StrictHostKeyChecking=no ./aws_ec2/cnn_model.py ${{ env.EC2_USER }}@${{ env.EC2_HOST }}:~/ec2
-        scp -i /tmp/ec2-key.pem -o StrictHostKeyChecking=no ./aws_ec2/module_import_example.py ${{ env.EC2_USER }}@${{ env.EC2_HOST }}:~/ec2
-        scp -i /tmp/ec2-key.pem -o StrictHostKeyChecking=no ./aws_ec2/personal_color.py ${{ env.EC2_USER }}@${{ env.EC2_HOST }}:~/ec2
+        scp -i /tmp/ec2-key.pem -o StrictHostKeyChecking=no ./Flask_backend/aws_ec2/app.py ${{ env.EC2_USER }}@${{ env.EC2_HOST }}:~/ec2
+        scp -i /tmp/ec2-key.pem -o StrictHostKeyChecking=no ./Flask_backend/aws_ec2/cnn_model.py ${{ env.EC2_USER }}@${{ env.EC2_HOST }}:~/ec2
+        scp -i /tmp/ec2-key.pem -o StrictHostKeyChecking=no ./Flask_backend/aws_ec2/module_import_example.py ${{ env.EC2_USER }}@${{ env.EC2_HOST }}:~/ec2
+        scp -i /tmp/ec2-key.pem -o StrictHostKeyChecking=no ./Flask_backend/aws_ec2/personal_color.py ${{ env.EC2_USER }}@${{ env.EC2_HOST }}:~/ec2
     
     - name: Run app.py on EC2
       run: |
