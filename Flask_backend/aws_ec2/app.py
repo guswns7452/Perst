@@ -1,3 +1,4 @@
+# EC2 배포용
 import os.path
 
 from http import HTTPStatus

@@ -27,7 +27,6 @@ jobs:
       run: |
         echo "$SSH_PRIVATE_KEY" > /tmp/ec2-key.pem
         chmod 600 /tmp/ec2-key.pem
-        scp -i /tmp/ec2-key.pem -o StrictHostKeyChecking=no -r ./path/to/your_python_file.py $EC2_USER@$EC2_HOST:/path/on/ec2/
 
     - name: Copy files to EC2
       run: |
