@@ -1,9 +1,10 @@
 name: Deploy Lambda
 
-on:
-  push:
-    paths:
-      - 'Flask_backend/aws_lambda/**'
+# 0901 : Lambda 서버를 EC2로 옮기려는 작업 
+# on:
+#   push:
+#     paths:
+#       - 'Flask_backend/aws_lambda/**'
 
 jobs:
   deploy:
