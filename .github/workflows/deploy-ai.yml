@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'Flask_backend/aws_ec2/**'
+      - '.github/workflows/**'
 
 jobs:
   deploy:
@@ -41,4 +42,4 @@ jobs:
         ssh -i /tmp/ec2-key.pem ${{ env.EC2_USER }}@${{ env.EC2_HOST }} "
         sudo kill -9 \$(ps -ef | grep python3 | awk '{print \$2}' | head -n -2) && \
         cd ~/ec2 && \
-        nohup python3 /home/user/ec2/app.py &> /dev/null &"
+        nohup python3 /home/ubuntu/ec2/app.py &"
