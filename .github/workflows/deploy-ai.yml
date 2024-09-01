@@ -38,7 +38,7 @@ jobs:
     
     - name: Run app.py on EC2
       run: |
-        ssh -i /tmp/ec2-key.pem ${{ env.EC2_USER }}@${{ env.EC2_HOST }} "
-        sudo kill -9 `ps -ef | grep python3 | awk '{print $2}' | head -n -1` \
-        cd ~/ec2 \
-        nohup python3 /home/${{ env.EC2_USER }}/ec2/app.py & "
+        ssh -i /tmp/ec2-key.pem user@host "
+        sudo kill -9 \$(ps -ef | grep python3 | awk '{print \$2}' | head -n -1) && \
+        cd ~/ec2 && \
+        nohup python3 /home/user/ec2/app.py &> /dev/null &"
