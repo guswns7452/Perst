@@ -9,6 +9,11 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     
+    env:
+      SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+      EC2_HOST: ${{ secrets.EC2_HOST }}
+      EC2_USER: ${{ secrets.EC2_USER }}  # 또는 다른 사용자 이름
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -20,23 +25,19 @@ jobs:
         pip3 install --upgrade pip
 
     - name: Copy files to EC2
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
-        EC2_HOST: ${{ secrets.EC2_HOST }}
-        EC2_USER: ${{ secrets.EC2_USER }}  # 또는 다른 사용자 이름
       run: |
-        echo "$SSH_PRIVATE_KEY" > /tmp/ec2-key.pem
+        echo "${{ env.SSH_PRIVATE_KEY }}" > /tmp/ec2-key.pem
         chmod 600 /tmp/ec2-key.pem
 
     - name: Copy files to EC2
       run: |
-        scp -i /tmp/ec2-key.pem -o StrictHostKeyChecking=no ./aws_ec2/app.py $EC2_USER@$EC2_HOST:~/ec2
-        scp -i /tmp/ec2-key.pem -o StrictHostKeyChecking=no ./aws_ec2/cnn_model.py $EC2_USER@$EC2_HOST:~/ec2
-        scp -i /tmp/ec2-key.pem -o StrictHostKeyChecking=no ./aws_ec2/module_import_example.py $EC2_USER@$EC2_HOST:~/ec2
-        scp -i /tmp/ec2-key.pem -o StrictHostKeyChecking=no ./aws_ec2/personal_color.py $EC2_USER@$EC2_HOST:~/ec2
+        scp -i /tmp/ec2-key.pem -o StrictHostKeyChecking=no ./aws_ec2/app.py ${{ env.EC2_USER }}@${{ env.EC2_HOST }}:~/ec2
+        scp -i /tmp/ec2-key.pem -o StrictHostKeyChecking=no ./aws_ec2/cnn_model.py ${{ env.EC2_USER }}@${{ env.EC2_HOST }}:~/ec2
+        scp -i /tmp/ec2-key.pem -o StrictHostKeyChecking=no ./aws_ec2/module_import_example.py ${{ env.EC2_USER }}@${{ env.EC2_HOST }}:~/ec2
+        scp -i /tmp/ec2-key.pem -o StrictHostKeyChecking=no ./aws_ec2/personal_color.py ${{ env.EC2_USER }}@${{ env.EC2_HOST }}:~/ec2
     
     - name: Run app.py on EC2
       run: |
-        ssh -i /tmp/ec2-key.pem $EC2_USER@$EC2_HOST
+        ssh -i /tmp/ec2-key.pem ${{ env.EC2_USER }}@${{ env.EC2_HOST }}
         kill -9 `ps -ef | grep python3 | awk '{print $2}'`
         python3 /home/ec2/app.py
