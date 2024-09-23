@@ -77,7 +77,6 @@ class _IntroState extends State<Intro> {
               const SizedBox(
                 height: 20,
               ),
-              // 어플에서 사용할 이미지로 대체 예정
               Container(
                 width: 400,
                 height: 350,

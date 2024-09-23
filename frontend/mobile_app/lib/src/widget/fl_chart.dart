@@ -4,9 +4,13 @@ import 'package:fl_chart/fl_chart.dart';
 class FlChart extends StatelessWidget {
   final int myStyleLength;
   final Map<String, dynamic> styleResult;
+  final bool noneData;
 
   const FlChart(
-      {Key? key, required this.myStyleLength, required this.styleResult})
+      {Key? key,
+      required this.myStyleLength,
+      required this.styleResult,
+      required this.noneData})
       : super(key: key);
 
   @override
@@ -29,6 +33,9 @@ class FlChart extends StatelessWidget {
       Color.fromARGB(255, 255, 243, 218),
       Color.fromARGB(255, 255, 238, 0),
       Color.fromARGB(255, 0, 255, 217),
+      Color.fromARGB(255, 155, 230, 165),
+      Color.fromARGB(255, 46, 4, 80),
+      Color.fromARGB(255, 188, 255, 245),
     ];
 
     List<String> stylePercent = [];
@@ -91,27 +98,40 @@ class FlChart extends StatelessWidget {
       body: Column(
         children: [
           Container(
-            width: double.infinity,
-            margin: EdgeInsets.only(left: 10, top: 15),
-            child: Row(children: [
-              Text(
-                "고객님의 스타일은 ",
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
-              ),
-              Text(
-                favoriteStyle,
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Color.fromRGBO(255, 191, 25, 1),
-                ),
-              ),
-              Text(
-                "입니다.",
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
-              ),
-            ]),
-          ),
+              width: double.infinity,
+              margin: EdgeInsets.only(left: 10, top: 15),
+              child: noneData
+                  ? Row(children: [
+                      Text(
+                        "고객님의 스타일은 ",
+                        style: TextStyle(
+                            fontSize: 22, fontWeight: FontWeight.w600),
+                      ),
+                      Text(
+                        favoriteStyle,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromRGBO(255, 191, 25, 1),
+                        ),
+                      ),
+                      Text(
+                        "입니다.",
+                        style: TextStyle(
+                            fontSize: 22, fontWeight: FontWeight.w600),
+                      ),
+                    ])
+                  : Column(
+                      children: [
+                        SizedBox(height: 20),
+                        Text(
+                          '스타일 분석 이력이 존재하지 않습니다.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    )),
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.7,
             height: MediaQuery.of(context).size.width * 0.7,

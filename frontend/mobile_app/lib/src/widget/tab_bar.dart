@@ -32,8 +32,9 @@ class _TabbarState extends State<Tabbar> {
       setState(() {
         isLoading = true;
       });
-      name = _storage.read("name");
+      name = _storage.read('name');
       gender = _storage.read("gender");
+      print(name);
     } else {
       setState(() {
         isLoading = false;
@@ -115,14 +116,14 @@ class _TabbarState extends State<Tabbar> {
                           TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                     ),
                     accountEmail: Text(
-                      gender == "man" ? "MAN" : "WOMEN",
+                      name,
                       style: TextStyle(
                           color: Color.fromARGB(255, 255, 255, 255),
                           fontSize: 17,
                           fontWeight: FontWeight.bold),
                     ),
                     decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 0, 0, 0),
+                      color: Color.fromARGB(255, 197, 197, 197),
                     ),
                   ),
                   ListTile(

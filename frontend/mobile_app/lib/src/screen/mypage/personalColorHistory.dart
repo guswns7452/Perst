@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:perst/src/connect/mypage_connect.dart';
+import 'package:perst/src/screen/personalColor/personalColor.dart';
 import 'package:perst/src/screen/personalColor/personalColorFashion.dart';
 
 import '../../model/color_model.dart';
@@ -17,6 +18,8 @@ class PersonalColorHistory extends StatefulWidget {
   @override
   State<PersonalColorHistory> createState() => _PersonalColorHistoryState();
 }
+
+bool noneData = false;
 
 class _PersonalColorHistoryState extends State<PersonalColorHistory> {
   final mypageConnect = Get.put(MypageConnect());
@@ -108,6 +111,9 @@ class _PersonalColorHistoryState extends State<PersonalColorHistory> {
 
     setState(() {
       isLoading = false;
+      if (result is Null) {
+        noneData = true;
+      }
     });
   }
 
@@ -148,505 +154,548 @@ class _PersonalColorHistoryState extends State<PersonalColorHistory> {
   }
 
   Widget _buildResultScreen() {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          '퍼스널컬러 결과',
-          textAlign: TextAlign.start,
-          style: GoogleFonts.nanumGothicCoding(
-              textStyle: TextStyle(fontWeight: FontWeight.bold)),
-        ),
-      ),
-      body: Column(
-        children: [
-          Row(
-            children: [
-              SizedBox(width: 20),
-              Text(
-                name,
-                style: GoogleFonts.gowunDodum(
-                    textStyle: TextStyle(
-                        fontSize: 25,
-                        color: Color.fromRGBO(255, 191, 25, 1),
-                        fontWeight: FontWeight.bold)),
+    return noneData
+        ? Scaffold(
+            appBar: AppBar(
+              title: Text(
+                '퍼스널컬러 결과',
+                textAlign: TextAlign.start,
+                style: GoogleFonts.nanumGothicCoding(
+                    textStyle: TextStyle(fontWeight: FontWeight.bold)),
               ),
-              Text(
-                "님의 퍼스널컬러 진단 결과",
-                style: GoogleFonts.gowunDodum(
-                    textStyle:
-                        TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-              )
-            ],
-          ),
-          SizedBox(height: 15),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 170,
-                height: 110,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.4),
-                        blurRadius: 4.0,
-                        offset: const Offset(0, 7),
-                      ),
-                    ],
-                    borderRadius: BorderRadius.circular(10)),
-                child: Column(
+            ),
+            body: Column(
+              children: [
+                Row(
                   children: [
-                    SizedBox(height: 10),
-                    Row(
-                      children: [
-                        SizedBox(width: 10),
-                        Text(
-                          '1',
-                          style: GoogleFonts.poorStory(
-                              textStyle: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  height: 1.0)),
-                        ),
-                        Text(
-                          '순위',
-                          style: GoogleFonts.poorStory(
-                              textStyle: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  height: 2.0)),
-                        ),
-                      ],
-                    ),
-                    Container(
-                        width: 150,
-                        child: Text(
-                            "${result!["personalSelects"][0]["personalSelectType"]}",
-                            style: GoogleFonts.poorStory(
-                                textStyle: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600)))),
-                    SizedBox(height: 10),
-                    Container(
-                        width: 150,
-                        child:
-                            Text(firstRatio, style: TextStyle(fontSize: 10))),
-                    Stack(
-                      children: [
-                        Container(
-                          width: 150,
-                          height: 10,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(color: Colors.black, width: 1),
-                              borderRadius: BorderRadius.circular(10)),
-                        ),
-                        Container(
-                          width: firstWidth,
-                          height: 10,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                bottomLeft: Radius.circular(10)),
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(width: 20),
-              Container(
-                width: 170,
-                height: 110,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.4),
-                        blurRadius: 4.0,
-                        offset: const Offset(0, 7),
-                      ),
-                    ],
-                    borderRadius: BorderRadius.circular(10)),
-                child: Column(
-                  children: [
-                    SizedBox(height: 10),
-                    Row(
-                      children: [
-                        SizedBox(width: 10),
-                        Text(
-                          '2',
-                          style: GoogleFonts.poorStory(
-                              textStyle: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  height: 1.0)),
-                        ),
-                        Text(
-                          '순위',
-                          style: GoogleFonts.poorStory(
-                              textStyle: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  height: 2.0)),
-                        )
-                      ],
-                    ),
-                    Container(
-                        width: 150,
-                        child: Text(
-                            "${result!["personalSelects"][1]["personalSelectType"]}",
-                            style: GoogleFonts.poorStory(
-                                textStyle: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600)))),
-                    SizedBox(height: 10),
-                    Container(
-                        width: 150,
-                        child:
-                            Text(secondRatio, style: TextStyle(fontSize: 10))),
-                    Stack(
-                      children: [
-                        Container(
-                          width: 150,
-                          height: 10,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(color: Colors.black, width: 1),
-                              borderRadius: BorderRadius.circular(10)),
-                        ),
-                        Container(
-                          width: secondWidth,
-                          height: 10,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                bottomLeft: Radius.circular(10)),
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 20),
-          Container(
-            width: double.infinity,
-            child: Text(
-              '   컬러 팔레트',
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-            ),
-          ),
-          Column(
-            children: [
-              SizedBox(height: 15),
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Container(
-                  height: 100,
-                  width: 120,
-                  decoration: BoxDecoration(
-                      color: Color.fromRGBO(colorList[0].red,
-                          colorList[0].green, colorList[0].blue, 1),
-                      borderRadius: BorderRadius.circular(8)),
-                ),
-                SizedBox(width: 10),
-                Container(
-                  height: 100,
-                  width: 120,
-                  decoration: BoxDecoration(
-                      color: Color.fromRGBO(colorList[1].red,
-                          colorList[1].green, colorList[1].blue, 1),
-                      borderRadius: BorderRadius.circular(8)),
-                ),
-                SizedBox(width: 10),
-                Container(
-                  height: 100,
-                  width: 120,
-                  decoration: BoxDecoration(
-                      color: Color.fromRGBO(colorList[2].red,
-                          colorList[2].green, colorList[2].blue, 1),
-                      borderRadius: BorderRadius.circular(8)),
-                ),
-              ]),
-              SizedBox(height: 15),
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Container(
-                  height: 100,
-                  width: 120,
-                  decoration: BoxDecoration(
-                      color: Color.fromRGBO(colorList[3].red,
-                          colorList[3].green, colorList[3].blue, 1),
-                      borderRadius: BorderRadius.circular(8)),
-                ),
-                SizedBox(width: 10),
-                Container(
-                  height: 100,
-                  width: 120,
-                  decoration: BoxDecoration(
-                      color: Color.fromRGBO(colorList[4].red,
-                          colorList[4].green, colorList[4].blue, 1),
-                      borderRadius: BorderRadius.circular(8)),
-                ),
-                SizedBox(width: 10),
-                Container(
-                  height: 100,
-                  width: 120,
-                  decoration: BoxDecoration(
-                      color: Color.fromRGBO(colorList[5].red,
-                          colorList[5].green, colorList[5].blue, 1),
-                      borderRadius: BorderRadius.circular(8)),
-                ),
-              ]),
-            ],
-          ),
-          SizedBox(height: 18),
-          Container(
-            width: double.infinity,
-            child: Text(
-              '   퍼스널 컬러 정보',
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-            ),
-          ),
-          Container(
-            height: 1,
-            width: double.infinity,
-            decoration: BoxDecoration(
-                color: Color.fromRGBO(189, 189, 189, 1),
-                borderRadius: BorderRadius.circular(50)),
-            margin: EdgeInsets.fromLTRB(15, 8, 15, 8),
-          ),
-          Container(
-            width: double.infinity,
-            child: Text(
-              '       명도',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            margin: EdgeInsets.only(bottom: 10),
-          ),
-          Stack(
-            children: [
-              Container(
-                width: 350,
-                height: 15,
-                decoration: BoxDecoration(
-                    color: Color.fromRGBO(255, 255, 255, 1),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.black, width: 0.5)),
-              ),
-              Container(
-                  margin: EdgeInsets.only(top: 0.5),
-                  width: 117,
-                  height: 14,
-                  decoration: BoxDecoration(
-                      color: value == "low"
-                          ? Color.fromRGBO(217, 217, 217, 1)
-                          : Colors.transparent,
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(10),
-                          bottomLeft: Radius.circular(10)))),
-              Container(
-                  margin: EdgeInsets.only(left: 116, top: 0.5),
-                  width: 117,
-                  height: 14,
-                  decoration: BoxDecoration(
-                    color: value == "middle"
-                        ? Color.fromRGBO(217, 217, 217, 1)
-                        : Colors.transparent,
-                  )),
-              Container(
-                margin: EdgeInsets.only(left: 232, top: 0.5),
-                width: 117,
-                height: 14,
-                decoration: BoxDecoration(
-                    color: value == "top"
-                        ? Color.fromRGBO(217, 217, 217, 1)
-                        : Colors.transparent,
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(10),
-                        bottomRight: Radius.circular(10))),
-              ),
-            ],
-          ),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Container(
-              margin: EdgeInsets.only(left: 32, top: 3),
-              child: Text(
-                '낮음',
-                style: TextStyle(fontSize: 8),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(right: 32, top: 3),
-              child: Text(
-                '높음',
-                style: TextStyle(fontSize: 8),
-              ),
-            ),
-          ]),
-          SizedBox(height: 8),
-          Container(
-            width: double.infinity,
-            child: Text(
-              '       채도',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            margin: EdgeInsets.only(bottom: 10),
-          ),
-          Stack(
-            children: [
-              Container(
-                width: 350,
-                height: 15,
-                decoration: BoxDecoration(
-                    color: Color.fromRGBO(255, 255, 255, 1),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.black, width: 0.5)),
-              ),
-              Container(
-                  margin: EdgeInsets.only(top: 0.5),
-                  width: 117,
-                  height: 14,
-                  decoration: BoxDecoration(
-                      color: saturation.toString() == "low"
-                          ? Color.fromRGBO(217, 217, 217, 1)
-                          : Colors.transparent,
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(10),
-                          bottomLeft: Radius.circular(10)))),
-              Container(
-                  margin: EdgeInsets.only(left: 116, top: 0.5),
-                  width: 117,
-                  height: 14,
-                  decoration: BoxDecoration(
-                    color: saturation.toString() == "middle"
-                        ? Color.fromRGBO(217, 217, 217, 1)
-                        : Colors.transparent,
-                  )),
-              Container(
-                margin: EdgeInsets.only(left: 232, top: 0.5),
-                width: 117,
-                height: 14,
-                decoration: BoxDecoration(
-                    color: saturation == "top"
-                        ? Color.fromRGBO(217, 217, 217, 1)
-                        : Colors.transparent,
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(10),
-                        bottomRight: Radius.circular(10))),
-              ),
-            ],
-          ),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Container(
-              margin: EdgeInsets.only(left: 32, top: 3),
-              child: Text(
-                '낮음',
-                style: TextStyle(fontSize: 8),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(right: 32, top: 3),
-              child: Text(
-                '높음',
-                style: TextStyle(fontSize: 8),
-              ),
-            ),
-          ]),
-          SizedBox(height: 8),
-          Container(
-            width: double.infinity,
-            child: Text(
-              '       색감',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            margin: EdgeInsets.only(bottom: 10),
-          ),
-          Stack(
-            children: [
-              Container(
-                width: 350,
-                height: 15,
-                decoration: BoxDecoration(
-                    color: Color.fromRGBO(255, 255, 255, 1),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.black, width: 0.5)),
-              ),
-              Container(
-                margin: EdgeInsets.only(top: 0.5, left: 1),
-                width: 175,
-                height: 14,
-                decoration: BoxDecoration(
-                    color: hue == "warm"
-                        ? Color.fromRGBO(217, 217, 217, 1)
-                        : Colors.transparent,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        bottomLeft: Radius.circular(10))),
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 175, top: 0.5),
-                width: 175,
-                height: 14,
-                decoration: BoxDecoration(
-                    color: hue == "cool"
-                        ? Color.fromRGBO(217, 217, 217, 1)
-                        : Colors.transparent,
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(10),
-                        bottomRight: Radius.circular(10))),
-              )
-            ],
-          ),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Container(
-              margin: EdgeInsets.only(left: 32, top: 3),
-              child: Text(
-                '웜',
-                style: TextStyle(fontSize: 8),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(right: 32, top: 3),
-              child: Text(
-                '쿨',
-                style: TextStyle(fontSize: 8),
-              ),
-            ),
-          ]),
-          Container(
-            margin: EdgeInsets.only(left: 20, right: 20, top: 12),
-            child: OutlinedButton(
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => PersonalColorFashion(
-                        personalColor: result!["personalSelects"][0]
-                            ["personalSelectType"]),
-                  ));
-                },
-                style: OutlinedButton.styleFrom(backgroundColor: Colors.black),
-                child: Row(
-                  children: [
-                    Image.asset('assets/arrow-right.png',
-                        height: 20, width: 20),
-                    SizedBox(width: 10),
+                    SizedBox(width: 20),
                     Text(
-                      '내 진단 결과에 따른 코디 보러가기',
-                      style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold),
+                      name,
+                      style: GoogleFonts.gowunDodum(
+                          textStyle: TextStyle(
+                              fontSize: 25,
+                              color: Color.fromRGBO(255, 191, 25, 1),
+                              fontWeight: FontWeight.bold)),
+                    ),
+                    Text(
+                      "님의 퍼스널컬러 진단 결과",
+                      style: GoogleFonts.gowunDodum(
+                          textStyle: TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.bold)),
                     )
                   ],
-                )),
+                ),
+                SizedBox(height: 15),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 170,
+                      height: 110,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.4),
+                              blurRadius: 4.0,
+                              offset: const Offset(0, 7),
+                            ),
+                          ],
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Column(
+                        children: [
+                          SizedBox(height: 10),
+                          Row(
+                            children: [
+                              SizedBox(width: 10),
+                              Text(
+                                '1',
+                                style: GoogleFonts.poorStory(
+                                    textStyle: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        height: 1.0)),
+                              ),
+                              Text(
+                                '순위',
+                                style: GoogleFonts.poorStory(
+                                    textStyle: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        height: 2.0)),
+                              ),
+                            ],
+                          ),
+                          Container(
+                              width: 150,
+                              child: Text(
+                                  "${result!["personalSelects"][0]["personalSelectType"]}",
+                                  style: GoogleFonts.poorStory(
+                                      textStyle: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w600)))),
+                          SizedBox(height: 10),
+                          Container(
+                              width: 150,
+                              child: Text(firstRatio,
+                                  style: TextStyle(fontSize: 10))),
+                          Stack(
+                            children: [
+                              Container(
+                                width: 150,
+                                height: 10,
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border.all(
+                                        color: Colors.black, width: 1),
+                                    borderRadius: BorderRadius.circular(10)),
+                              ),
+                              Container(
+                                width: firstWidth,
+                                height: 10,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(10),
+                                      bottomLeft: Radius.circular(10)),
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: 20),
+                    Container(
+                      width: 170,
+                      height: 110,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.4),
+                              blurRadius: 4.0,
+                              offset: const Offset(0, 7),
+                            ),
+                          ],
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Column(
+                        children: [
+                          SizedBox(height: 10),
+                          Row(
+                            children: [
+                              SizedBox(width: 10),
+                              Text(
+                                '2',
+                                style: GoogleFonts.poorStory(
+                                    textStyle: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        height: 1.0)),
+                              ),
+                              Text(
+                                '순위',
+                                style: GoogleFonts.poorStory(
+                                    textStyle: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        height: 2.0)),
+                              )
+                            ],
+                          ),
+                          Container(
+                              width: 150,
+                              child: Text(
+                                  "${result!["personalSelects"][1]["personalSelectType"]}",
+                                  style: GoogleFonts.poorStory(
+                                      textStyle: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w600)))),
+                          SizedBox(height: 10),
+                          Container(
+                              width: 150,
+                              child: Text(secondRatio,
+                                  style: TextStyle(fontSize: 10))),
+                          Stack(
+                            children: [
+                              Container(
+                                width: 150,
+                                height: 10,
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border.all(
+                                        color: Colors.black, width: 1),
+                                    borderRadius: BorderRadius.circular(10)),
+                              ),
+                              Container(
+                                width: secondWidth,
+                                height: 10,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(10),
+                                      bottomLeft: Radius.circular(10)),
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20),
+                Container(
+                  width: double.infinity,
+                  child: Text(
+                    '   컬러 팔레트',
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Column(
+                  children: [
+                    SizedBox(height: 15),
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                      Container(
+                        height: 100,
+                        width: 120,
+                        decoration: BoxDecoration(
+                            color: Color.fromRGBO(colorList[0].red,
+                                colorList[0].green, colorList[0].blue, 1),
+                            borderRadius: BorderRadius.circular(8)),
+                      ),
+                      SizedBox(width: 10),
+                      Container(
+                        height: 100,
+                        width: 120,
+                        decoration: BoxDecoration(
+                            color: Color.fromRGBO(colorList[1].red,
+                                colorList[1].green, colorList[1].blue, 1),
+                            borderRadius: BorderRadius.circular(8)),
+                      ),
+                      SizedBox(width: 10),
+                      Container(
+                        height: 100,
+                        width: 120,
+                        decoration: BoxDecoration(
+                            color: Color.fromRGBO(colorList[2].red,
+                                colorList[2].green, colorList[2].blue, 1),
+                            borderRadius: BorderRadius.circular(8)),
+                      ),
+                    ]),
+                    SizedBox(height: 15),
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                      Container(
+                        height: 100,
+                        width: 120,
+                        decoration: BoxDecoration(
+                            color: Color.fromRGBO(colorList[3].red,
+                                colorList[3].green, colorList[3].blue, 1),
+                            borderRadius: BorderRadius.circular(8)),
+                      ),
+                      SizedBox(width: 10),
+                      Container(
+                        height: 100,
+                        width: 120,
+                        decoration: BoxDecoration(
+                            color: Color.fromRGBO(colorList[4].red,
+                                colorList[4].green, colorList[4].blue, 1),
+                            borderRadius: BorderRadius.circular(8)),
+                      ),
+                      SizedBox(width: 10),
+                      Container(
+                        height: 100,
+                        width: 120,
+                        decoration: BoxDecoration(
+                            color: Color.fromRGBO(colorList[5].red,
+                                colorList[5].green, colorList[5].blue, 1),
+                            borderRadius: BorderRadius.circular(8)),
+                      ),
+                    ]),
+                  ],
+                ),
+                SizedBox(height: 18),
+                Container(
+                  width: double.infinity,
+                  child: Text(
+                    '   퍼스널 컬러 정보',
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Container(
+                  height: 1,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      color: Color.fromRGBO(189, 189, 189, 1),
+                      borderRadius: BorderRadius.circular(50)),
+                  margin: EdgeInsets.fromLTRB(15, 8, 15, 8),
+                ),
+                Container(
+                  width: double.infinity,
+                  child: Text(
+                    '       명도',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  margin: EdgeInsets.only(bottom: 10),
+                ),
+                Stack(
+                  children: [
+                    Container(
+                      width: 350,
+                      height: 15,
+                      decoration: BoxDecoration(
+                          color: Color.fromRGBO(255, 255, 255, 1),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.black, width: 0.5)),
+                    ),
+                    Container(
+                        margin: EdgeInsets.only(top: 0.5),
+                        width: 117,
+                        height: 14,
+                        decoration: BoxDecoration(
+                            color: value == "low"
+                                ? Color.fromRGBO(217, 217, 217, 1)
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                bottomLeft: Radius.circular(10)))),
+                    Container(
+                        margin: EdgeInsets.only(left: 116, top: 0.5),
+                        width: 117,
+                        height: 14,
+                        decoration: BoxDecoration(
+                          color: value == "middle"
+                              ? Color.fromRGBO(217, 217, 217, 1)
+                              : Colors.transparent,
+                        )),
+                    Container(
+                      margin: EdgeInsets.only(left: 232, top: 0.5),
+                      width: 117,
+                      height: 14,
+                      decoration: BoxDecoration(
+                          color: value == "top"
+                              ? Color.fromRGBO(217, 217, 217, 1)
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(10),
+                              bottomRight: Radius.circular(10))),
+                    ),
+                  ],
+                ),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(left: 32, top: 3),
+                        child: Text(
+                          '낮음',
+                          style: TextStyle(fontSize: 8),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(right: 32, top: 3),
+                        child: Text(
+                          '높음',
+                          style: TextStyle(fontSize: 8),
+                        ),
+                      ),
+                    ]),
+                SizedBox(height: 8),
+                Container(
+                  width: double.infinity,
+                  child: Text(
+                    '       채도',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  margin: EdgeInsets.only(bottom: 10),
+                ),
+                Stack(
+                  children: [
+                    Container(
+                      width: 350,
+                      height: 15,
+                      decoration: BoxDecoration(
+                          color: Color.fromRGBO(255, 255, 255, 1),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.black, width: 0.5)),
+                    ),
+                    Container(
+                        margin: EdgeInsets.only(top: 0.5),
+                        width: 117,
+                        height: 14,
+                        decoration: BoxDecoration(
+                            color: saturation.toString() == "low"
+                                ? Color.fromRGBO(217, 217, 217, 1)
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                bottomLeft: Radius.circular(10)))),
+                    Container(
+                        margin: EdgeInsets.only(left: 116, top: 0.5),
+                        width: 117,
+                        height: 14,
+                        decoration: BoxDecoration(
+                          color: saturation.toString() == "middle"
+                              ? Color.fromRGBO(217, 217, 217, 1)
+                              : Colors.transparent,
+                        )),
+                    Container(
+                      margin: EdgeInsets.only(left: 232, top: 0.5),
+                      width: 117,
+                      height: 14,
+                      decoration: BoxDecoration(
+                          color: saturation == "top"
+                              ? Color.fromRGBO(217, 217, 217, 1)
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(10),
+                              bottomRight: Radius.circular(10))),
+                    ),
+                  ],
+                ),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(left: 32, top: 3),
+                        child: Text(
+                          '낮음',
+                          style: TextStyle(fontSize: 8),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(right: 32, top: 3),
+                        child: Text(
+                          '높음',
+                          style: TextStyle(fontSize: 8),
+                        ),
+                      ),
+                    ]),
+                SizedBox(height: 8),
+                Container(
+                  width: double.infinity,
+                  child: Text(
+                    '       색감',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  margin: EdgeInsets.only(bottom: 10),
+                ),
+                Stack(
+                  children: [
+                    Container(
+                      width: 350,
+                      height: 15,
+                      decoration: BoxDecoration(
+                          color: Color.fromRGBO(255, 255, 255, 1),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.black, width: 0.5)),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: 0.5, left: 1),
+                      width: 175,
+                      height: 14,
+                      decoration: BoxDecoration(
+                          color: hue == "warm"
+                              ? Color.fromRGBO(217, 217, 217, 1)
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              bottomLeft: Radius.circular(10))),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(left: 175, top: 0.5),
+                      width: 175,
+                      height: 14,
+                      decoration: BoxDecoration(
+                          color: hue == "cool"
+                              ? Color.fromRGBO(217, 217, 217, 1)
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(10),
+                              bottomRight: Radius.circular(10))),
+                    )
+                  ],
+                ),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(left: 32, top: 3),
+                        child: Text(
+                          '웜',
+                          style: TextStyle(fontSize: 8),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(right: 32, top: 3),
+                        child: Text(
+                          '쿨',
+                          style: TextStyle(fontSize: 8),
+                        ),
+                      ),
+                    ]),
+                Container(
+                  margin: EdgeInsets.only(left: 20, right: 20, top: 12),
+                  child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => PersonalColorFashion(
+                              personalColor: result!["personalSelects"][0]
+                                  ["personalSelectType"]),
+                        ));
+                      },
+                      style: OutlinedButton.styleFrom(
+                          backgroundColor: Colors.black),
+                      child: Row(
+                        children: [
+                          Image.asset('assets/arrow-right.png',
+                              height: 20, width: 20),
+                          SizedBox(width: 10),
+                          Text(
+                            '내 진단 결과에 따른 코디 보러가기',
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          )
+                        ],
+                      )),
+                )
+              ],
+            ),
           )
-        ],
-      ),
-    );
+        : Scaffold(
+            body: Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '퍼스널 컬러 진단결과가 없습니다.',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    margin: EdgeInsets.fromLTRB(90, 10, 90, 0),
+                    child: OutlinedButton(
+                      onPressed: () {
+                        // 로그인을 클릭하면 로그인 창으로 이동
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => PersonalColor(),
+                        ));
+                      },
+                      child: Text(
+                        '퍼스널 컬러 진단하러가기',
+                        style: TextStyle(color: Colors.black, fontSize: 14),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
   }
 }

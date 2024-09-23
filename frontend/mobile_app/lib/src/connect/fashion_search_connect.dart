@@ -35,11 +35,11 @@ class FashionSearchConnect extends GetConnect {
           {"color": colorList, "isPersonal": isPersonal, "season": season},
           headers: {'Authorization': await getToken});
       Map<String, dynamic> body = response.body;
+      print(body);
 
       if (body['code'] != 200) {
         throw Exception(body['message']);
       }
-      print(body['data']);
       return body;
     } catch (e) {
       print('Error: $e');
@@ -58,6 +58,7 @@ class FashionSearchConnect extends GetConnect {
           {"color": colorList, "isPersonal": isPersonal, "season": season},
           headers: {'Authorization': await getToken});
       Map<String, dynamic> body = response.body;
+      print(body);
       if (body['code'] != 200) {
         throw Exception(body['message']);
       }

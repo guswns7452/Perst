@@ -16,6 +16,8 @@ class MyStyle extends StatefulWidget {
   State<MyStyle> createState() => _MyStyleState();
 }
 
+bool noneData = false;
+
 class _MyStyleState extends State<MyStyle> {
   final mypageController = Get.put(MypageController());
   late List<MystyleModel> fashion = [];
@@ -42,6 +44,9 @@ class _MyStyleState extends State<MyStyle> {
 
     setState(() {
       isLoading = false;
+      if (fashion is Null) {
+        noneData = true;
+      }
     });
   }
 
@@ -91,26 +96,6 @@ class _MyStyleState extends State<MyStyle> {
                         fontWeight: FontWeight.bold),
                   ),
                 ),
-                // 분석한 이력들이 없을 때
-                // Container(
-                //   width: double.infinity,
-                //   height: 500,
-                //   child: Column(
-                //     mainAxisAlignment: MainAxisAlignment.center,
-                //     crossAxisAlignment: CrossAxisAlignment.center,
-                //     children: [
-                //       Image.asset('assets/Closets.png', height: 80, width: 80),
-                //       SizedBox(
-                //         height: 8,
-                //       ),
-                //       Text(
-                //         '등록한 스타일이 없어요.',
-                //         style: TextStyle(
-                //             fontSize: 15, color: Color.fromRGBO(153, 153, 153, 1)),
-                //       )
-                //     ],
-                //   ),
-                // ),
                 Stack(
                   children: [
                     Container(
@@ -123,47 +108,61 @@ class _MyStyleState extends State<MyStyle> {
                       ),
                     ),
                     Positioned(
-                      top: 35,
-                      left: 35,
-                      right: 35,
-                      bottom: 0,
-                      child: Container(
-                        color: Colors.transparent,
-                        child: ListView.builder(
-                          itemCount: styleResult.length,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            final key = styleResult.keys.toList()[index];
-                            final value = styleResult[key];
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                        top: 35,
+                        left: 35,
+                        right: 35,
+                        bottom: 0,
+                        child: noneData
+                            ? Container(
+                                color: Colors.transparent,
+                                child: ListView.builder(
+                                  itemCount: styleResult.length,
+                                  scrollDirection: Axis.horizontal,
+                                  itemBuilder: (context, index) {
+                                    final key =
+                                        styleResult.keys.toList()[index];
+                                    final value = styleResult[key];
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "$value",
+                                            style: TextStyle(
+                                                fontSize: 17,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(
+                                            key,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 10,
+                                                color: const Color.fromARGB(
+                                                    255, 195, 195, 195)),
+                                          ),
+                                          SizedBox(height: 6),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              )
+                            : Column(
                                 children: [
+                                  SizedBox(height: 3),
                                   Text(
-                                    "$value",
+                                    '스타일 분석 이력이 존재하지 않습니다.',
+                                    textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontSize: 17,
-                                        fontWeight: FontWeight.bold),
+                                        fontWeight: FontWeight.w600),
                                   ),
-                                  Text(
-                                    key,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 10,
-                                        color: const Color.fromARGB(
-                                            255, 195, 195, 195)),
-                                  ),
-                                  SizedBox(height: 6),
                                 ],
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
+                              )),
                   ],
                 ),
                 SizedBox(height: 30),

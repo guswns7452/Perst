@@ -60,7 +60,6 @@ class MypageConnect extends GetConnect {
         headers: {'Authorization': await getToken});
 
     Map<String, dynamic> body = response.body;
-    print(body['data']);
 
     if (body['code'] != 200) {
       throw Exception(body['message']);

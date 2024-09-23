@@ -19,6 +19,8 @@ class StyleHistory extends StatefulWidget {
   State<StyleHistory> createState() => _StyleHistoryState();
 }
 
+bool noneData = false;
+
 class _StyleHistoryState extends State<StyleHistory> {
   final mypageController = Get.put(MypageController());
   late List<MystyleModel> fashion = [];
@@ -49,6 +51,9 @@ class _StyleHistoryState extends State<StyleHistory> {
 
     setState(() {
       isLoading = false;
+      if (fashion is Null) {
+        noneData = true;
+      }
     });
   }
 
@@ -77,15 +82,10 @@ class _StyleHistoryState extends State<StyleHistory> {
               child: ListView(
                 children: [
                   Container(
-                    height: 230,
+                    height: 150,
                     width: double.infinity,
-                    decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(15),
-                            bottomRight: Radius.circular(15))),
+                    color: const Color.fromARGB(255, 229, 229, 229),
                   ),
-                  // TODO: 색 10개정도 list에 넣어서 랜덤으로 돌릴 예정
                   SizedBox(height: 10),
                   Row(
                     children: [
@@ -120,7 +120,8 @@ class _StyleHistoryState extends State<StyleHistory> {
                           styleResult: styleResult,
                           myStyleLength: myStyleLength,
                           fetchData: fetchData,
-                          setState: setState)),
+                          setState: setState,
+                          noneData: noneData)),
                 ],
               ),
             ),
@@ -134,6 +135,7 @@ class CustomDrawer extends StatefulWidget {
   final List<MystyleModel> fashion;
   final Function fetchData;
   final Function setState;
+  final bool noneData;
 
   const CustomDrawer(
       {super.key,
@@ -141,7 +143,8 @@ class CustomDrawer extends StatefulWidget {
       required this.styleResult,
       required this.myStyleLength,
       required this.fetchData,
-      required this.setState});
+      required this.setState,
+      required this.noneData});
 
   @override
   _CustomDrawerState createState() => _CustomDrawerState();
@@ -242,45 +245,58 @@ Widget _buildStyleTab(
               ),
             ),
             Positioned(
-              top: 35,
-              left: 35,
-              right: 35,
-              bottom: 0,
-              child: Container(
-                color: Colors.transparent,
-                child: ListView.builder(
-                  itemCount: styleResult.length,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) {
-                    final key = styleResult.keys.toList()[index];
-                    final value = styleResult[key];
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                top: 35,
+                left: 35,
+                right: 35,
+                bottom: 0,
+                child: noneData
+                    ? Container(
+                        color: Colors.transparent,
+                        child: ListView.builder(
+                          itemCount: styleResult.length,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            final key = styleResult.keys.toList()[index];
+                            final value = styleResult[key];
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "$value",
+                                    style: TextStyle(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    key,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 10,
+                                        color: const Color.fromARGB(
+                                            255, 195, 195, 195)),
+                                  ),
+                                  SizedBox(height: 6),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      )
+                    : Column(
                         children: [
+                          SizedBox(height: 7),
                           Text(
-                            "$value",
+                            '스타일 분석 이력이 존재하지 않습니다.',
+                            textAlign: TextAlign.center,
                             style: TextStyle(
-                                fontSize: 17, fontWeight: FontWeight.bold),
+                                fontSize: 17, fontWeight: FontWeight.w600),
                           ),
-                          Text(
-                            key,
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 10,
-                                color:
-                                    const Color.fromARGB(255, 195, 195, 195)),
-                          ),
-                          SizedBox(height: 6),
                         ],
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
+                      )),
           ],
         ),
         SizedBox(height: 30),
@@ -377,8 +393,11 @@ Widget _buildGraphTab(Map<String, dynamic> styleResult, int myStyleLength) {
       children: [
         Expanded(
           child: Center(
-            child:
-                FlChart(styleResult: styleResult, myStyleLength: myStyleLength),
+            child: FlChart(
+              styleResult: styleResult,
+              myStyleLength: myStyleLength,
+              noneData: noneData,
+            ),
           ),
         ),
       ],

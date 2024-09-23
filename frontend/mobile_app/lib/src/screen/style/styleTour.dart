@@ -52,7 +52,6 @@ class _StyleTourState extends State<StyleTour> {
     if (_seletedGenderInt == 1) {
       var response = await fashionSearchConnect.searchWoman(_searchCurrentStyle,
           _personalColorChecked, colorNameList, _seletedSeason);
-
       List<dynamic> results = response['data'];
       setState(() {
         fashions = results
@@ -265,6 +264,7 @@ class _CustomDrawerState extends State<CustomDrawer>
             _seletedSeason);
 
         List<dynamic> results = response['data'];
+        print(results);
         setState(() {
           fashions = results
               .map((result) => FashionSearchModel.fromJson(result))
