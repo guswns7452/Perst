@@ -294,7 +294,7 @@ class _StyleHistoryDetailState extends State<StyleHistoryDetail> {
                             MaterialPageRoute(
                               builder: (context) => KeywordFashion(
                                 styleKeyword: styleName,
-                                kRStyleName: '캐주얼',
+                                kRStyleName: kRStyleName,
                                 personalColor: '',
                               ),
                             ),
@@ -402,7 +402,7 @@ class _StyleHistoryDetailState extends State<StyleHistoryDetail> {
                                     '에 어울리는 스타일 둘러보기',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                    fontSize: 20,
+                                    fontSize: 19,
                                     fontWeight: FontWeight.w600,
                                     color: Color.fromARGB(255, 255, 255, 255)),
                               ),
