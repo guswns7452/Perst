@@ -1,4 +1,4 @@
-package com.clothes.perst;
+package com.clothes.perst.GoogleDrive.FashionTip;
 
 import com.clothes.perst.config.GoogleDriveAPI;
 import com.clothes.perst.domain.CoordinateVO;

@@ -1,4 +1,4 @@
-package com.clothes.perst;
+package com.clothes.perst.GoogleDrive;
 
 import com.clothes.perst.DTO.ClothesFolder;
 import com.clothes.perst.config.GoogleDriveAPI;

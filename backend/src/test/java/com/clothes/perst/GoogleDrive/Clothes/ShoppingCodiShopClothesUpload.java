@@ -1,4 +1,4 @@
-package com.clothes.perst;
+package com.clothes.perst.GoogleDrive.Clothes;
 
 import com.clothes.perst.DTO.ClothesFolder;
 import com.clothes.perst.config.GoogleDriveAPI;
@@ -31,6 +31,11 @@ import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.util.*;
 
+/**
+ * 쇼핑몰 이미지의 정보 > Google Drive 업로드
+ * # 현재는 Python으로 이동함  #
+ */
+@Deprecated
 @SpringBootTest
 public class ShoppingCodiShopClothesUpload {
     //사용자의 토큰을 어디에 저장할지 경로를 지정
